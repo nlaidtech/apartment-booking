@@ -878,6 +878,9 @@ h2 {
 }
 
 .confirm-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   min-height: 48px;
   margin: 18px 0 10px;
@@ -887,6 +890,8 @@ h2 {
   border-radius: 7px;
   font-size: 18px;
   font-weight: 700;
+  text-align: center;
+  text-decoration: none;
   cursor: pointer;
   box-shadow: 0 10px 18px rgba(7, 91, 216, 0.22);
 }
@@ -899,6 +904,229 @@ h2 {
 
 .confirm-card a {
   color: #084fba;
+}
+
+.confirmation-topbar {
+  grid-template-columns: 1fr 1fr;
+}
+
+.confirmation-shell {
+  width: min(1148px, calc(100% - 38px));
+  margin: 28px auto 48px;
+}
+
+.success-hero {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-bottom: 36px;
+}
+
+.success-mark {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  color: #fff;
+  background: linear-gradient(145deg, #02bd55, #039842);
+  border-radius: 50%;
+  box-shadow: 0 16px 28px rgba(3, 152, 66, 0.24);
+}
+
+.success-mark svg {
+  width: 58px;
+  stroke-width: 2.6;
+}
+
+.success-hero h1 {
+  margin: 0 0 8px;
+  font-size: clamp(32px, 3.4vw, 39px);
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+.success-hero p {
+  margin: 0;
+  max-width: 740px;
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.confirmation-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 278px;
+  gap: 20px;
+  align-items: start;
+}
+
+.confirmation-main {
+  display: grid;
+  gap: 34px;
+  min-width: 0;
+}
+
+.reservation-summary,
+.confirmed-stay-card,
+.cancellation-note,
+.payment-confirm-card {
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid #aeb4be;
+  border-radius: 8px;
+}
+
+.reservation-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 224px;
+  gap: 20px;
+  padding: 14px 16px;
+}
+
+.reservation-summary > div > strong {
+  display: block;
+  margin-bottom: 22px;
+  font-size: 18px;
+}
+
+.reservation-summary h2,
+.confirmed-stay-card strong {
+  display: block;
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.confirmed-section h2 {
+  margin-bottom: 8px;
+  font-size: 23px;
+}
+
+.confirmed-stay-card {
+  padding: 14px 16px;
+}
+
+.cancellation-note {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 14px 16px;
+  font-size: 16px;
+}
+
+.cancellation-note a {
+  color: #084fba;
+  text-decoration: none;
+}
+
+.payment-confirm-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 24px;
+}
+
+.payment-confirm-card {
+  min-height: 116px;
+  padding: 14px 16px;
+}
+
+.payment-confirm-card strong,
+.payment-confirm-details strong,
+.payment-confirm-details label span {
+  display: block;
+  font-weight: 800;
+}
+
+.payment-confirm-card p,
+.payment-confirm-details p {
+  margin: 4px 0 16px;
+  line-height: 1.2;
+}
+
+.payment-confirm-details label {
+  display: grid;
+  gap: 7px;
+}
+
+.payment-confirm-details input {
+  width: 100%;
+  height: 39px;
+  padding: 0 12px;
+  background: #fff;
+  border: 1px solid #aeb4be;
+  border-radius: 8px;
+}
+
+.stay-side-card {
+  position: sticky;
+  top: 92px;
+  padding: 20px;
+  background: var(--panel);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+
+.stay-side-card h2 {
+  margin-bottom: 10px;
+  font-size: 23px;
+}
+
+.stay-side-card img {
+  width: 100%;
+  height: 152px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.stay-side-card h3 {
+  margin: 11px 0 8px;
+  font-size: 23px;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+.stay-side-card dl {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 16px;
+}
+
+.stay-side-card div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.stay-side-card dt,
+.stay-side-card dd {
+  margin: 0;
+}
+
+.stay-side-card div:last-child {
+  font-weight: 800;
+}
+
+.side-primary,
+.side-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  border-radius: 7px;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+}
+
+.side-primary {
+  color: #fff;
+  background: var(--blue);
+  box-shadow: 0 10px 18px rgba(7, 91, 216, 0.2);
+}
+
+.side-secondary {
+  margin-top: 8px;
+  color: var(--text);
+  background: #fff;
+  border: 1px solid #bcc1c9;
 }
 
 @media (max-width: 980px) {
@@ -946,6 +1174,14 @@ h2 {
 
   .additional-details {
     grid-column: 1 / -1;
+  }
+
+  .confirmation-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stay-side-card {
+    position: static;
   }
 }
 
@@ -1028,6 +1264,33 @@ h2 {
   .host-mini {
     display: none;
   }
+
+  .confirmation-topbar {
+    grid-template-columns: 1fr auto;
+  }
+
+  .success-hero {
+    align-items: flex-start;
+  }
+
+  .success-mark {
+    width: 72px;
+    height: 72px;
+  }
+
+  .success-mark svg {
+    width: 45px;
+  }
+
+  .reservation-summary,
+  .payment-confirm-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reservation-summary .stay-prices {
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+  }
 }
 
 @media (max-width: 430px) {
@@ -1045,5 +1308,9 @@ h2 {
 
   .booking-fields {
     grid-template-columns: 1fr;
+  }
+
+  .success-hero {
+    display: grid;
   }
 }
