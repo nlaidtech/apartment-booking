@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -170,6 +171,208 @@
         <div class="map-road road-three"></div>
         <span>Tagum</span>
       </section>
+    </section>
+
+    <section class="listing-section" aria-labelledby="listingHeading">
+      <div class="listing-header">
+        <div>
+          <p class="section-kicker">Featured apartments</p>
+          <h2 id="listingHeading">Search and filter live listings</h2>
+          <p>Use the controls to narrow apartments by location, room type, price, amenities, and rating.</p>
+        </div>
+        <div class="listing-summary">
+          <strong><span data-listing-count>6</span> results</strong>
+          <span>Updated instantly as you filter</span>
+        </div>
+      </div>
+
+      <form class="listing-filters" id="listingFilters">
+        <label>
+          <span>Location</span>
+          <select name="location">
+            <option value="all">All locations</option>
+            <option value="Tagum City">Tagum City</option>
+            <option value="Davao City">Davao City</option>
+            <option value="General Santos">General Santos</option>
+            <option value="Cebu City">Cebu City</option>
+          </select>
+        </label>
+        <label>
+          <span>Room type</span>
+          <select name="roomType">
+            <option value="all">Any type</option>
+            <option value="Studio">Studio</option>
+            <option value="1 Bedroom">1 Bedroom</option>
+            <option value="2 Bedroom">2 Bedroom</option>
+            <option value="Loft">Loft</option>
+          </select>
+        </label>
+        <label>
+          <span>Amenities</span>
+          <select name="amenity">
+            <option value="all">Any amenity</option>
+            <option value="WiFi">WiFi</option>
+            <option value="Pool">Pool</option>
+            <option value="Balcony">Balcony</option>
+            <option value="Kitchen">Kitchen</option>
+            <option value="Parking">Parking</option>
+          </select>
+        </label>
+        <label>
+          <span>Minimum rating</span>
+          <select name="rating">
+            <option value="0">Any rating</option>
+            <option value="4">4.0+</option>
+            <option value="4.5">4.5+</option>
+            <option value="4.8">4.8+</option>
+          </select>
+        </label>
+        <label class="range-field">
+          <span>Price max</span>
+          <input name="price" type="range" min="60" max="150" value="150">
+          <strong data-price-value>$150 max</strong>
+        </label>
+      </form>
+
+      <div class="listing-grid" aria-live="polite">
+        <article class="listing-card" data-listing-card data-location="Tagum City" data-room-type="1 Bedroom" data-amenities="WiFi,Balcony,Kitchen" data-rating="4.8" data-price="85">
+          <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1100&q=90" alt="Bright apartment living room with city view">
+          <div class="listing-card-body">
+            <div class="listing-card-top">
+              <div>
+                <h3>Modern Tagum Stay</h3>
+                <p>Tagum City</p>
+              </div>
+              <strong>$85</strong>
+            </div>
+            <div class="listing-meta">
+              <span>1 Bedroom</span>
+              <span>4.8 rating</span>
+            </div>
+            <div class="listing-tags">
+              <span>WiFi</span>
+              <span>Balcony</span>
+              <span>Kitchen</span>
+            </div>
+            <a class="listing-button" href="index.html">View details</a>
+          </div>
+        </article>
+
+        <article class="listing-card" data-listing-card data-location="Davao City" data-room-type="Studio" data-amenities="WiFi,Pool,Parking" data-rating="4.7" data-price="72">
+          <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1100&q=90" alt="Modern apartment bedroom with natural light">
+          <div class="listing-card-body">
+            <div class="listing-card-top">
+              <div>
+                <h3>Riverfront Studio</h3>
+                <p>Davao City</p>
+              </div>
+              <strong>$72</strong>
+            </div>
+            <div class="listing-meta">
+              <span>Studio</span>
+              <span>4.7 rating</span>
+            </div>
+            <div class="listing-tags">
+              <span>WiFi</span>
+              <span>Pool</span>
+              <span>Parking</span>
+            </div>
+            <a class="listing-button" href="checkout.html">Book now</a>
+          </div>
+        </article>
+
+        <article class="listing-card" data-listing-card data-location="General Santos" data-room-type="Loft" data-amenities="WiFi,Skyline View,Kitchen" data-rating="4.9" data-price="95">
+          <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1100&q=90" alt="Stylish loft apartment with warm lighting">
+          <div class="listing-card-body">
+            <div class="listing-card-top">
+              <div>
+                <h3>City Lights Loft</h3>
+                <p>General Santos</p>
+              </div>
+              <strong>$95</strong>
+            </div>
+            <div class="listing-meta">
+              <span>Loft</span>
+              <span>4.9 rating</span>
+            </div>
+            <div class="listing-tags">
+              <span>WiFi</span>
+              <span>Kitchen</span>
+              <span>Skyline View</span>
+            </div>
+            <a class="listing-button" href="saved-apartments.html">Save listing</a>
+          </div>
+        </article>
+
+        <article class="listing-card" data-listing-card data-location="Tagum City" data-room-type="2 Bedroom" data-amenities="WiFi,Pool,Kitchen" data-rating="4.6" data-price="120">
+          <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1100&q=90" alt="Contemporary apartment lounge with large windows">
+          <div class="listing-card-body">
+            <div class="listing-card-top">
+              <div>
+                <h3>Sunset Family Flat</h3>
+                <p>Tagum City</p>
+              </div>
+              <strong>$120</strong>
+            </div>
+            <div class="listing-meta">
+              <span>2 Bedroom</span>
+              <span>4.6 rating</span>
+            </div>
+            <div class="listing-tags">
+              <span>WiFi</span>
+              <span>Pool</span>
+              <span>Kitchen</span>
+            </div>
+            <a class="listing-button" href="checkout.html">Reserve</a>
+          </div>
+        </article>
+
+        <article class="listing-card" data-listing-card data-location="Cebu City" data-room-type="Studio" data-amenities="WiFi,Balcony,Parking" data-rating="4.4" data-price="68">
+          <img src="https://images.unsplash.com/photo-1502005097973-6a7082348e28?auto=format&fit=crop&w=1100&q=90" alt="Compact studio apartment with modern design">
+          <div class="listing-card-body">
+            <div class="listing-card-top">
+              <div>
+                <h3>Harbor Studio</h3>
+                <p>Cebu City</p>
+              </div>
+              <strong>$68</strong>
+            </div>
+            <div class="listing-meta">
+              <span>Studio</span>
+              <span>4.4 rating</span>
+            </div>
+            <div class="listing-tags">
+              <span>WiFi</span>
+              <span>Balcony</span>
+              <span>Parking</span>
+            </div>
+            <a class="listing-button" href="index.html">View details</a>
+          </div>
+        </article>
+
+        <article class="listing-card" data-listing-card data-location="Davao City" data-room-type="1 Bedroom" data-amenities="WiFi,Pool,Balcony" data-rating="4.5" data-price="140">
+          <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1100&q=90" alt="Luxury apartment interior with designer furniture">
+          <div class="listing-card-body">
+            <div class="listing-card-top">
+              <div>
+                <h3>Executive Haven</h3>
+                <p>Davao City</p>
+              </div>
+              <strong>$140</strong>
+            </div>
+            <div class="listing-meta">
+              <span>1 Bedroom</span>
+              <span>4.5 rating</span>
+            </div>
+            <div class="listing-tags">
+              <span>WiFi</span>
+              <span>Pool</span>
+              <span>Balcony</span>
+            </div>
+            <a class="listing-button" href="checkout.html">Book now</a>
+          </div>
+        </article>
+      </div>
     </section>
   </main>
 </body>
