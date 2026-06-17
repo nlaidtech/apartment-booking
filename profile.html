@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apartly - My Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="auth.js" defer></script>
+</head>
+<body>
+  <header class="topbar saved-topbar">
+    <a class="brand" href="index.html" aria-label="Apartly home">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 11.2 12 3l9 8.2v8.1a1.7 1.7 0 0 1-1.7 1.7h-4.1v-6.2H8.8V21H4.7A1.7 1.7 0 0 1 3 19.3v-8.1Z"/>
+        </svg>
+      </span>
+      <span>Apartly</span>
+    </a>
+    <div class="topbar-actions">
+      <nav class="topnav" aria-label="Primary">
+        <a href="index.html">Browse apartments</a>
+        <a href="saved-apartments.html">Saved apartments</a>
+      </nav>
+      <div class="account-actions">
+        <!-- Dynamically loaded by auth.js -->
+      </div>
+    </div>
+  </header>
+
+  <main class="profile-shell" id="profileShell">
+    <!-- Sidebar Navigation -->
+    <aside class="profile-sidebar" aria-label="Profile navigation">
+      <img id="sideAvatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" alt="Large avatar" class="profile-avatar-large">
+      <h2 id="sideName">[User Name]</h2>
+      <span id="sideRole" class="profile-role-tag">[Role]</span>
+      
+      <nav class="profile-menu-list">
+        <button class="profile-menu-item active" data-tab="tabProfile">
+          <svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
+          Personal Info
+        </button>
+        <button class="profile-menu-item" data-tab="tabTrips">
+          <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          My Trips
+        </button>
+        <button class="profile-menu-item" data-tab="tabSettings">
+          <svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+          Account Settings
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Content Area -->
+    <section class="profile-content" aria-label="Tab Content">
+      <!-- 1. Personal Info Pane -->
+      <article class="profile-tab-pane active" id="tabProfile">
+        <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 8px;">Personal Information</h2>
+        <p style="color: var(--muted); margin-bottom: 24px; font-size: 14.5px;">Update your personal details. This information is shared with hosts when booking stays.</p>
+        
+        <form id="profileForm">
+          <div class="profile-form-grid">
+            <div class="login-form-group">
+              <label for="profName">Full Name</label>
+              <input type="text" id="profName" required>
+            </div>
+            <div class="login-form-group">
+              <label for="profEmail">Email Address</label>
+              <input type="email" id="profEmail" readonly style="background: var(--surface); cursor: not-allowed;">
+            </div>
+            <div class="login-form-group">
+              <label for="profPhone">Phone Number</label>
+              <input type="text" id="profPhone" placeholder="+1 234 567 8900">
+            </div>
+            <div class="login-form-group">
+              <label for="profGender">Gender</label>
+              <select id="profGender">
+                <option value="Female">Female</option>
+                <option value="Male">Male</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+              </select>
+            </div>
+            <div class="login-form-group profile-form-full">
+              <label for="profAvatar">Avatar Image URL</label>
+              <input type="text" id="profAvatar" placeholder="https://images.unsplash.com/photo-...">
+            </div>
+            <div class="login-form-group profile-form-full">
+              <label for="profBio">Personal Bio</label>
+              <textarea id="profBio" style="
+                width: 100%;
+                min-height: 100px;
+                padding: 10px 12px;
+                border: 1px solid #bcc1c9;
+                border-radius: 8px;
+                outline: 0;
+                font-family: inherit;
+                resize: vertical;
+              " placeholder="Tell hosts about yourself..."></textarea>
+            </div>
+          </div>
+          
+          <div id="profileSuccess" style="
+            display: none;
+            padding: 12px;
+            background: #e1fbf0;
+            color: #039842;
+            border: 1px solid #a7f3d0;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 18px;
+            font-weight: 600;
+          ">Changes saved successfully!</div>
+
+          <button type="submit" class="admin-btn" style="margin-top: 12px;">Save Changes</button>
+        </form>
+      </article>
+
+      <!-- 2. Trips Pane -->
+      <article class="profile-tab-pane" id="tabTrips">
+        <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 8px;">My Stays &amp; Trips</h2>
+        <p style="color: var(--muted); margin-bottom: 24px; font-size: 14.5px;">View status of upcoming bookings, review past stays, or manage cancellations.</p>
+        
+        <div class="profile-trips-list" id="tripsList">
+          <!-- Dynamically populated -->
+        </div>
+      </article>
+
+      <!-- 3. Settings Pane -->
+      <article class="profile-tab-pane" id="tabSettings">
+        <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 8px;">Account Settings</h2>
+        <p style="color: var(--muted); margin-bottom: 24px; font-size: 14.5px;">Manage account credentials, communication configurations, and security settings.</p>
+        
+        <form id="settingsForm">
+          <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">Notification Preferences</h3>
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+            <label class="check-row">
+              <input type="checkbox" checked>
+              <span style="font-size: 14.5px; font-weight: 500;">Email notifications for booking confirmations</span>
+            </label>
+            <label class="check-row">
+              <input type="checkbox" checked>
+              <span style="font-size: 14.5px; font-weight: 500;">SMS updates from hosts</span>
+            </label>
+            <label class="check-row">
+              <input type="checkbox">
+              <span style="font-size: 14.5px; font-weight: 500;">Special deals and personalized stay recommendations</span>
+            </label>
+          </div>
+
+          <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px; border-top: 1px solid var(--line); padding-top: 20px;">Change Password</h3>
+          <div class="profile-form-grid">
+            <div class="login-form-group">
+              <label for="oldPass">Current Password</label>
+              <input type="password" id="oldPass" placeholder="••••••••">
+            </div>
+            <div class="login-form-group">
+              <label for="newPass">New Password</label>
+              <input type="password" id="newPass" placeholder="••••••••">
+            </div>
+          </div>
+          
+          <div id="settingsSuccess" style="
+            display: none;
+            padding: 12px;
+            background: #e1fbf0;
+            color: #039842;
+            border: 1px solid #a7f3d0;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 18px;
+            font-weight: 600;
+          ">Password updated successfully! (Mock)</div>
+
+          <button type="submit" class="admin-btn" style="margin-top: 12px;">Update Password</button>
+        </form>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Direct access checking
+      const user = window.Auth.getCurrentUser();
+      if (!user) {
+        document.getElementById('profileShell').innerHTML = `
+          <div class="access-denied-box">
+            <h2>Access Denied</h2>
+            <p>You must log in to view your profile and bookings details.</p>
+            <a href="login.html" class="admin-btn">Go to Login</a>
+          </div>
+        `;
+        return;
+      }
+
+      // Fill Sidebar
+      const sideAvatar = document.getElementById('sideAvatar');
+      const sideName = document.getElementById('sideName');
+      const sideRole = document.getElementById('sideRole');
+
+      function updateSidebarVisuals() {
+        const u = window.Auth.getCurrentUser();
+        sideAvatar.src = u.avatarUrl;
+        sideName.textContent = u.name;
+        sideRole.textContent = u.role === 'host' ? 'Property Host' : 'Guest';
+      }
+      updateSidebarVisuals();
+
+      // Tab switcher
+      const tabButtons = document.querySelectorAll('.profile-menu-item');
+      const tabPanes = document.querySelectorAll('.profile-tab-pane');
+
+      function switchTab(tabId) {
+        tabButtons.forEach(btn => {
+          if (btn.dataset.tab === tabId) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+        tabPanes.forEach(pane => {
+          if (pane.id === tabId) {
+            pane.classList.add('active');
+          } else {
+            pane.classList.remove('active');
+          }
+        });
+      }
+
+      tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          switchTab(btn.dataset.tab);
+        });
+      });
+
+      // Check URL parameters for tab
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get('tab');
+      if (tabParam === 'trips') {
+        switchTab('tabTrips');
+      }
+
+      // --- PERSONAL INFO FORM ---
+      const profileForm = document.getElementById('profileForm');
+      const profName = document.getElementById('profName');
+      const profEmail = document.getElementById('profEmail');
+      const profPhone = document.getElementById('profPhone');
+      const profGender = document.getElementById('profGender');
+      const profAvatar = document.getElementById('profAvatar');
+      const profBio = document.getElementById('profBio');
+      const profileSuccess = document.getElementById('profileSuccess');
+
+      // Populate form
+      profName.value = user.name || '';
+      profEmail.value = user.email || '';
+      profPhone.value = user.phone || '';
+      profGender.value = user.gender || 'Prefer not to say';
+      profAvatar.value = user.avatarUrl || '';
+      profBio.value = user.bio || '';
+
+      profileForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        profileSuccess.style.display = 'none';
+        
+        const success = window.Auth.updateProfile({
+          name: profName.value.trim(),
+          phone: profPhone.value.trim(),
+          gender: profGender.value,
+          avatarUrl: profAvatar.value.trim(),
+          bio: profBio.value.trim()
+        });
+
+        if (success) {
+          profileSuccess.style.display = 'block';
+          updateSidebarVisuals();
+          // Update header via redirect/reload or custom event if needed
+          setTimeout(() => {
+            profileSuccess.style.display = 'none';
+            window.location.reload();
+          }, 1500);
+        }
+      });
+
+      // --- SETTINGS FORM ---
+      const settingsForm = document.getElementById('settingsForm');
+      const oldPass = document.getElementById('oldPass');
+      const newPass = document.getElementById('newPass');
+      const settingsSuccess = document.getElementById('settingsSuccess');
+
+      settingsForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        settingsSuccess.style.display = 'none';
+        if (oldPass.value && newPass.value) {
+          if (oldPass.value !== user.password) {
+            alert('Current password incorrect.');
+            return;
+          }
+          window.Auth.updateProfile({ password: newPass.value });
+          settingsSuccess.style.display = 'block';
+          oldPass.value = '';
+          newPass.value = '';
+          setTimeout(() => settingsSuccess.style.display = 'none', 3000);
+        } else {
+          alert('Settings updated successfully.');
+        }
+      });
+
+      // --- TRIPS RENDERING ---
+      const tripsList = document.getElementById('tripsList');
+      const listings = window.Auth.getListings();
+
+      function renderTrips() {
+        tripsList.innerHTML = '';
+        const allBookings = window.Auth.getBookings();
+        const userTrips = allBookings.filter(b => b.guestEmail.toLowerCase() === user.email.toLowerCase());
+
+        if (userTrips.length === 0) {
+          tripsList.innerHTML = `
+            <div style="text-align: center; padding: 48px 16px; border: 1px dashed var(--line); border-radius: 12px;">
+              <svg viewBox="0 0 24 24" style="width: 48px; height: 48px; color: #8a9099; stroke-width: 1.5; margin-bottom: 12px; margin-left: auto; margin-right: auto;"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <h3 style="margin: 0 0 6px; font-weight: 800; font-size: 16px;">No stays booked yet</h3>
+              <p style="color: var(--muted); margin: 0 0 16px; font-size: 14px;">When you reserve an apartment, your stay details will show up right here.</p>
+              <a href="index.html" class="admin-btn">Explore Apartments</a>
+            </div>
+          `;
+          return;
+        }
+
+        // Sort bookings: Confirmed and Pending first, then Cancelled
+        userTrips.sort((a, b) => {
+          if (a.status === 'Cancelled' && b.status !== 'Cancelled') return 1;
+          if (a.status !== 'Cancelled' && b.status === 'Cancelled') return -1;
+          return new Date(b.dateBooked) - new Date(a.dateBooked);
+        });
+
+        userTrips.forEach(trip => {
+          // Cross-ref listing
+          const listing = listings.find(l => l.id === trip.listingId) || {
+            name: trip.propertyName || 'Apartment Stay',
+            imageUrl: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=700&q=90',
+            location: 'Tagum City, Davao Region',
+            price: trip.pricePerNight
+          };
+
+          const card = document.createElement('div');
+          card.className = 'profile-trip-card';
+          
+          let statusClass = trip.status.toLowerCase();
+          
+          card.innerHTML = `
+            <img src="${listing.imageUrl}" alt="${listing.name}">
+            <div class="profile-trip-details">
+              <div>
+                <div class="trip-card-header">
+                  <h3>${listing.name}</h3>
+                  <span class="trip-status-badge ${statusClass}">${trip.status}</span>
+                </div>
+                <div class="trip-info-row">
+                  <span>
+                    <svg viewBox="0 0 24 24"><path d="M7 3v3m10-3v3M4 9h16M5.5 5.5h13A1.5 1.5 0 0 1 20 7v11.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5V7a1.5 1.5 0 0 1 1.5-1.5Z"/></svg>
+                    ${trip.checkIn} - ${trip.checkOut}
+                  </span>
+                  <span>
+                    <svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
+                    Guests: ${trip.guests}
+                  </span>
+                  <span>
+                    <svg viewBox="0 0 24 24"><path d="M9 12H5m6-6-6 6 6 6"/></svg>
+                    ID: ${trip.id}
+                  </span>
+                </div>
+                ${trip.notes ? `<p style="margin: 0; font-size: 13px; color: var(--muted);"><strong>Special Requests:</strong> ${trip.notes}</p>` : ''}
+              </div>
+              <div class="trip-footer">
+                <div class="trip-price">
+                  <span>Total (USD)</span>
+                  <strong>$${trip.totalPrice}</strong>
+                </div>
+                <div class="trip-actions">
+                  ${trip.status !== 'Cancelled' ? `
+                    <button class="trip-cancel-btn" data-booking-id="${trip.id}">Cancel Stay</button>
+                  ` : ''}
+                  <a href="index.html" class="admin-btn admin-btn-secondary" style="padding: 6px 12px; font-size: 13px;">View Details</a>
+                </div>
+              </div>
+            </div>
+          `;
+          tripsList.appendChild(card);
+        });
+
+        // Add cancel triggers
+        document.querySelectorAll('.trip-cancel-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const bookingId = e.target.dataset.bookingId;
+            if (confirm(`Are you sure you want to cancel booking ${bookingId}?`)) {
+              window.Auth.updateBookingStatus(bookingId, 'Cancelled');
+              renderTrips();
+            }
+          });
+        });
+      }
+
+      renderTrips();
+    });
+  </script>
+</body>
+</html>

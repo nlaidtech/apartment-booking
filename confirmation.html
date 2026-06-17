@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="auth.js" defer></script>
 </head>
 <body>
   <header class="topbar confirmation-topbar">
@@ -130,9 +131,124 @@
           <div><dt>Total (USD)</dt><dd>$310</dd></div>
         </dl>
         <a class="side-primary" href="#">View Check-in Instructions</a>
-        <a class="side-secondary" href="#">Go to My Trips</a>
+        <a class="side-secondary" id="myTripsBtn" href="profile.html?tab=trips">Go to My Trips</a>
       </aside>
     </div>
   </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!window.Auth) return;
+
+      // Parse bookingId from query string or localStorage fallback
+      const urlParams = new URLSearchParams(window.location.search);
+      let bookingId = urlParams.get('bookingId');
+      if (!bookingId) {
+        bookingId = localStorage.getItem('lastBookingId');
+      }
+
+      if (!bookingId) {
+        alert('No booking confirmation reference found. Redirecting to home.');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Read bookings
+      const bookings = window.Auth.getBookings();
+      const booking = bookings.find(b => b.id === bookingId);
+
+      if (!booking) {
+        alert('Reservation record not found. Redirecting to home.');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const listings = window.Auth.getListings();
+      const listing = listings.find(l => l.id === booking.listingId) || {
+        name: booking.propertyName || 'Apartment Stay',
+        imageUrl: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=700&q=90'
+      };
+
+      // 1. Success Hero
+      const heroTextDiv = document.querySelector('.success-hero div:nth-child(2)');
+      if (heroTextDiv) {
+        heroTextDiv.innerHTML = `
+          <h1>Reservation Confirmed!</h1>
+          <p>Thank you, ${booking.guestName}, for booking your stay at <strong>${listing.name}.</strong><br>An email confirmation has been sent to ${booking.guestEmail}.</p>
+        `;
+      }
+
+      // 2. Reservation Summary Column
+      const resIdEl = document.querySelector('.reservation-summary strong');
+      const resTitleEl = document.querySelector('.reservation-summary h2');
+      const resDatesEl = document.querySelector('.reservation-summary .stay-meta span:first-child');
+      const resGuestsEl = document.querySelector('.reservation-summary .stay-meta span:last-child');
+      const resPricesEl = document.querySelector('.reservation-summary .stay-prices');
+
+      if (resIdEl) resIdEl.textContent = `Reservation ID: ${booking.id}`;
+      if (resTitleEl) resTitleEl.textContent = listing.name;
+      if (resDatesEl) {
+        resDatesEl.innerHTML = `
+          <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 18px; stroke-width: 2; display: inline-block; vertical-align: middle;"><path d="M7 3v3m10-3v3M4 9h16M5.5 5.5h13A1.5 1.5 0 0 1 20 7v11.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5V7a1.5 1.5 0 0 1 1.5-1.5Z"/></svg>
+          ${booking.checkIn} - ${booking.checkOut}
+        `;
+      }
+      if (resGuestsEl) {
+        resGuestsEl.innerHTML = `
+          <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 18px; stroke-width: 2; display: inline-block; vertical-align: middle;"><path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
+          Guests: ${booking.guests}
+        `;
+      }
+      if (resPricesEl) {
+        resPricesEl.innerHTML = `
+          <div><dt>$${booking.pricePerNight} / night x ${booking.nights}</dt><dd>$${booking.pricePerNight * booking.nights}</dd></div>
+          <div><dt>Cleaning fee</dt><dd>$35</dd></div>
+          <div><dt>Service fee</dt><dd>$20</dd></div>
+          <div><dt>Total (USD)</dt><dd>$${booking.totalPrice}</dd></div>
+        `;
+      }
+
+      // 3. Confirmed Stay Section
+      const confTitleEl = document.querySelector('.confirmed-stay-card strong');
+      const confDatesEl = document.querySelector('.confirmed-stay-card .stay-meta span:first-child');
+      const confGuestsEl = document.querySelector('.confirmed-stay-card .stay-meta span:last-child');
+
+      if (confTitleEl) confTitleEl.textContent = listing.name;
+      if (confDatesEl) {
+        confDatesEl.innerHTML = `
+          <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 18px; stroke-width: 2; display: inline-block; vertical-align: middle;"><path d="M7 3v3m10-3v3M4 9h16M5.5 5.5h13A1.5 1.5 0 0 1 20 7v11.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5V7a1.5 1.5 0 0 1 1.5-1.5Z"/></svg>
+          ${booking.checkIn} - ${booking.checkOut}
+        `;
+      }
+      if (confGuestsEl) {
+        confGuestsEl.innerHTML = `
+          <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 18px; stroke-width: 2; display: inline-block; vertical-align: middle;"><path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
+          Guests: ${booking.guests}
+        `;
+      }
+
+      // 4. Transaction ID field prefill
+      const txnInput = document.querySelector('.payment-confirm-details input');
+      if (txnInput) {
+        txnInput.value = `TXN-${booking.id}-${Math.floor(Math.random() * 90000 + 10000)}`;
+        txnInput.readOnly = true;
+        txnInput.style.background = '#f6f7f9';
+      }
+
+      // 5. Sidebar stay details
+      const sideImgEl = document.querySelector('.stay-side-card img');
+      const sideTitleEl = document.querySelector('.stay-side-card h3');
+      const sideDlEl = document.querySelector('.stay-side-card dl');
+
+      if (sideImgEl) sideImgEl.src = listing.imageUrl;
+      if (sideTitleEl) sideTitleEl.textContent = listing.name;
+      if (sideDlEl) {
+        sideDlEl.innerHTML = `
+          <div><dt>Confirmed:</dt><dd>${booking.checkIn} - ${booking.checkOut}</dd></div>
+          <div><dt>Total (USD)</dt><dd style="font-weight: 800;">$${booking.totalPrice}</dd></div>
+        `;
+      }
+    });
+  </script>
 </body>
 </html>

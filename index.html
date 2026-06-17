@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="auth.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
@@ -138,18 +139,24 @@
 
       <aside class="booking-panel" aria-label="Reservation summary">
         <div class="price"><strong>$85</strong><span>/ night</span></div>
-        <div class="booking-fields">
+        <div class="booking-fields" style="grid-template-columns: 1fr 1fr; gap: 8px;">
           <label>
             <span>Check-in</span>
-            <input value="15 Oct - 18 Oct">
+            <input type="date" id="checkinDate" value="2026-10-15" style="padding: 0 8px;">
           </label>
           <label>
-            <span>Guests</span>
-            <select>
-              <option>2</option>
-              <option>1</option>
-              <option>3</option>
-              <option>4</option>
+            <span>Check-out</span>
+            <input type="date" id="checkoutDate" value="2026-10-18" style="padding: 0 8px;">
+          </label>
+        </div>
+        <div style="margin-top: 12px; margin-bottom: 12px;">
+          <label style="display: flex; flex-direction: column; gap: 8px;">
+            <span style="font-weight: 700; font-size: 13px;">Guests</span>
+            <select id="guestCount" style="width: 100%; height: 40px; border: 1px solid var(--line); border-radius: 7px; padding: 0 12px; background: #fff;">
+              <option value="1">1 guest</option>
+              <option value="2" selected>2 guests</option>
+              <option value="3">3 guests</option>
+              <option value="4">4 guests</option>
             </select>
           </label>
         </div>

@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="auth.js" defer></script>
 </head>
 <body>
   <header class="topbar saved-topbar">
@@ -126,5 +127,118 @@
       </article>
     </section>
   </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!window.Auth) return;
+
+      const savedGrid = document.querySelector('.saved-grid');
+      const savedSummaryStrong = document.querySelector('.saved-summary strong');
+
+      function renderSavedStays() {
+        const savedIds = window.Auth.getSavedListings();
+        const listings = window.Auth.getListings();
+        const savedListings = listings.filter(l => savedIds.includes(l.id));
+
+        if (savedSummaryStrong) {
+          savedSummaryStrong.textContent = `${savedListings.length} saved stays`;
+        }
+
+        if (!savedGrid) return;
+        savedGrid.innerHTML = '';
+
+        if (savedListings.length === 0) {
+          savedGrid.innerHTML = `
+            <div style="grid-column: span 3; text-align: center; padding: 60px 16px; background: var(--panel); border: 1px dashed var(--line); border-radius: 16px; box-shadow: var(--shadow);">
+              <svg viewBox="0 0 24 24" style="width: 52px; height: 52px; color: #8a9099; stroke-width: 1.5; margin-bottom: 16px; margin-left: auto; margin-right: auto;"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+              <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;">Your shortlist is empty</h2>
+              <p style="color: var(--muted); max-width: 380px; margin: 0 auto 20px; font-size: 14.5px; line-height: 1.4;">Save listings to keep track of apartments you like, compare them, and book when ready.</p>
+              <a href="index.html" class="admin-btn">Explore Stays</a>
+            </div>
+          `;
+          return;
+        }
+
+        savedListings.forEach(prop => {
+          const card = document.createElement('article');
+          card.className = 'saved-card';
+          card.innerHTML = `
+            <img src="${prop.imageUrl}" alt="${prop.name}">
+            <div class="saved-card-body">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+                  <h2 style="font-size: 19px; font-weight: 800; margin: 0 0 6px;">${prop.name}</h2>
+                  <button class="remove-bookmark-btn" data-id="${prop.id}" title="Remove from saved" style="
+                    background: transparent;
+                    border: 0;
+                    cursor: pointer;
+                    color: #e83e5a;
+                    padding: 4px;
+                    display: inline-flex;
+                    align-items: center;
+                  ">
+                    <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: #e83e5a; stroke: #e83e5a; stroke-width: 2;"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                  </button>
+                </div>
+                <div class="saved-meta">
+                  <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.34 1.05 6.12L12 17.04l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9L12 3Z"/></svg>${prop.rating}</span>
+                  <span>${prop.location}</span>
+                </div>
+              </div>
+              <div class="saved-tags">
+                ${prop.amenities.slice(0, 3).map(am => `<span>${am}</span>`).join('')}
+              </div>
+              <p class="saved-price"><strong>$${prop.price}</strong><span>/ night</span></p>
+              <div class="saved-actions">
+                <button class="action-primary saved-book-btn" data-id="${prop.id}" style="border: 0; cursor: pointer; width: 100%;">Book now</button>
+                <a class="action-secondary" href="index.html?listing=${prop.id}">View details</a>
+              </div>
+            </div>
+          `;
+          savedGrid.appendChild(card);
+        });
+
+        // Add listeners for bookmark removal
+        document.querySelectorAll('.remove-bookmark-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const btnEl = e.currentTarget;
+            const id = parseInt(btnEl.dataset.id, 10);
+            window.Auth.toggleSaveListing(id);
+            renderSavedStays();
+          });
+        });
+
+        // Add listeners for Book now clicks
+        document.querySelectorAll('.saved-book-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const id = parseInt(e.target.dataset.id, 10);
+            const listing = listings.find(l => l.id === id);
+            
+            // Set standard Oct 15 - Oct 18 default dates for the checkout
+            const baseCost = listing.price * 3;
+            const cleaningFee = 35;
+            const serviceFee = 20;
+            
+            const pendingBooking = {
+              listingId: listing.id,
+              checkIn: '15 Oct',
+              checkOut: '18 Oct',
+              checkInRaw: '2026-10-15',
+              checkOutRaw: '2026-10-18',
+              guests: 2,
+              pricePerNight: listing.price,
+              nights: 3,
+              totalPrice: baseCost + cleaningFee + serviceFee
+            };
+            
+            localStorage.setItem('pendingBooking', JSON.stringify(pendingBooking));
+            window.location.href = 'checkout.html';
+          });
+        });
+      }
+
+      renderSavedStays();
+    });
+  </script>
 </body>
 </html>

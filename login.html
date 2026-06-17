@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apartly - Log In or Sign Up</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="auth.js" defer></script>
+</head>
+<body>
+  <header class="topbar saved-topbar">
+    <a class="brand" href="index.html" aria-label="Apartly home">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 11.2 12 3l9 8.2v8.1a1.7 1.7 0 0 1-1.7 1.7h-4.1v-6.2H8.8V21H4.7A1.7 1.7 0 0 1 3 19.3v-8.1Z"/>
+        </svg>
+      </span>
+      <span>Apartly</span>
+    </a>
+    <div class="topbar-actions">
+      <nav class="topnav" aria-label="Primary">
+        <a href="index.html">Browse apartments</a>
+      </nav>
+      <div class="account-actions">
+        <!-- Dynmically loaded by auth.js -->
+      </div>
+    </div>
+  </header>
+
+  <main class="login-shell">
+    <section class="login-side-banner" aria-label="Welcome banner">
+      <div class="banner-brand">
+        <a class="brand" href="index.html" style="color: #fff;">
+          <span class="brand-mark" style="color: #fff;">
+            <svg viewBox="0 0 24 24" aria-hidden="true" style="stroke: #fff;">
+              <path d="M3 11.2 12 3l9 8.2v8.1a1.7 1.7 0 0 1-1.7 1.7h-4.1v-6.2H8.8V21H4.7A1.7 1.7 0 0 1 3 19.3v-8.1Z"/>
+            </svg>
+          </span>
+          <span style="color: #fff;">Apartly</span>
+        </a>
+      </div>
+      <div class="banner-content">
+        <h2>Find your next inspiring stay.</h2>
+        <p>Explore curated design homes, lofts, and waterfront apartments tailored for both travelers and local staycationers.</p>
+      </div>
+      <div class="banner-footer">
+        &copy; 2026 Apartly Inc. All rights reserved.
+      </div>
+    </section>
+
+    <section class="login-side-form" aria-label="Login Form">
+      <div class="form-container">
+        <div class="form-tabs">
+          <div class="form-tab active" id="tabSignin">Sign In</div>
+          <div class="form-tab" id="tabSignup">Create Account</div>
+        </div>
+
+        <form id="authForm" novalidate>
+          <div class="login-form-group" id="nameGroup" style="display: none;">
+            <label for="regName">Full Name</label>
+            <input type="text" id="regName" placeholder="John Doe">
+          </div>
+
+          <div class="login-form-group">
+            <label for="authEmail">Email Address</label>
+            <input type="email" id="authEmail" required placeholder="name@example.com">
+          </div>
+
+          <div class="login-form-group">
+            <label for="authPassword">Password</label>
+            <input type="password" id="authPassword" required placeholder="••••••••">
+          </div>
+
+          <div class="login-form-group" id="roleGroup" style="display: none;">
+            <label>I want to</label>
+            <div class="role-selector">
+              <div class="role-option active" data-role="guest">Book Stays</div>
+              <div class="role-option" data-role="host">Host Stays</div>
+            </div>
+          </div>
+
+          <div id="errorAlert" style="
+            display: none;
+            padding: 12px;
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fca5a5;
+            border-radius: 6px;
+            font-size: 13.5px;
+            margin-bottom: 18px;
+            font-weight: 500;
+          "></div>
+
+          <button type="submit" class="login-submit-btn" id="submitBtn">Sign In</button>
+        </form>
+
+        <div class="quick-logins">
+          <div class="quick-logins-title">Quick demo logins</div>
+          <div class="quick-login-grid">
+            <button class="quick-login-btn" id="quickGuest">
+              <strong>Guest User</strong>
+              <span>john@gmail.com</span>
+            </button>
+            <button class="quick-login-btn" id="quickHost">
+              <strong>Property Host</strong>
+              <span>sarah@apartly.com</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabSignin = document.getElementById('tabSignin');
+      const tabSignup = document.getElementById('tabSignup');
+      const nameGroup = document.getElementById('nameGroup');
+      const roleGroup = document.getElementById('roleGroup');
+      const submitBtn = document.getElementById('submitBtn');
+      const authForm = document.getElementById('authForm');
+      const errorAlert = document.getElementById('errorAlert');
+      
+      const regName = document.getElementById('regName');
+      const authEmail = document.getElementById('authEmail');
+      const authPassword = document.getElementById('authPassword');
+      
+      let mode = 'signin'; // or 'signup'
+      let selectedRole = 'guest';
+
+      // Check query string for default tab
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('tab') === 'signup') {
+        setMode('signup');
+      }
+
+      function setMode(newMode) {
+        mode = newMode;
+        errorAlert.style.display = 'none';
+        if (mode === 'signin') {
+          tabSignin.classList.add('active');
+          tabSignup.classList.remove('active');
+          nameGroup.style.display = 'none';
+          roleGroup.style.display = 'none';
+          submitBtn.textContent = 'Sign In';
+        } else {
+          tabSignin.classList.remove('active');
+          tabSignup.classList.add('active');
+          nameGroup.style.display = 'flex';
+          roleGroup.style.display = 'flex';
+          submitBtn.textContent = 'Create Account';
+        }
+      }
+
+      tabSignin.addEventListener('click', () => setMode('signin'));
+      tabSignup.addEventListener('click', () => setMode('signup'));
+
+      // Role selector clicking
+      const roleOptions = document.querySelectorAll('.role-option');
+      roleOptions.forEach(opt => {
+        opt.addEventListener('click', () => {
+          roleOptions.forEach(o => o.classList.remove('active'));
+          opt.classList.add('active');
+          selectedRole = opt.dataset.role;
+        });
+      });
+
+      // Quick logins
+      document.getElementById('quickGuest').addEventListener('click', () => {
+        authEmail.value = 'john@gmail.com';
+        authPassword.value = 'password';
+        setMode('signin');
+        handleAuth();
+      });
+
+      document.getElementById('quickHost').addEventListener('click', () => {
+        authEmail.value = 'sarah@apartly.com';
+        authPassword.value = 'password';
+        setMode('signin');
+        handleAuth();
+      });
+
+      authForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        handleAuth();
+      });
+
+      function handleAuth() {
+        errorAlert.style.display = 'none';
+        
+        const email = authEmail.value.trim();
+        const password = authPassword.value;
+        const name = regName.value.trim();
+
+        if (!email || !password) {
+          showError('Please enter email and password.');
+          return;
+        }
+
+        if (mode === 'signup' && !name) {
+          showError('Please enter your full name.');
+          return;
+        }
+
+        if (mode === 'signin') {
+          const res = window.Auth.login(email, password);
+          if (res.success) {
+            // Redirect based on role
+            if (res.user.role === 'host') {
+              window.location.href = 'admin.html';
+            } else {
+              window.location.href = 'index.html';
+            }
+          } else {
+            showError(res.message);
+          }
+        } else {
+          const res = window.Auth.register(name, email, password, selectedRole);
+          if (res.success) {
+            if (res.user.role === 'host') {
+              window.location.href = 'admin.html';
+            } else {
+              window.location.href = 'index.html';
+            }
+          } else {
+            showError(res.message);
+          }
+        }
+      }
+
+      function showError(msg) {
+        errorAlert.textContent = msg;
+        errorAlert.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
