@@ -41,19 +41,25 @@
       </label>
     </form>
 
-    <div class="account-actions">
-      <button class="icon-button" aria-label="Notifications">
-        <span class="alert-dot"></span>
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8.3 12a2.6 2.6 0 0 0 4.6 0"/>
-        </svg>
-      </button>
-      <button class="profile-button" aria-label="Profile menu">
-        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" alt="">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m6 9 6 6 6-6"/>
-        </svg>
-      </button>
+    <div class="topbar-actions">
+      <nav class="topnav" aria-label="Primary">
+        <a href="saved-apartments.html">Saved apartments</a>
+      </nav>
+
+      <div class="account-actions">
+        <button class="icon-button" aria-label="Notifications">
+          <span class="alert-dot"></span>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8.3 12a2.6 2.6 0 0 0 4.6 0"/>
+          </svg>
+        </button>
+        <button class="profile-button" aria-label="Profile menu">
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" alt="">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -147,6 +153,7 @@
           </label>
         </div>
         <a class="reserve-button" href="checkout.html">Reserve</a>
+        <a class="secondary-button" href="saved-apartments.html">View saved apartments</a>
         <dl class="price-lines">
           <div><dt>$85 x 3 nights</dt><dd>$255</dd></div>
           <div><dt>Cleaning fee</dt><dd>$35</dd></div>
