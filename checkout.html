@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apartly - Checkout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html" aria-label="Apartly home">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 11.2 12 3l9 8.2v8.1a1.7 1.7 0 0 1-1.7 1.7h-4.1v-6.2H8.8V21H4.7A1.7 1.7 0 0 1 3 19.3v-8.1Z"/>
+        </svg>
+      </span>
+      <span>Apartly</span>
+    </a>
+
+    <form class="search-pill" aria-label="Apartment search">
+      <label class="search-field">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/>
+        </svg>
+        <input value="Tagum City" aria-label="Location">
+      </label>
+      <label class="search-field">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M7 3v3m10-3v3M4 9h16M5.5 5.5h13A1.5 1.5 0 0 1 20 7v11.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5V7a1.5 1.5 0 0 1 1.5-1.5Z"/>
+        </svg>
+        <input value="15 Oct - 18 Oct" aria-label="Dates">
+      </label>
+      <label class="search-field">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/>
+        </svg>
+        <input value="2 guests" aria-label="Guests">
+      </label>
+    </form>
+
+    <div class="account-actions host-account">
+      <button class="icon-button" aria-label="Notifications">
+        <span class="alert-dot"></span>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8.3 12a2.6 2.6 0 0 0 4.6 0"/>
+        </svg>
+      </button>
+      <img class="host-avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80" alt="">
+      <div class="host-mini">
+        <strong>Sarah</strong>
+        <span>4.9 · 114 reviews</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="checkout-shell">
+    <div class="checkout-heading">
+      <div>
+        <nav class="breadcrumbs" aria-label="Booking steps">
+          <span>Listing Details</span>
+          <span>Guest Info</span>
+          <span>Cancellation Policy</span>
+          <span>Payment</span>
+        </nav>
+        <h1>Guest Info &amp; Cancellation &amp; Payment</h1>
+      </div>
+      <a class="back-button" href="index.html">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 12H5m6-6-6 6 6 6"/>
+        </svg>
+        Back
+      </a>
+    </div>
+
+    <div class="checkout-grid">
+      <form class="checkout-form">
+        <section class="checkout-section">
+          <h2>Your Stay Details</h2>
+          <div class="stay-card">
+            <div>
+              <strong>Modern Tagum Stay - City Center Apartment</strong>
+              <div class="stay-meta">
+                <span>
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v3m10-3v3M4 9h16M5.5 5.5h13A1.5 1.5 0 0 1 20 7v11.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5V7a1.5 1.5 0 0 1 1.5-1.5Z"/></svg>
+                  15 Oct - 18 Oct
+                </span>
+                <span>
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
+                  Guests: 2
+                </span>
+              </div>
+              <label class="check-row">
+                <input type="checkbox" checked>
+                <span>Details confirmed</span>
+              </label>
+            </div>
+            <dl class="stay-prices">
+              <div><dt>$85 / night x 3</dt><dd>$255</dd></div>
+              <div><dt>Cleaning fee</dt><dd>$35</dd></div>
+              <div><dt>Service fee</dt><dd>$20</dd></div>
+              <div><dt>Total (USD)</dt><dd>$310</dd></div>
+            </dl>
+          </div>
+        </section>
+
+        <section class="checkout-section">
+          <h2>2. Guest Information</h2>
+          <div class="guest-fields">
+            <label><span>Full Name</span><input placeholder="[Full Name]"></label>
+            <label><span>Email Address</span><input placeholder="[Email Address]" type="email"></label>
+            <label><span>Phone Number</span><input placeholder="[Phone Number]" type="tel"></label>
+            <label>
+              <span>Gender</span>
+              <select>
+                <option>Gender</option>
+                <option>Female</option>
+                <option>Male</option>
+                <option>Prefer not to say</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <section class="checkout-section">
+          <h2>3. Cancellation Policy</h2>
+          <div class="policy-box">
+            <p><strong>Free cancellation before Oct 10th.</strong> For a full refund of the nightly rate, the cancellation must be made before 12:00 PM local time on Oct 10th. After that, a 50% refund is issued. Fees are non-refundable.</p>
+            <label class="check-row">
+              <input type="checkbox">
+              <span>I understand and agree to the cancellation policy.</span>
+            </label>
+          </div>
+        </section>
+
+        <section class="checkout-section">
+          <h2>4. Payment</h2>
+          <div class="payment-grid">
+            <fieldset class="payment-methods">
+              <legend>Payment Method</legend>
+              <label><input type="radio" name="payment" checked><span class="card-icon"></span>Credit/Debit Card</label>
+              <label><input type="radio" name="payment"><strong class="paypal-mark">P</strong>PayPal</label>
+              <label><input type="radio" name="payment"><span class="bank-icon">▤</span>Bank Transfer</label>
+            </fieldset>
+
+            <fieldset class="card-details">
+              <legend>Card Details</legend>
+              <input placeholder="[Card Number]">
+              <div>
+                <input placeholder="[Expiry MM/YY]">
+                <input placeholder="[CVV]">
+              </div>
+              <input placeholder="[Cardholder Name]">
+            </fieldset>
+
+            <div class="additional-details">
+              <h3>Additional</h3>
+              <label class="check-row">
+                <input type="checkbox">
+                <span>Save card details for future use.</span>
+              </label>
+              <p class="security-note">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3M6 11h12v10H6z"/></svg>
+                Data security keeps your payment information private. Learn more.
+              </p>
+              <label class="notes-field">
+                <span>Notes</span>
+                <textarea placeholder="Special Requests (Optional)"></textarea>
+              </label>
+            </div>
+          </div>
+        </section>
+      </form>
+
+      <aside class="confirm-card" aria-label="Confirm stay">
+        <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=700&q=90" alt="Apartment living room">
+        <h2>Confirm Stay</h2>
+        <dl class="confirm-lines">
+          <div><dt>Dates:</dt><dd>15 Oct - 18 Oct</dd></div>
+          <div><dt>Guests:</dt><dd>2</dd></div>
+          <div class="summary-label"><dt>Price Summary</dt><dd></dd></div>
+          <div class="total"><dt>Total (USD)</dt><dd>$310</dd></div>
+        </dl>
+        <button class="confirm-button">Confirm Reservation</button>
+        <p>By clicking you agree to the <a href="#">Terms of Service.</a></p>
+      </aside>
+    </div>
+  </main>
+</body>
+</html>

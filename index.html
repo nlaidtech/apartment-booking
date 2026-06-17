@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apartly - Apartment Booking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Apartly home">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 11.2 12 3l9 8.2v8.1a1.7 1.7 0 0 1-1.7 1.7h-4.1v-6.2H8.8V21H4.7A1.7 1.7 0 0 1 3 19.3v-8.1Z"/>
+        </svg>
+      </span>
+      <span>Apartly</span>
+    </a>
+
+    <form class="search-pill" aria-label="Apartment search">
+      <label class="search-field">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/>
+        </svg>
+        <input value="Tagum City" aria-label="Location">
+      </label>
+      <label class="search-field">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M7 3v3m10-3v3M4 9h16M5.5 5.5h13A1.5 1.5 0 0 1 20 7v11.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5V7a1.5 1.5 0 0 1 1.5-1.5Z"/>
+        </svg>
+        <input value="15 Oct - 18 Oct" aria-label="Dates">
+      </label>
+      <label class="search-field">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/>
+        </svg>
+        <input value="2 guests" aria-label="Guests">
+      </label>
+    </form>
+
+    <div class="account-actions">
+      <button class="icon-button" aria-label="Notifications">
+        <span class="alert-dot"></span>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8.3 12a2.6 2.6 0 0 0 4.6 0"/>
+        </svg>
+      </button>
+      <button class="profile-button" aria-label="Profile menu">
+        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" alt="">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m6 9 6 6 6-6"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="headline">
+      <div>
+        <h1>Modern Tagum Stay - City Center Apartment</h1>
+        <p>Tagum, Davao Region, Philippines</p>
+      </div>
+      <div class="rating">
+        <span>4.8</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m12 3 2.75 5.57 6.15.9-4.45 4.34 1.05 6.12L12 17.04l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9L12 3Z"/>
+        </svg>
+        <span>67 Reviews</span>
+      </div>
+    </section>
+
+    <section class="content-grid">
+      <div class="main-content">
+        <section class="gallery" aria-label="Apartment photos">
+          <img class="gallery-main" src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1100&q=90" alt="Bright apartment living room with city view">
+          <img src="https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?auto=format&fit=crop&w=700&q=90" alt="Modern apartment kitchen">
+          <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=700&q=90" alt="Calm bedroom with neutral bedding">
+          <img src="https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&w=700&q=90" alt="Clean bathroom with glass shower">
+          <img src="https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=700&q=90" alt="Balcony seating with city view">
+        </section>
+
+        <section class="details-grid">
+          <article class="about">
+            <h2>About this space</h2>
+            <p>
+              Modern Tagum Stay is a bright city-center apartment with floor-to-ceiling windows,
+              a private balcony, fast WiFi, and easy access to cafes, malls, and transport.
+            </p>
+            <div class="host-row">
+              <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80" alt="">
+              <div>
+                <strong>Sarah</strong>
+                <span>4.9 · 114 reviews</span>
+              </div>
+            </div>
+          </article>
+
+          <article>
+            <h2>What this place offers</h2>
+            <div class="amenities">
+              <span><svg viewBox="0 0 24 24"><path d="M5 13a10 10 0 0 1 14 0M8.5 16.5a5 5 0 0 1 7 0M12 20h.01M2 9a15 15 0 0 1 20 0"/></svg>WiFi</span>
+              <span><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4zM8 21h8M9 11h.01M13 11h.01M17 11h.01"/></svg>AC</span>
+              <span><svg viewBox="0 0 24 24"><path d="M4 13h16M7 13v6m10-6v6M8 5h8l2 8H6l2-8Z"/></svg>Kitchen</span>
+              <span><svg viewBox="0 0 24 24"><path d="M5 12h14v7H5zM8 12V8a4 4 0 0 1 8 0v4"/></svg>Pool</span>
+              <span><svg viewBox="0 0 24 24"><path d="M4 5h16v12H4zM9 21h6"/></svg>TV</span>
+              <span><svg viewBox="0 0 24 24"><path d="M8 21V4h6a4 4 0 0 1 0 8H8"/></svg>Parking</span>
+            </div>
+
+            <h2 class="sleep-title">Where you'll sleep</h2>
+            <ul class="sleep-list">
+              <li>1 Queen bed</li>
+              <li>1 Sofa bed</li>
+            </ul>
+          </article>
+
+          <article>
+            <h2>Reviews</h2>
+            <div class="review-card">
+              <div>
+                <strong>John Doe</strong>
+                <p>Great stay!</p>
+              </div>
+              <span>5 ★</span>
+            </div>
+          </article>
+        </section>
+      </div>
+
+      <aside class="booking-panel" aria-label="Reservation summary">
+        <div class="price"><strong>$85</strong><span>/ night</span></div>
+        <div class="booking-fields">
+          <label>
+            <span>Check-in</span>
+            <input value="15 Oct - 18 Oct">
+          </label>
+          <label>
+            <span>Guests</span>
+            <select>
+              <option>2</option>
+              <option>1</option>
+              <option>3</option>
+              <option>4</option>
+            </select>
+          </label>
+        </div>
+        <a class="reserve-button" href="checkout.html">Reserve</a>
+        <dl class="price-lines">
+          <div><dt>$85 x 3 nights</dt><dd>$255</dd></div>
+          <div><dt>Cleaning fee</dt><dd>$35</dd></div>
+          <div><dt>Service fee</dt><dd>$20</dd></div>
+          <div class="total"><dt>Total (USD)</dt><dd>$310</dd></div>
+        </dl>
+        <p class="policy">Free cancellation for 48 hours. See more.</p>
+      </aside>
+
+      <section class="map-card" aria-label="Map preview showing Tagum">
+        <div class="map-river"></div>
+        <div class="map-road road-one"></div>
+        <div class="map-road road-two"></div>
+        <div class="map-road road-three"></div>
+        <span>Tagum</span>
+      </section>
+    </section>
+  </main>
+</body>
+</html>
