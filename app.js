@@ -101,6 +101,63 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  // --- AUTH MODAL HOOKS ---
+  function openAuthModal() {
+    const backdrop = document.getElementById('authModalBackdrop');
+    if (!backdrop) return;
+    backdrop.classList.add('is-active');
+    backdrop.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeAuthModal() {
+    const backdrop = document.getElementById('authModalBackdrop');
+    if (!backdrop) return;
+    backdrop.classList.remove('is-active');
+    backdrop.setAttribute('aria-hidden', 'true');
+  }
+
+  // Global click handler for elements that require auth
+  document.body.addEventListener('click', (e) => {
+    const target = e.target.closest && e.target.closest('.requires-auth');
+    if (!target) return;
+    const user = window.Auth.getCurrentUser && window.Auth.getCurrentUser();
+    if (!user) {
+      e.preventDefault();
+      openAuthModal();
+    }
+  });
+
+  // Wire modal controls (basic UI only)
+  const authClose = document.getElementById('authCloseBtn');
+  if (authClose) authClose.addEventListener('click', closeAuthModal);
+  const authCancel = document.getElementById('authCancelBtn');
+  if (authCancel) authCancel.addEventListener('click', closeAuthModal);
+  const authCancel2 = document.getElementById('authCancelBtn2');
+  if (authCancel2) authCancel2.addEventListener('click', closeAuthModal);
+
+  // Tab switching
+  document.querySelectorAll('.auth-tab').forEach(tab => {
+    tab.addEventListener('click', (ev) => {
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('is-active'));
+      tab.classList.add('is-active');
+      const mode = tab.dataset.mode;
+      document.querySelectorAll('.auth-form').forEach(f => f.style.display = (f.dataset.mode === mode) ? 'block' : 'none');
+    });
+  });
+
+  // Update submit button text to match active tab
+  function updateAuthSubmitLabel() {
+    const active = document.querySelector('.auth-tab.is-active');
+    const mode = active ? active.dataset.mode : 'login';
+    const loginBtn = document.getElementById('authSubmitBtn');
+    const signupBtn = document.getElementById('authSubmitSignupBtn');
+    if (loginBtn) loginBtn.textContent = (mode === 'login') ? 'Log in' : 'Continue';
+    if (signupBtn) signupBtn.textContent = (mode === 'signup') ? 'Create account' : 'Continue';
+  }
+  // run once and on tab change
+  updateAuthSubmitLabel();
+  document.querySelectorAll('.auth-tab').forEach(t => t.addEventListener('click', updateAuthSubmitLabel));
+
   // --- TOAST NOTIFICATION ---
   function showToast(message) {
     let toast = document.getElementById('apartlyToast');
@@ -279,6 +336,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       const listings = window.Auth.getListings();
       const listing = listings.find(l => l.id === selectedListingId) || listings[0];
       calculatePriceBreakdown(listing.price);
+      if (!window.Auth.getCurrentUser()) {
+        e.preventDefault();
+        window.Auth.openAuthModal('signup', 'checkout.html');
+      }
     });
   }
 

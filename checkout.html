@@ -191,7 +191,7 @@
           <div class="summary-label"><dt>Price Summary</dt><dd></dd></div>
           <div class="total"><dt>Total (USD)</dt><dd>$310</dd></div>
         </dl>
-        <a class="confirm-button" id="confirmReservationBtn" href="#">Confirm Reservation</a>
+        <a class="confirm-button requires-auth" id="confirmReservationBtn" href="#">Confirm Reservation</a>
         <p>By clicking you agree to the <a href="#">Terms of Service.</a></p>
       </aside>
     </div>
@@ -204,6 +204,11 @@
 
       const user = window.Auth.getCurrentUser();
       const pendingBooking = JSON.parse(localStorage.getItem('pendingBooking'));
+
+      if (!user) {
+        window.location.href = 'index.html?auth=signup&next=checkout.html';
+        return;
+      }
 
       // If no pending booking, redirect to home page
       if (!pendingBooking) {

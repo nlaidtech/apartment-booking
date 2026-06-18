@@ -192,7 +192,7 @@
               </div>
               <p class="saved-price"><strong>$${prop.price}</strong><span>/ night</span></p>
               <div class="saved-actions">
-                <button class="action-primary saved-book-btn" data-id="${prop.id}" style="border: 0; cursor: pointer; width: 100%;">Book now</button>
+                <button class="action-primary saved-book-btn requires-auth" data-id="${prop.id}" style="border: 0; cursor: pointer; width: 100%;">Book now</button>
                 <a class="action-secondary" href="index.html?listing=${prop.id}">View details</a>
               </div>
             </div>
@@ -234,6 +234,10 @@
             };
             
             localStorage.setItem('pendingBooking', JSON.stringify(pendingBooking));
+            if (!window.Auth.getCurrentUser()) {
+              window.Auth.openAuthModal('signup', 'checkout.html');
+              return;
+            }
             window.location.href = 'checkout.html';
           });
         });

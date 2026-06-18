@@ -298,8 +298,9 @@
 
       const exists = state.users.some((item) => item.email.toLowerCase() === email.toLowerCase());
       if (exists) return { success: false, message: 'Email already registered.' };
+      const numericIds = state.users.map((item) => Number(item.id)).filter(Boolean);
       const user = {
-        id: Math.max(...state.users.map((item) => Number(item.id))) + 1,
+        id: numericIds.length ? Math.max(...numericIds) + 1 : 1,
         name,
         email,
         password,
@@ -411,6 +412,10 @@
       writeLocal('bookings', state.bookings);
       if (state.supabase) state.supabase.from('bookings').update({ status: newStatus }).eq('id', bookingId);
       return true;
+    },
+
+    openAuthModal: (mode = 'signup', redirectTo = '') => {
+      openAuthModal(mode, redirectTo);
     }
   };
 
@@ -421,15 +426,8 @@
     const user = window.Auth.getCurrentUser();
     if (!user) {
       accountActions.innerHTML = `
-        <a href="login.html" class="login-header-btn">Log In</a>
-        <div class="profile-menu-container">
-          <button class="profile-button" aria-label="Profile menu" id="profileMenuBtn">
-            <span class="anonymous-avatar">
-              <svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
-            </span>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-          </button>
-        </div>
+        <button class="auth-chip secondary" type="button" data-auth-open="signin">Log in</button>
+        <button class="auth-chip primary" type="button" data-auth-open="signup">Sign up</button>
       `;
     } else {
       accountActions.className = 'account-actions' + (user.role === 'host' ? ' host-account' : '');
@@ -449,6 +447,154 @@
     }
 
     setupDropdown();
+    setupAuthButtons();
+  }
+
+  function setupAuthButtons() {
+    document.querySelectorAll('[data-auth-open]').forEach((button) => {
+      button.addEventListener('click', () => {
+        openAuthModal(button.dataset.authOpen || 'signup', window.location.href);
+      });
+    });
+  }
+
+  function ensureAuthModal() {
+    let modal = document.getElementById('authModal');
+    if (modal) return modal;
+
+    modal = document.createElement('div');
+    modal.className = 'auth-modal';
+    modal.id = 'authModal';
+    modal.setAttribute('aria-hidden', 'true');
+    modal.innerHTML = `
+      <div class="auth-modal-backdrop" data-auth-close></div>
+      <section class="auth-modal-panel" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+        <button class="auth-modal-close" type="button" data-auth-close aria-label="Close">x</button>
+        <div class="auth-modal-tabs">
+          <button type="button" class="auth-modal-tab" data-auth-tab="signin">Log in</button>
+          <button type="button" class="auth-modal-tab" data-auth-tab="signup">Sign up</button>
+        </div>
+        <h2 id="authModalTitle">Create your account</h2>
+        <p class="auth-modal-copy">Sign up or log in to reserve this apartment and manage your trips.</p>
+        <form id="authModalForm">
+          <label class="auth-modal-field" data-auth-name-field>
+            <span>Full name</span>
+            <input id="authModalName" type="text" autocomplete="name" placeholder="John Doe">
+          </label>
+          <label class="auth-modal-field">
+            <span>Email address</span>
+            <input id="authModalEmail" type="email" autocomplete="email" placeholder="name@example.com" required>
+          </label>
+          <label class="auth-modal-field">
+            <span>Password</span>
+            <input id="authModalPassword" type="password" autocomplete="current-password" placeholder="Password" required>
+          </label>
+          <div class="auth-modal-role" data-auth-role-field>
+            <span>I want to</span>
+            <div>
+              <button type="button" class="is-active" data-auth-role="guest">Book stays</button>
+              <button type="button" data-auth-role="host">Host stays</button>
+            </div>
+          </div>
+          <div class="auth-modal-error" id="authModalError"></div>
+          <button class="auth-modal-submit" type="submit">Create account</button>
+        </form>
+      </section>
+    `;
+    document.body.appendChild(modal);
+
+    modal.querySelectorAll('[data-auth-close]').forEach((item) => {
+      item.addEventListener('click', closeAuthModal);
+    });
+
+    modal.querySelectorAll('[data-auth-tab]').forEach((tab) => {
+      tab.addEventListener('click', () => setAuthModalMode(tab.dataset.authTab));
+    });
+
+    modal.querySelectorAll('[data-auth-role]').forEach((roleButton) => {
+      roleButton.addEventListener('click', () => {
+        modal.querySelectorAll('[data-auth-role]').forEach((button) => button.classList.remove('is-active'));
+        roleButton.classList.add('is-active');
+      });
+    });
+
+    modal.querySelector('#authModalForm').addEventListener('submit', handleAuthModalSubmit);
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && modal.classList.contains('is-open')) closeAuthModal();
+    });
+    return modal;
+  }
+
+  function setAuthModalMode(mode) {
+    const modal = ensureAuthModal();
+    const activeMode = mode === 'signin' ? 'signin' : 'signup';
+    modal.dataset.mode = activeMode;
+    modal.querySelectorAll('[data-auth-tab]').forEach((tab) => {
+      tab.classList.toggle('is-active', tab.dataset.authTab === activeMode);
+    });
+    modal.querySelector('[data-auth-name-field]').hidden = activeMode === 'signin';
+    modal.querySelector('[data-auth-role-field]').hidden = activeMode === 'signin';
+    modal.querySelector('#authModalTitle').textContent = activeMode === 'signin' ? 'Log in to continue' : 'Create your account';
+    modal.querySelector('.auth-modal-submit').textContent = activeMode === 'signin' ? 'Log in' : 'Create account';
+    modal.querySelector('#authModalPassword').setAttribute('autocomplete', activeMode === 'signin' ? 'current-password' : 'new-password');
+    modal.querySelector('#authModalError').textContent = '';
+  }
+
+  function openAuthModal(mode = 'signup', redirectTo = '') {
+    const modal = ensureAuthModal();
+    modal.dataset.redirectTo = redirectTo || '';
+    setAuthModalMode(mode);
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+    setTimeout(() => modal.querySelector('#authModalEmail').focus(), 0);
+  }
+
+  function closeAuthModal() {
+    const modal = document.getElementById('authModal');
+    if (!modal) return;
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  async function handleAuthModalSubmit(event) {
+    event.preventDefault();
+    const modal = ensureAuthModal();
+    const mode = modal.dataset.mode || 'signup';
+    const error = modal.querySelector('#authModalError');
+    const name = modal.querySelector('#authModalName').value.trim();
+    const email = modal.querySelector('#authModalEmail').value.trim();
+    const password = modal.querySelector('#authModalPassword').value;
+    const activeRole = modal.querySelector('[data-auth-role].is-active');
+    const role = activeRole ? activeRole.dataset.authRole : 'guest';
+
+    error.textContent = '';
+    if (!email || !password) {
+      error.textContent = 'Please enter your email and password.';
+      return;
+    }
+    if (mode === 'signup' && !name) {
+      error.textContent = 'Please enter your full name.';
+      return;
+    }
+
+    const result = mode === 'signin'
+      ? await window.Auth.login(email, password)
+      : await window.Auth.register(name, email, password, role);
+
+    if (!result.success) {
+      error.textContent = result.message || 'Unable to continue. Please try again.';
+      return;
+    }
+
+    closeAuthModal();
+    const redirectTo = modal.dataset.redirectTo || '';
+    if (redirectTo) {
+      window.location.href = redirectTo;
+    } else if (result.user.role === 'host') {
+      window.location.href = 'admin.html';
+    } else {
+      window.location.reload();
+    }
   }
 
   function setupDropdown() {
@@ -490,6 +636,12 @@
   function initHeader() {
     renderHeaderActions();
     document.addEventListener('apartly:data-ready', renderHeaderActions);
+    const params = new URLSearchParams(window.location.search);
+    const authMode = params.get('auth');
+    if (authMode) {
+      const next = params.get('next') || '';
+      setTimeout(() => openAuthModal(authMode, next), 0);
+    }
   }
 
   if (document.readyState === 'loading') {
