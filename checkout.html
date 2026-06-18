@@ -8,7 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <script src="auth.js" defer></script>
+  <script src="supabase-config.js" defer></script>
+  <script src="backend.js" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -197,8 +198,9 @@
   </main>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       if (!window.Auth) return;
+      await window.Auth.ready;
 
       const user = window.Auth.getCurrentUser();
       const pendingBooking = JSON.parse(localStorage.getItem('pendingBooking'));
@@ -287,7 +289,7 @@
 
       // Handle Confirm Reservation click
       const confirmBtn = document.getElementById('confirmReservationBtn');
-      confirmBtn.addEventListener('click', (e) => {
+      confirmBtn.addEventListener('click', async (e) => {
         e.preventDefault();
 
         const nameInput = document.getElementById('guestName').value.trim();
@@ -307,7 +309,7 @@
         }
 
         // Add reservation booking
-        const newBooking = window.Auth.addBooking({
+        const newBooking = await window.Auth.addBooking({
           listingId: pendingBooking.listingId,
           propertyName: listing.name,
           guestName: nameInput,

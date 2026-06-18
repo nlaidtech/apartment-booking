@@ -8,7 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <script src="auth.js" defer></script>
+  <script src="supabase-config.js" defer></script>
+  <script src="backend.js" defer></script>
 </head>
 <body>
   <header class="topbar saved-topbar">
@@ -25,7 +26,7 @@
         <a href="index.html">Browse apartments</a>
       </nav>
       <div class="account-actions">
-        <!-- Dynmically loaded by auth.js -->
+        <!-- Dynamically loaded by backend.js -->
       </div>
     </div>
   </header>
@@ -188,7 +189,7 @@
         handleAuth();
       });
 
-      function handleAuth() {
+      async function handleAuth() {
         errorAlert.style.display = 'none';
         
         const email = authEmail.value.trim();
@@ -206,7 +207,7 @@
         }
 
         if (mode === 'signin') {
-          const res = window.Auth.login(email, password);
+          const res = await window.Auth.login(email, password);
           if (res.success) {
             // Redirect based on role
             if (res.user.role === 'host') {
@@ -218,7 +219,7 @@
             showError(res.message);
           }
         } else {
-          const res = window.Auth.register(name, email, password, selectedRole);
+          const res = await window.Auth.register(name, email, password, selectedRole);
           if (res.success) {
             if (res.user.role === 'host') {
               window.location.href = 'admin.html';

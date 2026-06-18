@@ -1,5 +1,39 @@
 # apartment-booking
 
+## Supabase Backend Setup
+
+The app is now prepared for Supabase. Until Supabase keys are added, it keeps using local demo data so the UI remains usable.
+
+1. Create your Supabase project.
+2. Add your project URL and anon key in `supabase-config.js`.
+3. Run the SQL schema you will provide later.
+4. Make sure the table names match: `profiles`, `listings`, `saved_listings`, and `bookings`.
+
+Expected important columns:
+- `profiles`: `id`, `email`, `name`, `role`, `avatar_url`, `rating`, `reviews_count`, `phone`, `gender`, `bio`
+- `listings`: `id`, `host_id`, `name`, `location`, `room_type`, `amenities`, `rating`, `reviews_count`, `price`, `image_url`, `description`
+- `saved_listings`: `user_id`, `listing_id`
+- `bookings`: `id`, `listing_id`, `guest_id`, `property_name`, `guest_name`, `guest_email`, `guest_phone`, `guest_gender`, `check_in`, `check_out`, `guests`, `price_per_night`, `nights`, `total_price`, `status`, `notes`, `created_at`
+
+The frontend adapter is in `backend.js`. It keeps the existing `window.Auth` methods, but those methods now write to Supabase when configured.
+
+## Supabase: apply schema and seed data
+
+1. In Supabase dashboard → SQL Editor, open and run `sql/schema.sql` to create tables.
+2. Optionally run `sql/policies.sql` to add example RLS policies (read the comments before applying).
+3. Confirm `supabase-config.js` contains your project URL and anon key.
+4. Open the app (`index.html`) in a browser. In DevTools Console run:
+
+```js
+// after the page loads and Auth.ready resolves
+await window.Auth.ready;
+await window.apartlySeed(); // seeds profiles, listings, bookings when tables are empty
+```
+
+If you prefer a one-off SQL seed, use the Supabase SQL editor to insert rows directly.
+
+Security reminder: For quick testing you can disable RLS, but for production configure proper policies and avoid exposing service_role keys.
+
 ## Project Status: 70–75% Front-End Complete
 
 ### ✅ Completed

@@ -8,7 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <script src="auth.js" defer></script>
+  <script src="supabase-config.js" defer></script>
+  <script src="backend.js" defer></script>
 </head>
 <body>
   <header class="topbar saved-topbar">
@@ -26,7 +27,7 @@
         <a href="saved-apartments.html">Saved apartments</a>
       </nav>
       <div class="account-actions">
-        <!-- Dynamically loaded by auth.js -->
+        <!-- Dynamically loaded by backend.js -->
       </div>
     </div>
   </header>
@@ -181,7 +182,9 @@
   </main>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!window.Auth) return;
+      await window.Auth.ready;
       // Direct access checking
       const user = window.Auth.getCurrentUser();
       if (!user) {
@@ -260,11 +263,11 @@
       profAvatar.value = user.avatarUrl || '';
       profBio.value = user.bio || '';
 
-      profileForm.addEventListener('submit', (e) => {
+      profileForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         profileSuccess.style.display = 'none';
         
-        const success = window.Auth.updateProfile({
+        const success = await window.Auth.updateProfile({
           name: profName.value.trim(),
           phone: profPhone.value.trim(),
           gender: profGender.value,
@@ -289,7 +292,7 @@
       const newPass = document.getElementById('newPass');
       const settingsSuccess = document.getElementById('settingsSuccess');
 
-      settingsForm.addEventListener('submit', (e) => {
+      settingsForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         settingsSuccess.style.display = 'none';
         if (oldPass.value && newPass.value) {
@@ -297,7 +300,7 @@
             alert('Current password incorrect.');
             return;
           }
-          window.Auth.updateProfile({ password: newPass.value });
+          await window.Auth.updateProfile({ password: newPass.value });
           settingsSuccess.style.display = 'block';
           oldPass.value = '';
           newPass.value = '';

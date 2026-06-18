@@ -1,8 +1,9 @@
 // app.js - Apartment Booking UI interactions
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // Ensure data is initialized from Auth
   if (!window.Auth) return;
+  await window.Auth.ready;
 
   const listingGrid = document.querySelector('.listing-grid');
   const listingFilters = document.querySelector('#listingFilters');
@@ -27,8 +28,33 @@ document.addEventListener('DOMContentLoaded', () => {
       card.setAttribute('data-rating', listing.rating);
       card.setAttribute('data-price', listing.price);
 
+      const savedIds = window.Auth.getSavedListings();
+      const isSaved = savedIds.includes(listing.id);
+
       card.innerHTML = `
-        <img src="${listing.imageUrl}" alt="${listing.name}">
+        <div style="position: relative;">
+          <img src="${listing.imageUrl}" alt="${listing.name}">
+          <button class="save-toggle-btn" data-id="${listing.id}" title="${isSaved ? 'Remove from saved' : 'Save listing'}" style="
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.92);
+            border: 0;
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+            transition: background 0.15s;
+          ">
+            <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: ${isSaved ? '#e83e5a' : 'none'}; stroke: ${isSaved ? '#e83e5a' : '#444'}; stroke-width: 2; transition: fill 0.15s, stroke 0.15s;">
+              <path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+            </svg>
+          </button>
+        </div>
         <div class="listing-card-body">
           <div class="listing-card-top">
             <div>
@@ -57,6 +83,58 @@ document.addEventListener('DOMContentLoaded', () => {
         selectListing(id, true);
       });
     });
+
+    // Attach save toggle listeners
+    document.querySelectorAll('.save-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = parseInt(btn.dataset.id, 10);
+        window.Auth.toggleSaveListing(id);
+        const newSaved = window.Auth.getSavedListings();
+        const isNowSaved = newSaved.includes(id);
+        const svg = btn.querySelector('svg');
+        svg.style.fill = isNowSaved ? '#e83e5a' : 'none';
+        svg.style.stroke = isNowSaved ? '#e83e5a' : '#444';
+        btn.title = isNowSaved ? 'Remove from saved' : 'Save listing';
+        showToast(isNowSaved ? 'Saved to your list!' : 'Removed from saved');
+      });
+    });
+  }
+
+  // --- TOAST NOTIFICATION ---
+  function showToast(message) {
+    let toast = document.getElementById('apartlyToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'apartlyToast';
+      toast.style.cssText = `
+        position: fixed;
+        bottom: 28px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        background: #1a1d23;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: Inter, sans-serif;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.22);
+        opacity: 0;
+        transition: opacity 0.2s, transform 0.2s;
+        pointer-events: none;
+        z-index: 9999;
+      `;
+      document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(-50%) translateY(10px)';
+    }, 2200);
   }
 
   // --- 2. DYNAMIC DETAILS PANEL RENDERING ---
@@ -265,7 +343,84 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Initialize page components
+  // Prefer async listings if available via Auth.getListingsAsync
+  if (typeof window.Auth.getListingsAsync === 'function') {
+    try {
+      const asyncListings = await window.Auth.getListingsAsync();
+      // If async returned array, replace local state for rendering
+      if (Array.isArray(asyncListings)) {
+        // update local cache used by other methods
+        if (window.Auth && window.Auth.getListings) {
+          // attempt to write to localStorage so other pages see same data
+          localStorage.setItem('listings', JSON.stringify(asyncListings));
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to load remote listings, using local data', err);
+    }
+  }
+
   renderListingGrid();
+
+  // --- 6. WIRE SEARCH PILL TO FILTERS ---
+  const searchPill = document.querySelector('.search-pill');
+  if (searchPill && listingFilters) {
+    const searchLocationInput = searchPill.querySelector('input[aria-label="Location"]');
+    const searchDatesInput = searchPill.querySelector('input[aria-label="Dates"]');
+    const searchGuestsInput = searchPill.querySelector('input[aria-label="Guests"]');
+
+    // Map typed location text to filter option values
+    const locationMap = {
+      'tagum': 'Tagum City',
+      'tagum city': 'Tagum City',
+      'davao': 'Davao City',
+      'davao city': 'Davao City',
+      'general santos': 'General Santos',
+      'gensan': 'General Santos',
+      'cebu': 'Cebu City',
+      'cebu city': 'Cebu City'
+    };
+
+    function syncSearchToFilters() {
+      if (searchLocationInput) {
+        const typed = searchLocationInput.value.trim().toLowerCase();
+        const locationSelect = listingFilters.elements.location;
+        if (locationSelect) {
+          const mapped = locationMap[typed];
+          if (mapped) {
+            locationSelect.value = mapped;
+          } else if (typed === '' || typed === 'all') {
+            locationSelect.value = 'all';
+          }
+        }
+      }
+      // Trigger filter application
+      const changeEvent = new Event('change');
+      listingFilters.dispatchEvent(changeEvent);
+    }
+
+    if (searchLocationInput) {
+      searchLocationInput.addEventListener('input', syncSearchToFilters);
+      searchLocationInput.addEventListener('change', syncSearchToFilters);
+      // Sync on initial load
+      syncSearchToFilters();
+    }
+
+    // Guests pill: update guest count selector in booking panel
+    if (searchGuestsInput) {
+      searchGuestsInput.addEventListener('change', () => {
+        const guestText = searchGuestsInput.value.trim();
+        const match = guestText.match(/\d+/);
+        if (match) {
+          const guestSelect = document.getElementById('guestCount');
+          if (guestSelect) {
+            guestSelect.value = match[0];
+            guestSelect.dispatchEvent(new Event('change'));
+          }
+        }
+      });
+    }
+  }
 
   // Read listing param from URL on load
   const urlParams = new URLSearchParams(window.location.search);
