@@ -153,4 +153,4 @@ c:\apartment-booking\
 │   ├── schema.sql          # Database table definitions
 │   └── policies.sql        # Row Level Security (RLS) policies
 └── assets/                 # Curated Philippine boarding house & avatar assets
-```
+```8
