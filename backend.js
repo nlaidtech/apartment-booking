@@ -20,6 +20,7 @@
       rating: 4.9,
       reviewsCount: 42,
       price: 350,
+      monthlyPrice: 2800,
       imageUrl: 'assets/properties/ph_bunk_dorm.jpg',
       campusNearby: 'UM Tagum (3 min walk)',
       curfew: '10:00 PM Gate Curfew',
@@ -36,6 +37,7 @@
       rating: 4.8,
       reviewsCount: 38,
       price: 550,
+      monthlyPrice: 4500,
       imageUrl: 'assets/properties/ph_cozy_dorm.jpg',
       campusNearby: 'UM Tagum & St. Marys (8 min commute)',
       curfew: 'No Curfew (24/7 RFID Keycard)',
@@ -52,6 +54,7 @@
       rating: 4.9,
       reviewsCount: 56,
       price: 750,
+      monthlyPrice: 6500,
       imageUrl: 'assets/properties/ph_transient_studio.jpg',
       campusNearby: 'UM Tagum & USEP Tagum (5 min via tricycle)',
       curfew: 'No Curfew (Private keypad entry)',
@@ -68,6 +71,7 @@
       rating: 4.7,
       reviewsCount: 64,
       price: 400,
+      monthlyPrice: 3200,
       imageUrl: 'assets/properties/ph_ladies_dorm.jpg',
       campusNearby: 'Davao Doctors College & SPMC (Walking distance)',
       curfew: '9:30 PM Curfew (Strict All-Female Compound)',
@@ -84,6 +88,7 @@
       rating: 4.8,
       reviewsCount: 29,
       price: 650,
+      monthlyPrice: 5500,
       imageUrl: 'assets/properties/ph_hillside_pad.jpg',
       campusNearby: 'Ateneo de Davao (Matina Campus)',
       curfew: 'No Curfew (24/7 Guarded Community)',
@@ -100,6 +105,7 @@
       rating: 4.9,
       reviewsCount: 88,
       price: 500,
+      monthlyPrice: 4200,
       imageUrl: 'assets/properties/ph_cebu_pods.jpg',
       campusNearby: 'USC Talamban & UC Banilad (10 min jeepney)',
       curfew: 'No Curfew (24/7 BPO & Student Access)',
@@ -111,11 +117,52 @@
   // Real Bookings Store (No mock bookings)
   const defaultBookings = [];
 
+  // Authentic Philippine Boarding House Reviews
+  const defaultReviews = [
+    {
+      id: 'rev-1',
+      listingId: 1,
+      authorName: 'Camille R.',
+      authorRole: 'Nursing Intern (UM Tagum)',
+      rating: 5,
+      comment: 'Super peaceful environment, perfect for studying for boards! Ate Maria is very motherly and makes sure the gate is locked at 10 PM. Own CR is very clean with strong water pressure.',
+      cleanliness: 5,
+      wifi: 5,
+      landlady: 5,
+      date: 'Sep 10, 2026'
+    },
+    {
+      id: 'rev-2',
+      listingId: 2,
+      authorName: 'Ken Bryan S.',
+      authorRole: 'IT Student (Ateneo Davao)',
+      rating: 5,
+      comment: 'Fiber internet never drops during my coding projects and capstone. Submetered electric is fair and transparent. Highly recommended for students!',
+      cleanliness: 5,
+      wifi: 5,
+      landlady: 5,
+      date: 'Sep 02, 2026'
+    },
+    {
+      id: 'rev-3',
+      listingId: 3,
+      authorName: 'Jessa Mae B.',
+      authorRole: 'Medtech Student (USC Cebu)',
+      rating: 5,
+      comment: 'Very convenient location, just 5 minutes walk to USC Talamban campus. Safe compound with CCTV and polite co-boarders.',
+      cleanliness: 5,
+      wifi: 5,
+      landlady: 5,
+      date: 'Aug 28, 2026'
+    }
+  ];
+
   const state = {
     users: readLocal('users', defaultUsers),
     listings: readLocal('listings', defaultListings),
     bookings: readLocal('bookings', defaultBookings),
     inquiries: readLocal('inquiries', defaultInquiries),
+    reviews: readLocal('reviews', defaultReviews),
     savedListings: readLocal('saved_listings', []),
     currentUser: readLocal('currentUser', null),
     supabase: null,
@@ -199,6 +246,7 @@
       rating: Number(row.rating || 0),
       reviewsCount: row.reviews_count || row.reviewsCount || 0,
       price: Number(row.price || 0),
+      monthlyPrice: Number(row.monthly_price || row.monthlyPrice || (row.price ? Math.round(row.price * 8) : 3000)),
       imageUrl: row.image_url || row.imageUrl,
       campusNearby: row.campus_nearby || row.campusNearby || '',
       curfew: row.curfew || 'No Curfew',
@@ -226,7 +274,12 @@
       totalPrice: row.total_price || row.totalPrice,
       status: row.status,
       dateBooked: row.created_at || row.dateBooked,
-      notes: row.notes || ''
+      notes: row.notes || '',
+      paymentMethod: row.payment_method || row.paymentMethod || 'gcash',
+      leaseType: row.lease_type || row.leaseType || 'transient',
+      leaseName: row.lease_name || row.leaseName || 'Daily Transient Stay',
+      moveInBalance: Number(row.move_in_balance || row.moveInBalance || 0),
+      depositDetails: row.deposit_details || row.depositDetails || null
     };
   }
 
@@ -264,6 +317,7 @@
       rating: listing.rating,
       reviews_count: listing.reviewsCount,
       price: listing.price,
+      monthly_price: listing.monthlyPrice || (listing.price ? Math.round(listing.price * 8) : 3000),
       image_url: listing.imageUrl,
       campus_nearby: listing.campusNearby,
       curfew: listing.curfew,
@@ -289,7 +343,11 @@
       nights: booking.nights,
       total_price: booking.totalPrice,
       status: booking.status,
-      notes: booking.notes
+      notes: booking.notes,
+      payment_method: booking.paymentMethod,
+      lease_type: booking.leaseType,
+      lease_name: booking.leaseName,
+      move_in_balance: booking.moveInBalance
     };
   }
 
@@ -589,12 +647,18 @@
         thread.status = 'Replied';
         thread.reply = text;
         if (imageUrl) thread.replyImageUrl = imageUrl;
+        thread.unreadByGuest = (thread.unreadByGuest || 0) + 1;
+        thread.unreadByHost = 0;
       } else {
         thread.status = 'Active';
+        thread.unreadByHost = (thread.unreadByHost || 0) + 1;
+        thread.unreadByGuest = 0;
       }
 
       writeLocal('inquiries', state.inquiries);
+      updateUnreadBadges();
       document.dispatchEvent(new CustomEvent('apartly:chat-updated', { detail: { threadId, message: newMsg } }));
+      document.dispatchEvent(new CustomEvent('apartly:unread-updated', { detail: { count: window.Auth.getUnreadCount() } }));
       return newMsg;
     },
 
@@ -618,12 +682,16 @@
         dateSent: new Date().toISOString().slice(0, 10),
         status: 'Sent',
         reply: null,
+        unreadByHost: 1,
+        unreadByGuest: 0,
         messages: [initialMsg],
         ...inquiryData
       };
       state.inquiries.unshift(inq);
       writeLocal('inquiries', state.inquiries);
+      updateUnreadBadges();
       document.dispatchEvent(new CustomEvent('apartly:chat-updated', { detail: { threadId: inq.id, message: initialMsg } }));
+      document.dispatchEvent(new CustomEvent('apartly:unread-updated', { detail: { count: window.Auth.getUnreadCount() } }));
       return inq;
     },
 
@@ -646,9 +714,88 @@
       thread.reply = replyText;
       if (imageUrl) thread.replyImageUrl = imageUrl;
       thread.status = 'Replied';
+      thread.unreadByGuest = (thread.unreadByGuest || 0) + 1;
+      thread.unreadByHost = 0;
       writeLocal('inquiries', state.inquiries);
+      updateUnreadBadges();
       document.dispatchEvent(new CustomEvent('apartly:chat-updated', { detail: { threadId: inquiryId, message: hostMsg } }));
+      document.dispatchEvent(new CustomEvent('apartly:unread-updated', { detail: { count: window.Auth.getUnreadCount() } }));
       return thread;
+    },
+
+    markThreadRead: (threadId, role = null) => {
+      const thread = state.inquiries.find(i => i.id === threadId);
+      if (!thread) return false;
+      const user = state.currentUser;
+      const targetRole = role || (user ? user.role : 'guest');
+      if (targetRole === 'host') {
+        thread.unreadByHost = 0;
+      } else {
+        thread.unreadByGuest = 0;
+      }
+      writeLocal('inquiries', state.inquiries);
+      updateUnreadBadges();
+      document.dispatchEvent(new CustomEvent('apartly:unread-updated', { detail: { count: window.Auth.getUnreadCount() } }));
+      return true;
+    },
+
+    getUnreadCount: (role = null) => {
+      const user = state.currentUser;
+      const targetRole = role || (user ? user.role : 'guest');
+      if (!state.inquiries || !state.inquiries.length) return 0;
+      if (targetRole === 'host') {
+        return state.inquiries.reduce((acc, inq) => acc + (inq.unreadByHost || 0), 0);
+      } else {
+        const myThreads = user ? state.inquiries.filter(inq => !inq.guestId || inq.guestId === user.id || inq.guestEmail === user.email || inq.guestName === user.name) : state.inquiries;
+        return myThreads.reduce((acc, inq) => acc + (inq.unreadByGuest || 0), 0);
+      }
+    },
+
+    getListingReviews: (listingId) => {
+      return (state.reviews || []).filter(r => Number(r.listingId) === Number(listingId));
+    },
+
+    addReview: ({ listingId, rating, comment, cleanliness = 5, wifi = 5, landlady = 5, authorName = '', authorRole = '' }) => {
+      const numListingId = Number(listingId);
+      const user = state.currentUser;
+      const name = authorName || (user ? user.name : 'Verified Student Boarder');
+      const role = authorRole || 'Student Tenant';
+
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const now = new Date();
+      const dateStr = `${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+
+      const review = {
+        id: 'REV-' + Date.now(),
+        listingId: numListingId,
+        authorName: name,
+        authorRole: role,
+        rating: Math.max(1, Math.min(5, Number(rating) || 5)),
+        comment: (comment || '').trim(),
+        cleanliness: Number(cleanliness) || 5,
+        wifi: Number(wifi) || 5,
+        landlady: Number(landlady) || 5,
+        date: dateStr
+      };
+
+      if (!state.reviews) state.reviews = [];
+      state.reviews.unshift(review);
+      writeLocal('reviews', state.reviews);
+
+      // Recalculate listing rating
+      const listing = state.listings.find(l => Number(l.id) === numListingId);
+      if (listing) {
+        const oldCount = listing.reviewsCount || 0;
+        const oldRating = listing.rating || 5.0;
+        const newCount = oldCount + 1;
+        const newRating = Number((((oldRating * oldCount) + Number(review.rating)) / newCount).toFixed(1));
+        listing.reviewsCount = newCount;
+        listing.rating = Math.min(5.0, Math.max(1.0, newRating));
+        writeLocal('listings', state.listings);
+      }
+
+      document.dispatchEvent(new CustomEvent('apartly:review-added', { detail: { review, listingId: numListingId } }));
+      return review;
     },
 
     addListing: (listingData) => {
@@ -760,7 +907,12 @@
 
       if (isHost) {
         // OWNER / LANDLADY NAVIGATION
+        const hostUnread = window.Auth.getUnreadCount('host');
         accountActions.innerHTML = `
+          <a href="admin.html#inquiries" class="topnav-inq-btn" title="Student Inquiries" style="position:relative; display:inline-flex; align-items:center; gap:6px; color:var(--white); font-size:13px; font-weight:600; padding:6px 14px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.22); border-radius:var(--radius-full);">
+            <span>💬 Inquiries</span>
+            <span class="unread-badge ${hostUnread > 0 ? 'has-unread' : ''}" id="adminInquiryBadge" style="${hostUnread > 0 ? 'display:inline-flex;' : 'display:none;'}">${hostUnread}</span>
+          </a>
           <a href="admin.html#post" class="btn-post-nav" aria-label="Post a room">
             <span>+</span> Post Room
           </a>
@@ -777,6 +929,10 @@
               <a href="admin.html">Host Dashboard</a>
               <a href="admin.html#listings">My Properties</a>
               <a href="admin.html#reservations">Tenant Bookings</a>
+              <a href="admin.html#inquiries">
+                Student Inquiries
+                <span class="unread-badge" style="${hostUnread > 0 ? 'display:inline-flex;' : 'display:none;'}">${hostUnread}</span>
+              </a>
               <a href="admin.html#post">+ Post New Room</a>
               <a href="#" id="logoutBtn" style="color:var(--clay); border-top:1px solid var(--line); margin-top:4px;">Log Out</a>
             </div>
@@ -784,7 +940,12 @@
         `;
       } else {
         // RENTER / STUDENT NAVIGATION (STRICTLY NO OWNER CONTROLS)
+        const guestUnread = window.Auth.getUnreadCount('guest');
         accountActions.innerHTML = `
+          <a href="profile.html?tab=inquiries" class="topnav-inq-btn" title="My Messages" style="position:relative; display:inline-flex; align-items:center; gap:6px; color:var(--ink); font-size:13px; font-weight:600; padding:6px 14px; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-full);">
+            <span>💬 Messages</span>
+            <span class="unread-badge ${guestUnread > 0 ? 'has-unread' : ''}" id="inquiryUnreadBadge" style="${guestUnread > 0 ? 'display:inline-flex;' : 'display:none;'}">${guestUnread}</span>
+          </a>
           <div class="profile-dropdown">
             <button class="profile-dropdown-trigger" aria-label="Student menu" id="profileMenuBtn">
               <img src="${user.avatarUrl || 'assets/avatars/sarah_student.jpg'}" alt="${user.name}">
@@ -797,6 +958,10 @@
               </div>
               <a href="profile.html">My Student Profile</a>
               <a href="profile.html?tab=trips">My Bookings</a>
+              <a href="profile.html?tab=inquiries">
+                Messages &amp; Inquiries
+                <span class="unread-badge" style="${guestUnread > 0 ? 'display:inline-flex;' : 'display:none;'}">${guestUnread}</span>
+              </a>
               <a href="saved-apartments.html">Saved Stays</a>
               <a href="#" id="logoutBtn" style="color:var(--clay); border-top:1px solid var(--line); margin-top:4px;">Log Out</a>
             </div>
@@ -807,6 +972,29 @@
 
     setupDropdown();
     setupAuthButtons();
+    updateUnreadBadges();
+  }
+
+  function updateUnreadBadges() {
+    if (!window.Auth) return;
+    const guestCount = window.Auth.getUnreadCount('guest');
+    const hostCount = window.Auth.getUnreadCount('host');
+
+    const guestBadges = document.querySelectorAll('#inquiryUnreadBadge, .inquiry-unread-badge');
+    guestBadges.forEach(b => {
+      b.textContent = String(guestCount);
+      b.style.display = guestCount > 0 ? 'inline-flex' : 'none';
+      if (guestCount > 0) b.classList.add('has-unread');
+      else b.classList.remove('has-unread');
+    });
+
+    const hostBadges = document.querySelectorAll('#adminInquiryBadge, .admin-inquiry-badge');
+    hostBadges.forEach(b => {
+      b.textContent = String(hostCount);
+      b.style.display = hostCount > 0 ? 'inline-flex' : 'none';
+      if (hostCount > 0) b.classList.add('has-unread');
+      else b.classList.remove('has-unread');
+    });
   }
 
   function setupAuthButtons() {
@@ -979,7 +1167,17 @@
 
   function initHeader() {
     renderHeaderActions();
-    document.addEventListener('apartly:data-ready', renderHeaderActions);
+    updateUnreadBadges();
+    document.addEventListener('apartly:data-ready', () => {
+      renderHeaderActions();
+      updateUnreadBadges();
+    });
+    document.addEventListener('apartly:unread-updated', updateUnreadBadges);
+    document.addEventListener('apartly:chat-updated', updateUnreadBadges);
+    document.addEventListener('apartly:user-switched', () => {
+      renderHeaderActions();
+      updateUnreadBadges();
+    });
     const params = new URLSearchParams(window.location.search);
     const authMode = params.get('auth');
     if (authMode) {

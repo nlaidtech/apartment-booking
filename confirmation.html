@@ -21,7 +21,9 @@
     <div class="nav-right">
       <div class="nav-links">
         <a href="index.html">Browse Stays</a>
+        <a href="saved-apartments.html">Saved</a>
         <a href="profile.html?tab=trips">My Bookings</a>
+        <a href="profile.html?tab=inquiries">Inquiries <span class="badge-count unread-badge" id="inquiryUnreadBadge" style="display:none; margin-left:4px;">0</span></a>
       </div>
       <div class="account-actions"></div>
     </div>
@@ -44,7 +46,7 @@
 
     <!-- Official Slip Card -->
     <div class="form-card" style="text-align: left;">
-      <h2>Reservation Slip</h2>
+      <h2>Official Boarding House Stay Slip</h2>
       <div style="display: flex; gap: 16px; margin-bottom: 16px; align-items: center;">
         <img id="confImg" src="assets/properties/ph_bunk_dorm.jpg" alt="Property" style="width: 90px; height: 75px; border-radius: var(--radius-sm); object-fit: cover; border: 1px solid var(--line);">
         <div>
@@ -59,14 +61,18 @@
           <dd><span class="trip-status confirmed" id="confStatus">Confirmed</span></dd>
         </div>
         <div class="detail-row">
+          <dt>Agreement Type</dt>
+          <dd id="confLeaseType" style="font-weight:600; color:var(--teal-deep);">Daily Transient Stay</dd>
+        </div>
+        <div class="detail-row">
           <dt>Check-in / Move-in Date</dt>
           <dd id="confCheckin">—</dd>
         </div>
         <div class="detail-row">
-          <dt>Check-out Date</dt>
+          <dt>Check-out / Term</dt>
           <dd id="confCheckout">—</dd>
         </div>
-        <div class="detail-row">
+        <div class="detail-row" id="confNightsRow">
           <dt>Total Duration</dt>
           <dd id="confNights">—</dd>
         </div>
@@ -75,10 +81,28 @@
           <dd id="confGuest">—</dd>
         </div>
         <div class="detail-row">
-          <dt>Total Amount</dt>
+          <dt>Payment Method</dt>
+          <dd id="confPaymentMethod" style="text-transform:uppercase; font-weight:600;">GCash</dd>
+        </div>
+        <div class="detail-row">
+          <dt>Amount Paid Today</dt>
           <dd id="confTotal" style="font-weight: 700; color: var(--teal-deep); font-size: 16px;">—</dd>
         </div>
+        <div class="detail-row" id="confMoveInRow" style="display:none; background:#FFF7ED; padding:8px 10px; border-radius:4px; margin-top:6px;">
+          <dt style="color:#9A3412; font-weight:700;">Remaining Balance upon Move-in</dt>
+          <dd id="confMoveInBalance" style="font-weight:700; color:#C1502E; font-size:15px;">₱0</dd>
+        </div>
       </dl>
+
+      <!-- Move-in Checklist Box -->
+      <div style="background:var(--bg-subtle); border:1px solid var(--line); border-radius:var(--radius-sm); padding:14px 16px; margin-top:16px;">
+        <h4 style="font-family:var(--font-serif); font-size:14px; margin:0 0 6px; color:var(--teal-deep);">📋 Move-in Day Checklist</h4>
+        <ul style="padding-left:18px; font-size:12.5px; color:var(--muted); line-height:1.6; margin:0;">
+          <li>Present 1 valid Student ID or Government ID to the caretaker upon arrival.</li>
+          <li>Initial electrical submeter reading (kWh) will be recorded together on day 1.</li>
+          <li>Please observe house curfew and quiet hours for studying reviewees.</li>
+        </ul>
+      </div>
     </div>
 
     <!-- Landlady Contact Box -->
@@ -89,7 +113,7 @@
         <div class="contact-info">
           <strong id="confHostName">Ate Maria (Landlady)</strong>
           <span id="confHostPhone">+63 917 123 4567</span>
-          <span style="font-size: 12px; margin-top: 4px; color: var(--muted);">Please present 1 government or school ID upon gate arrival. Gate locks at 10:00 PM.</span>
+          <span style="font-size: 12px; margin-top: 4px; color: var(--muted);">Please contact host 1-2 hours before gate arrival for smooth key turnover.</span>
         </div>
       </div>
     </div>
@@ -120,10 +144,25 @@
       document.getElementById('confProperty').textContent = booking.propertyName;
       document.getElementById('confCheckin').textContent = booking.checkIn;
       document.getElementById('confCheckout').textContent = booking.checkOut;
-      document.getElementById('confNights').textContent = `${booking.nights} night${booking.nights > 1 ? 's' : ''}`;
       document.getElementById('confGuest').textContent = booking.guestName;
       document.getElementById('confTotal').textContent = `₱${booking.totalPrice.toLocaleString()}`;
       document.getElementById('confStatus').textContent = booking.status;
+      document.getElementById('confLeaseType').textContent = booking.leaseName || 'Daily Transient Stay';
+      document.getElementById('confPaymentMethod').textContent = (booking.paymentMethod || 'GCash').toUpperCase();
+
+      if (booking.leaseType === 'transient') {
+        document.getElementById('confNightsRow').style.display = 'flex';
+        document.getElementById('confNights').textContent = `${booking.nights} night${booking.nights > 1 ? 's' : ''}`;
+        document.getElementById('confMoveInRow').style.display = 'none';
+      } else {
+        document.getElementById('confNightsRow').style.display = 'none';
+        if (booking.moveInBalance && booking.moveInBalance > 0) {
+          document.getElementById('confMoveInRow').style.display = 'flex';
+          document.getElementById('confMoveInBalance').textContent = `₱${booking.moveInBalance.toLocaleString()}`;
+        } else {
+          document.getElementById('confMoveInRow').style.display = 'none';
+        }
+      }
 
       // Image & location
       const listings = window.Auth.getListings();

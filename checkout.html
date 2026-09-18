@@ -22,6 +22,7 @@
       <div class="nav-links">
         <a href="index.html">← Back to Listings</a>
         <a href="saved-apartments.html">Saved</a>
+        <a href="profile.html?tab=inquiries">Inquiries <span class="badge-count unread-badge" id="inquiryUnreadBadge" style="display:none; margin-left:4px;">0</span></a>
       </div>
       <div class="account-actions"></div>
     </div>
@@ -31,37 +32,100 @@
     <h1>Reserve Your Boarding Stay</h1>
     <p class="page-subtitle">Complete your tenant details to secure this room with the landlady.</p>
 
+    <!-- Rental Agreement Type Card (Phase 3) -->
+    <div class="form-card" id="leaseAgreementCard">
+      <h2>Rental Agreement &amp; Term</h2>
+      <p style="font-size: 13px; color: var(--muted); margin-top: -6px; margin-bottom: 14px;">
+        Choose your preferred boarding contract. Philippine boarding houses support daily transients, monthly semester leases, or holding slot fees.
+      </p>
+
+      <div class="lease-options">
+        <label class="lease-option" id="optTransient">
+          <input type="radio" name="leaseType" value="transient" checked>
+          <div class="lease-option-content">
+            <div class="lease-option-header">
+              <span class="lease-option-title">Daily Transient Stay</span>
+              <span class="lease-option-price" id="leaseOptTransientPrice">₱.../night</span>
+            </div>
+            <p class="lease-option-desc">
+              Pay for the exact days booked + ₱100 linen &amp; utility fee. Ideal for board exam reviewees, visiting family, or short university seminars.
+            </p>
+          </div>
+        </label>
+
+        <label class="lease-option" id="optMonthly">
+          <input type="radio" name="leaseType" value="monthly">
+          <div class="lease-option-content">
+            <div class="lease-option-header">
+              <span class="lease-option-title">
+                Monthly Academic Contract (1-Mo Advance + 1-Mo Deposit)
+                <span class="lease-badge-popular">Standard PH Terms</span>
+              </span>
+              <span class="lease-option-price" id="leaseOptMonthlyPrice">₱.../mo</span>
+            </div>
+            <p class="lease-option-desc">
+              Standard boarding house contract. 1 Month Advance rent applied to your 1st month + 1 Month Refundable Security Deposit (returned upon end of stay) + ₱200 submeter processing.
+            </p>
+          </div>
+        </label>
+
+        <label class="lease-option" id="optHolding">
+          <input type="radio" name="leaseType" value="holding">
+          <div class="lease-option-content">
+            <div class="lease-option-header">
+              <span class="lease-option-title">₱500 Slot Reservation Fee (Holding Deposit)</span>
+              <span class="lease-option-price">₱500 now</span>
+            </div>
+            <p class="lease-option-desc">
+              Lock in and secure this room or bedspace slot right now. Pay only ₱500 today via GCash/Maya, and settle the remaining 1st month advance &amp; deposit with the landlady on physical move-in.
+            </p>
+          </div>
+        </label>
+      </div>
+    </div>
+
     <!-- Booking Summary Card -->
     <div class="form-card" id="bookingSummaryCard">
-      <h2>Stay Summary</h2>
+      <h2>Stay &amp; Price Breakdown</h2>
       <div id="summaryContent">
         <div class="summary-row">
           <span>Property</span>
           <strong id="summaryProperty">—</strong>
         </div>
         <div class="summary-row">
+          <span>Agreement Type</span>
+          <strong id="summaryAgreementType">Daily Transient Stay</strong>
+        </div>
+        <div class="summary-row">
           <span>Check-in (Move-in)</span>
           <span id="summaryCheckin">—</span>
         </div>
-        <div class="summary-row">
+        <div class="summary-row" id="summaryCheckoutRow">
           <span>Check-out</span>
           <span id="summaryCheckout">—</span>
         </div>
-        <div class="summary-row">
+        <div class="summary-row" id="summaryDurationRow">
           <span>Duration</span>
           <span id="summaryNights">—</span>
         </div>
-        <div class="summary-row">
-          <span>Nightly rate</span>
-          <span id="summaryRate">—</span>
-        </div>
-        <div class="summary-row">
-          <span>Maintenance &amp; Admin fee</span>
-          <span>₱100</span>
-        </div>
+
+        <!-- Dynamic Fee Items -->
+        <div id="dynamicBreakdownRows"></div>
+
         <div class="summary-row total">
-          <span>Total</span>
+          <span id="summaryTotalLabel">Total Due Today</span>
           <span id="summaryTotal">—</span>
+        </div>
+
+        <!-- Move-in Balance Note if holding fee -->
+        <div id="summaryMoveInNotice" style="display:none;" class="move-in-balance-alert">
+          <span>⚠️</span>
+          <div>
+            <strong>Balance upon Move-in: <span id="summaryMoveInBalanceText">₱0</span></strong>
+            <div style="font-size: 11.5px; margin-top: 2px;">
+              Payable directly to the landlady in cash or GCash upon physical arrival and key turnover.
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -148,13 +212,154 @@
       const listings = window.Auth.getListings();
       const listing = listings.find(l => l.id === pending.listingId);
       const propName = listing ? listing.name : 'Boarding Stay';
+      const nightlyPrice = pending.pricePerNight || (listing ? listing.price : 350);
+      const monthlyRate = listing && listing.monthlyPrice ? listing.monthlyPrice : Math.round(nightlyPrice * 8);
 
       document.getElementById('summaryProperty').textContent = propName;
       document.getElementById('summaryCheckin').textContent = pending.checkIn;
       document.getElementById('summaryCheckout').textContent = pending.checkOut;
       document.getElementById('summaryNights').textContent = `${pending.nights} night${pending.nights > 1 ? 's' : ''}`;
-      document.getElementById('summaryRate').textContent = `₱${pending.pricePerNight.toLocaleString()}`;
-      document.getElementById('summaryTotal').textContent = `₱${pending.totalPrice.toLocaleString()}`;
+
+      // Update Option Labels
+      const transPriceEl = document.getElementById('leaseOptTransientPrice');
+      const monthPriceEl = document.getElementById('leaseOptMonthlyPrice');
+      if (transPriceEl) transPriceEl.textContent = `₱${nightlyPrice.toLocaleString()}/night`;
+      if (monthPriceEl) monthPriceEl.textContent = `₱${monthlyRate.toLocaleString()}/mo`;
+
+      // Calculations State
+      let selectedLeaseType = 'transient';
+      let currentAmountDueToday = 0;
+      let currentMoveInBalance = 0;
+      let depositDetails = null;
+
+      function updateSummaryBreakdown() {
+        const breakdownContainer = document.getElementById('dynamicBreakdownRows');
+        const checkoutRow = document.getElementById('summaryCheckoutRow');
+        const durationRow = document.getElementById('summaryDurationRow');
+        const totalLabel = document.getElementById('summaryTotalLabel');
+        const totalEl = document.getElementById('summaryTotal');
+        const agreementTypeEl = document.getElementById('summaryAgreementType');
+        const moveInNotice = document.getElementById('summaryMoveInNotice');
+        const moveInBalanceText = document.getElementById('summaryMoveInBalanceText');
+
+        if (selectedLeaseType === 'transient') {
+          checkoutRow.style.display = 'flex';
+          durationRow.style.display = 'flex';
+          agreementTypeEl.textContent = 'Daily Transient Stay';
+          moveInNotice.style.display = 'none';
+          currentMoveInBalance = 0;
+
+          const baseRoomTotal = nightlyPrice * pending.nights;
+          const utilityFee = 100;
+          currentAmountDueToday = baseRoomTotal + utilityFee;
+
+          depositDetails = {
+            rateType: 'daily',
+            baseRate: nightlyPrice,
+            nights: pending.nights,
+            utilityFee: utilityFee,
+            deposit: 0
+          };
+
+          breakdownContainer.innerHTML = `
+            <div class="summary-row">
+              <span>Daily Rate (₱${nightlyPrice.toLocaleString()} × ${pending.nights} nights)</span>
+              <span>₱${baseRoomTotal.toLocaleString()}</span>
+            </div>
+            <div class="summary-row">
+              <span>Linen, WiFi &amp; Utility fee</span>
+              <span>₱${utilityFee.toLocaleString()}</span>
+            </div>
+          `;
+          totalLabel.textContent = 'Total Due Today';
+          totalEl.textContent = `₱${currentAmountDueToday.toLocaleString()}`;
+
+        } else if (selectedLeaseType === 'monthly') {
+          checkoutRow.style.display = 'none';
+          durationRow.style.display = 'none';
+          agreementTypeEl.textContent = 'Monthly Academic Contract';
+          moveInNotice.style.display = 'none';
+          currentMoveInBalance = 0;
+
+          const advanceRent = monthlyRate;
+          const securityDeposit = monthlyRate;
+          const contractProcessing = 200;
+          currentAmountDueToday = advanceRent + securityDeposit + contractProcessing;
+
+          depositDetails = {
+            rateType: 'monthly',
+            advanceRent: advanceRent,
+            securityDeposit: securityDeposit,
+            contractProcessing: contractProcessing,
+            submeterRefundable: true
+          };
+
+          breakdownContainer.innerHTML = `
+            <div class="summary-row">
+              <span>1st Month Advance Rent</span>
+              <span>₱${advanceRent.toLocaleString()}</span>
+            </div>
+            <div class="summary-row">
+              <span>1 Month Security Deposit (Refundable)</span>
+              <span>₱${securityDeposit.toLocaleString()}</span>
+            </div>
+            <div class="summary-row">
+              <span>Submeter Setup &amp; Contract Fee</span>
+              <span>₱${contractProcessing.toLocaleString()}</span>
+            </div>
+          `;
+          totalLabel.textContent = 'Total Move-in Package';
+          totalEl.textContent = `₱${currentAmountDueToday.toLocaleString()}`;
+
+        } else if (selectedLeaseType === 'holding') {
+          checkoutRow.style.display = 'none';
+          durationRow.style.display = 'none';
+          agreementTypeEl.textContent = '₱500 Slot Reservation (Holding Deposit)';
+
+          const fullMonthlyPackage = (monthlyRate * 2) + 200;
+          currentAmountDueToday = 500;
+          currentMoveInBalance = fullMonthlyPackage - 500;
+
+          depositDetails = {
+            rateType: 'holding',
+            holdingFeePaid: 500,
+            fullPackage: fullMonthlyPackage,
+            remainingBalanceDue: currentMoveInBalance,
+            monthlyRate: monthlyRate
+          };
+
+          breakdownContainer.innerHTML = `
+            <div class="summary-row">
+              <span>Monthly Room Rent</span>
+              <span>₱${monthlyRate.toLocaleString()}/month</span>
+            </div>
+            <div class="summary-row">
+              <span>Total Move-in Package (1 Adv + 1 Dep)</span>
+              <span>₱${fullMonthlyPackage.toLocaleString()}</span>
+            </div>
+            <div class="summary-row" style="color:var(--teal); font-weight:600;">
+              <span>Slot Reservation Fee (Paid Today)</span>
+              <span>₱500</span>
+            </div>
+          `;
+          totalLabel.textContent = 'Amount Due Today';
+          totalEl.textContent = '₱500';
+
+          moveInNotice.style.display = 'flex';
+          moveInBalanceText.textContent = `₱${currentMoveInBalance.toLocaleString()}`;
+        }
+      }
+
+      // Radio Change Listener
+      document.querySelectorAll('input[name="leaseType"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          selectedLeaseType = e.target.value;
+          updateSummaryBreakdown();
+        });
+      });
+
+      // Initial calculation
+      updateSummaryBreakdown();
 
       // Pre-fill user
       const user = window.Auth.getCurrentUser();
@@ -166,7 +371,7 @@
       }
 
       // Confirm booking
-      document.getElementById('confirmBookingBtn').addEventListener('click', () => {
+      document.getElementById('confirmBookingBtn').addEventListener('click', async () => {
         const name = document.getElementById('tenantName').value.trim();
         const email = document.getElementById('tenantEmail').value.trim();
         const phone = document.getElementById('tenantPhone').value.trim();
@@ -175,6 +380,12 @@
           alert('Please enter your full name, email, and phone number.');
           return;
         }
+
+        const leaseNames = {
+          transient: 'Daily Transient Stay',
+          monthly: 'Monthly Academic Contract (1-Mo Advance + 1-Mo Deposit)',
+          holding: '₱500 Slot Reservation (Balance on Move-In)'
+        };
 
         const bookingId = 'PH-BK' + Math.floor(1000 + Math.random() * 9000);
         const booking = {
@@ -187,18 +398,23 @@
           guestPhone: phone,
           guestGender: document.getElementById('tenantGender').value,
           checkIn: pending.checkIn,
-          checkOut: pending.checkOut,
+          checkOut: selectedLeaseType === 'transient' ? pending.checkOut : 'Ongoing (Monthly)',
           guests: pending.guests || 1,
-          pricePerNight: pending.pricePerNight,
-          nights: pending.nights,
-          totalPrice: pending.totalPrice,
+          pricePerNight: nightlyPrice,
+          nights: selectedLeaseType === 'transient' ? pending.nights : 30,
+          totalPrice: currentAmountDueToday,
+          moveInBalance: currentMoveInBalance,
+          leaseType: selectedLeaseType,
+          leaseName: leaseNames[selectedLeaseType],
+          depositDetails: depositDetails,
           status: 'Confirmed',
           dateBooked: new Date().toISOString().slice(0, 10),
           notes: document.getElementById('tenantNotes').value.trim(),
           paymentMethod: document.querySelector('input[name=paymentMethod]:checked').value
         };
 
-        window.Auth.addBooking(booking);
+        await window.Auth.addBooking(booking);
+        localStorage.setItem('lastBookingId', bookingId);
         localStorage.removeItem('pendingBooking');
         window.location.href = `confirmation.html?bookingId=${bookingId}`;
       });

@@ -22,7 +22,7 @@
       <div class="nav-links">
         <a href="admin.html" class="active">Landlady Center</a>
         <a href="#reservations">Tenant Bookings</a>
-        <a href="#inquiries">Inquiries</a>
+        <a href="#inquiries">Inquiries <span class="badge-count unread-badge" id="adminInquiryBadge" style="display:none; margin-left:4px;">0</span></a>
         <a href="index.html" target="_blank">View Live Catalog ↗</a>
       </div>
       <div class="account-actions"></div>
@@ -537,6 +537,13 @@
           </div>
           `;
         }).join('');
+
+        // Mark host threads read when viewed
+        inquiries.forEach(inq => {
+          if (inq.unreadByHost > 0) {
+            window.Auth.markThreadRead(inq.id, 'host');
+          }
+        });
       }
 
       document.addEventListener('apartly:chat-updated', () => {

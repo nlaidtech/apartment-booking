@@ -247,6 +247,32 @@ a {
   margin-left: 4px;
 }
 
+.unread-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--clay);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 12px;
+  min-width: 18px;
+  line-height: 1.4;
+  vertical-align: middle;
+  transition: transform 0.2s ease;
+}
+
+.unread-badge.has-unread {
+  animation: badgePulse 2s infinite ease-in-out;
+}
+
+@keyframes badgePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.18); box-shadow: 0 0 8px rgba(193, 80, 46, 0.4); }
+  100% { transform: scale(1); }
+}
+
 /* Account Actions & Dropdown */
 .account-actions {
   display: flex;
@@ -2293,4 +2319,128 @@ a {
   cursor: pointer;
   font-size: 14px;
 }
+
+/* ==========================================================================
+   LEASE AGREEMENT & CHECKOUT OPTIONS (Phase 3)
+   ========================================================================== */
+.lease-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 14px;
+  margin-bottom: 20px;
+}
+
+.lease-option {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  background: var(--paper);
+  transition: all 0.15s ease;
+}
+
+.lease-option:hover {
+  border-color: var(--teal);
+}
+
+.lease-option:has(input:checked) {
+  border-color: var(--teal);
+  background: rgba(18, 60, 61, 0.04);
+  box-shadow: 0 0 0 1px var(--teal);
+}
+
+.lease-option input[type="radio"] {
+  margin-top: 3px;
+  accent-color: var(--teal);
+  width: 18px;
+  height: 18px;
+}
+
+.lease-option-content {
+  flex: 1;
+}
+
+.lease-option-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.lease-option-title {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--teal-deep);
+}
+
+.lease-option-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--clay-deep);
+}
+
+.lease-option-desc {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.lease-badge-popular {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--teal);
+  background: rgba(18, 60, 61, 0.1);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.deposit-breakdown-box {
+  background: var(--bg-subtle);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.deposit-breakdown-box .breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.deposit-breakdown-box .breakdown-row:last-child {
+  margin-bottom: 0;
+}
+
+.deposit-breakdown-box .breakdown-row strong {
+  color: var(--ink);
+}
+
+.move-in-balance-alert {
+  background: #FFF7ED;
+  border: 1px solid #FDBA74;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-top: 12px;
+  font-size: 12.5px;
+  color: #9A3412;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 

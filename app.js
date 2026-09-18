@@ -242,6 +242,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     calculateModalPrice();
     if (typeof renderModalChat === 'function') renderModalChat(listing);
+    if (typeof renderModalReviews === 'function') renderModalReviews(listing.id);
 
     modalBackdrop.classList.add('is-active');
     modalBackdrop.setAttribute('aria-hidden', 'false');
@@ -317,7 +318,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // --- 6. CATEGORY & CAMPUS BAR PILLS ---
   let activeCampus = 'all';
-  const campusButtons = document.querySelectorAll('.campus-pill');
+  const campusButtons = document.querySelectorAll('.campus-bar .campus-pill');
   campusButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       campusButtons.forEach(b => b.classList.remove('is-active'));
@@ -330,6 +331,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         else if (activeCampus === 'Davao Doctors' || activeCampus === 'Ateneo') listingFilters.elements.location.value = 'Davao City';
         else if (activeCampus === 'USC') listingFilters.elements.location.value = 'Cebu City';
         else if (activeCampus === 'all') listingFilters.elements.location.value = 'all';
+      }
+
+      // Sync with Leaflet map view if open
+      if (typeof leafletMap !== 'undefined' && leafletMap && typeof CAMPUS_LOCATIONS !== 'undefined') {
+        if (activeCampus !== 'all' && CAMPUS_LOCATIONS[activeCampus]) {
+          const loc = CAMPUS_LOCATIONS[activeCampus];
+          leafletMap.setView([loc.lat, loc.lng], 15);
+        } else {
+          leafletMap.setView([7.4474, 125.8078], 13);
+        }
       }
 
       applyFilters();
@@ -357,6 +368,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
+  // Priority amenity filter chips (if present)
+  const priorityChips = document.querySelectorAll('.priority-filter-chip');
+  priorityChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chip.classList.toggle('is-active');
+      applyFilters();
+    });
+  });
+
   // --- 7. FILTER LOGIC ---
   function applyFilters() {
     if (!listingFilters) return;
@@ -365,6 +385,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const roomType = controls.roomType.value;
     const amenity = controls.amenity.value;
     const maxPrice = Number(controls.price.value || 1000);
+
+    const activePriorityFilters = Array.from(document.querySelectorAll('.priority-filter-chip.is-active'))
+      .map(c => c.dataset.amenityFilter.toLowerCase());
 
     const cards = Array.from(document.querySelectorAll('.listing-card'));
     let visibleCount = 0;
@@ -381,8 +404,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       const amenityOk = amenity === 'all' || cardAmenities.includes(amenity.toLowerCase());
       const priceOk = cardPrice <= maxPrice;
       const campusOk = activeCampus === 'all' || cardCampus.includes(activeCampus.toLowerCase());
+      const priorityOk = activePriorityFilters.length === 0 || activePriorityFilters.every(f => cardAmenities.includes(f));
 
-      const isMatch = locationOk && roomTypeOk && amenityOk && priceOk && campusOk;
+      const isMatch = locationOk && roomTypeOk && amenityOk && priceOk && campusOk && priorityOk;
       card.style.display = isMatch ? 'flex' : 'none';
       if (isMatch) visibleCount++;
     });
@@ -690,7 +714,247 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // --- 11. DYNAMIC EVENT LISTENERS ---
+  // --- 11. STUDENT REVIEWS & RATINGS SYSTEM ---
+  function renderModalReviews(listingId) {
+    const list = document.getElementById('modalReviewsList');
+    const summary = document.getElementById('modalReviewSummary');
+    const cleanScore = document.getElementById('modalCleanScore');
+    const wifiScore = document.getElementById('modalWifiScore');
+    const hostScore = document.getElementById('modalHostScore');
+    if (!list) return;
+
+    const reviews = window.Auth.getListingReviews(listingId);
+    if (!reviews || reviews.length === 0) {
+      list.innerHTML = `<div style="font-size:12px; color:var(--muted); text-align:center; padding:12px 0;">No student reviews written yet. Be the first to share your experience!</div>`;
+      if (summary) summary.textContent = '⭐ New Listing • Verified Landlady';
+      if (cleanScore) cleanScore.textContent = '5.0';
+      if (wifiScore) wifiScore.textContent = '5.0';
+      if (hostScore) hostScore.textContent = '5.0';
+      return;
+    }
+
+    const avg = (reviews.reduce((sum, r) => sum + Number(r.rating || 5), 0) / reviews.length).toFixed(1);
+    const avgClean = (reviews.reduce((sum, r) => sum + Number(r.cleanliness || 5), 0) / reviews.length).toFixed(1);
+    const avgWifi = (reviews.reduce((sum, r) => sum + Number(r.wifi || 5), 0) / reviews.length).toFixed(1);
+    const avgHost = (reviews.reduce((sum, r) => sum + Number(r.landlady || 5), 0) / reviews.length).toFixed(1);
+
+    if (summary) summary.textContent = `⭐ ${avg} • Based on ${reviews.length} student review${reviews.length > 1 ? 's' : ''}`;
+    if (cleanScore) cleanScore.textContent = avgClean;
+    if (wifiScore) wifiScore.textContent = avgWifi;
+    if (hostScore) hostScore.textContent = avgHost;
+
+    list.innerHTML = reviews.map(r => `
+      <div style="background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-sm); padding:10px 12px; font-size:12.5px;">
+        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;">
+          <div>
+            <strong style="color:var(--teal-deep);">${escapeHtml(r.authorName)}</strong>
+            <span style="font-size:11px; color:var(--muted); margin-left:6px;">${escapeHtml(r.authorRole || 'Verified Boarder')}</span>
+          </div>
+          <span style="color:var(--gold); font-weight:700; letter-spacing:1px;">${'⭐'.repeat(r.rating || 5)}</span>
+        </div>
+        <p style="margin:0 0 6px; color:var(--ink); line-height:1.45;">${escapeHtml(r.comment)}</p>
+        <div style="font-size:10.5px; color:var(--muted-light);">${escapeHtml(r.date || 'Recently')}</div>
+      </div>
+    `).join('');
+  }
+
+  const writeReviewModal = document.getElementById('writeReviewModal');
+  const openWriteReviewBtn = document.getElementById('openWriteReviewBtn');
+  const closeReviewModalBtn = document.getElementById('closeReviewModalBtn');
+  const cancelReviewBtn = document.getElementById('cancelReviewBtn');
+  const writeReviewForm = document.getElementById('writeReviewForm');
+  const starRatingPicker = document.getElementById('starRatingPicker');
+  const selectedStarRating = document.getElementById('selectedStarRating');
+
+  function openReviewModal() {
+    if (!writeReviewModal) return;
+    writeReviewModal.classList.add('is-active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeReviewModal() {
+    if (!writeReviewModal) return;
+    writeReviewModal.classList.remove('is-active');
+    document.body.style.overflow = '';
+  }
+
+  if (openWriteReviewBtn) openWriteReviewBtn.addEventListener('click', openReviewModal);
+  if (closeReviewModalBtn) closeReviewModalBtn.addEventListener('click', closeReviewModal);
+  if (cancelReviewBtn) cancelReviewBtn.addEventListener('click', closeReviewModal);
+  if (writeReviewModal) {
+    writeReviewModal.addEventListener('click', (e) => {
+      if (e.target === writeReviewModal) closeReviewModal();
+    });
+  }
+
+  if (starRatingPicker) {
+    const stars = starRatingPicker.querySelectorAll('[data-star]');
+    stars.forEach(star => {
+      star.addEventListener('click', () => {
+        const val = Number(star.dataset.star);
+        if (selectedStarRating) selectedStarRating.value = val;
+        stars.forEach((s, idx) => {
+          s.style.opacity = idx < val ? '1' : '0.35';
+        });
+      });
+    });
+  }
+
+  if (writeReviewForm) {
+    writeReviewForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!activeModalListing) return;
+
+      const rating = Number(selectedStarRating ? selectedStarRating.value : 5);
+      const cleanliness = Number(document.getElementById('reviewCleanliness').value);
+      const wifi = Number(document.getElementById('reviewWifi').value);
+      const landlady = Number(document.getElementById('reviewLandlady').value);
+      const comment = document.getElementById('reviewComment').value.trim();
+
+      if (!comment) {
+        alert('Please share your thoughts or advice for fellow students.');
+        return;
+      }
+
+      window.Auth.addReview({
+        listingId: activeModalListing.id,
+        rating,
+        cleanliness,
+        wifi,
+        landlady,
+        comment
+      });
+
+      closeReviewModal();
+      writeReviewForm.reset();
+      if (selectedStarRating) selectedStarRating.value = '5';
+      renderModalReviews(activeModalListing.id);
+      renderListingGrid();
+      showToast('Thank you! Your student review has been posted.', 'success');
+    });
+  }
+
+  // --- 12. LEAFLET CAMPUS PROXIMITY MAP ---
+  let leafletMap = null;
+  let mapMarkers = [];
+  const viewModeGrid = document.getElementById('viewModeGrid');
+  const viewModeMap = document.getElementById('viewModeMap');
+  const campusMapContainer = document.getElementById('campusMapContainer');
+
+  const CAMPUS_LOCATIONS = {
+    'UM Tagum': { lat: 7.4510, lng: 125.8035, name: 'University of Mindanao Tagum (Main Gate)' },
+    'Davao Doctors': { lat: 7.0768, lng: 125.6080, name: 'Davao Doctors College & SPMC' },
+    'Ateneo': { lat: 7.0706, lng: 125.6133, name: 'Ateneo de Davao University (Jacinto)' },
+    'USC': { lat: 10.3533, lng: 123.9126, name: 'University of San Carlos (Talamban Campus)' }
+  };
+
+  const LISTING_COORDINATES = {
+    1: { lat: 7.4525, lng: 125.8050 }, // Mankilam (Tagum)
+    2: { lat: 7.0725, lng: 125.6150 }, // Roxas Night Market (Davao)
+    3: { lat: 7.4485, lng: 125.8090 }, // Pioneer Ave (Tagum)
+    4: { lat: 7.0850, lng: 125.6110 }, // Bajada / SPMC (Davao)
+    5: { lat: 7.0650, lng: 125.5990 }, // Matina (Davao)
+    6: { lat: 10.3550, lng: 123.9140 }  // Cebu City (USC)
+  };
+
+  function initCampusMap() {
+    if (typeof L === 'undefined' || !campusMapContainer) return;
+
+    if (!leafletMap) {
+      leafletMap = L.map('campusMap').setView([7.4474, 125.8078], 14);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(leafletMap);
+    }
+
+    renderMapMarkers();
+  }
+
+  function renderMapMarkers() {
+    if (!leafletMap || typeof L === 'undefined') return;
+
+    mapMarkers.forEach(m => leafletMap.removeLayer(m));
+    mapMarkers = [];
+
+    // 1. Add University Landmark Pins
+    Object.entries(CAMPUS_LOCATIONS).forEach(([campusKey, loc]) => {
+      const universityIcon = L.divIcon({
+        className: 'custom-map-pin university',
+        html: `<div style="background:#123C3D; color:#FFF; padding:5px 9px; border-radius:20px; font-size:11px; font-weight:700; border:2px solid #E8A33D; white-space:nowrap; box-shadow:0 2px 6px rgba(0,0,0,0.3); display:inline-flex; align-items:center; gap:4px;">🎓 ${campusKey}</div>`,
+        iconSize: [110, 30],
+        iconAnchor: [55, 15]
+      });
+
+      const mark = L.marker([loc.lat, loc.lng], { icon: universityIcon })
+        .addTo(leafletMap)
+        .bindPopup(`<strong>${loc.name}</strong><br><span style="font-size:12px;color:#666;">Major University Landmark</span>`);
+      mapMarkers.push(mark);
+    });
+
+    // 2. Add Boarding House Listing Pins
+    const listings = window.Auth.getListings();
+    listings.forEach(listing => {
+      const coords = LISTING_COORDINATES[listing.id] || { lat: 7.4474, lng: 125.8078 };
+      const priceIcon = L.divIcon({
+        className: 'custom-map-pin listing',
+        html: `<div style="background:#C1502E; color:#FFF; padding:4px 10px; border-radius:16px; font-size:12px; font-weight:700; border:2px solid #FFF; white-space:nowrap; box-shadow:0 2px 6px rgba(0,0,0,0.25); cursor:pointer;">₱${listing.price}</div>`,
+        iconSize: [60, 26],
+        iconAnchor: [30, 13]
+      });
+
+      const popupContent = `
+        <div style="min-width:180px; text-align:left;">
+          <img src="${listing.imageUrl}" style="width:100%; height:95px; object-fit:cover; border-radius:6px; margin-bottom:6px;">
+          <strong style="font-size:13px; color:#123C3D; display:block;">${listing.name}</strong>
+          <div style="font-size:11.5px; color:#666; margin:2px 0 6px;">📍 ${listing.location} • ₱${listing.price}/night</div>
+          <button type="button" style="background:#123C3D; color:#FFF; border:none; border-radius:4px; padding:6px 12px; font-size:11.5px; cursor:pointer; width:100%;" onclick="window.openStayModalFromMap(${listing.id})">
+            View Details &amp; Chat
+          </button>
+        </div>
+      `;
+
+      const mark = L.marker([coords.lat, coords.lng], { icon: priceIcon })
+        .addTo(leafletMap)
+        .bindPopup(popupContent);
+      mapMarkers.push(mark);
+    });
+  }
+
+  window.openStayModalFromMap = function(listingId) {
+    openListingModal(listingId);
+  };
+
+  if (viewModeGrid && viewModeMap && campusMapContainer) {
+    viewModeGrid.addEventListener('click', () => {
+      viewModeGrid.classList.add('is-active');
+      viewModeGrid.style.background = 'var(--teal)';
+      viewModeGrid.style.color = 'var(--white)';
+      viewModeMap.classList.remove('is-active');
+      viewModeMap.style.background = 'transparent';
+      viewModeMap.style.color = 'var(--muted)';
+
+      campusMapContainer.style.display = 'none';
+      if (listingsGrid) listingsGrid.style.display = 'grid';
+    });
+
+    viewModeMap.addEventListener('click', () => {
+      viewModeMap.classList.add('is-active');
+      viewModeMap.style.background = 'var(--teal)';
+      viewModeMap.style.color = 'var(--white)';
+      viewModeGrid.classList.remove('is-active');
+      viewModeGrid.style.background = 'transparent';
+      viewModeGrid.style.color = 'var(--muted)';
+
+      campusMapContainer.style.display = 'block';
+      initCampusMap();
+      setTimeout(() => {
+        if (leafletMap) leafletMap.invalidateSize();
+      }, 100);
+    });
+  }
+
+  // --- 13. DYNAMIC EVENT LISTENERS ---
   document.addEventListener('apartly:user-switched', (e) => {
     const user = e.detail;
     showToast(`Switched persona to: ${user.name}`, 'info');
@@ -699,6 +963,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   document.addEventListener('apartly:listing-added', () => {
     renderListingGrid();
+    if (leafletMap) renderMapMarkers();
   });
 
   // Initial load

@@ -23,6 +23,7 @@
         <a href="index.html">Browse Stays</a>
         <a href="saved-apartments.html">Saved (<span data-saved-count>0</span>)</a>
         <a href="profile.html?tab=trips" class="active">My Bookings</a>
+        <a href="profile.html?tab=inquiries">Inquiries <span class="badge-count unread-badge inquiry-unread-badge" id="inquiryUnreadBadge" style="display:none; margin-left:4px;">0</span></a>
       </div>
       <div class="account-actions"></div>
     </div>
@@ -52,7 +53,7 @@
     <div class="profile-tabs">
       <button type="button" class="profile-tab active" data-tab="tabProfile">Personal &amp; School Info</button>
       <button type="button" class="profile-tab" data-tab="tabTrips">My Bookings</button>
-      <button type="button" class="profile-tab" data-tab="tabInquiries">Inquiries to Landladies</button>
+      <button type="button" class="profile-tab" data-tab="tabInquiries">Inquiries to Landladies <span class="badge-count unread-badge inquiry-unread-badge" id="profileTabInquiryBadge" style="display:none; margin-left:6px;">0</span></button>
       <button type="button" class="profile-tab" data-tab="tabSettings">Settings</button>
     </div>
 
@@ -408,14 +409,24 @@
                   <h3>${b.propertyName}</h3>
                   <span class="trip-status confirmed">${b.status}</span>
                 </div>
-                <p style="margin:4px 0 8px;">Stay dates: <strong>${b.checkIn} – ${b.checkOut}</strong> &bull; ${b.nights} night${b.nights > 1 ? 's' : ''} &bull; Total: <strong>₱${b.totalPrice.toLocaleString()}</strong></p>
-                <div style="display:flex; gap:10px; align-items:center;">
-                  <a href="confirmation.html?bookingId=${b.id}" class="btn-secondary" style="font-size:12px; padding:6px 14px; text-decoration:none;">View &amp; Print Slip</a>
+                <p style="margin:4px 0 8px;">Stay dates: <strong>${b.checkIn} – ${b.checkOut}</strong> &bull; ${b.nights} night${b.nights > 1 ? 's' : ''} &bull; Total: <strong>₱${b.totalPrice.toLocaleString()}</strong> &bull; <span style="color:var(--teal); font-weight:600;">${escapeHtml(b.leaseName || 'Daily Transient Stay')}</span></p>
+                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                  <a href="confirmation.html?bookingId=${b.id}" class="btn-secondary" style="font-size:12px; padding:6px 14px; text-decoration:none;">View Slip</a>
+                  <button type="button" class="btn-primary rate-stay-trigger-btn" data-listing-id="${b.listingId}" data-listing-name="${escapeHtml(b.propertyName)}" style="font-size:12px; padding:6px 14px; width:auto;">⭐ Rate &amp; Review</button>
                   <span style="font-size:12px; color:var(--muted);">Ref: ${b.id}</span>
                 </div>
               </div>
             </div>`;
         }).join('');
+
+        // Wire up review buttons on booking cards
+        container.querySelectorAll('.rate-stay-trigger-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const lid = parseInt(btn.dataset.listingId, 10);
+            const lname = btn.dataset.listingName;
+            openProfileReviewModal(lid, lname);
+          });
+        });
       }
 
       // Safe HTML escaping
@@ -551,15 +562,172 @@
           </div>
           `;
         }).join('');
+
+        // Mark guest threads read when viewing inquiries tab
+        myInquiries.forEach(inq => {
+          if (inq.unreadByGuest > 0) {
+            window.Auth.markThreadRead(inq.id, 'guest');
+          }
+        });
       }
 
       document.addEventListener('apartly:chat-updated', () => {
         renderInquiries();
       });
 
+      // --- Student Review Modal Logic ---
+      const reviewModal = document.getElementById('profileReviewModal');
+      const reviewForm = document.getElementById('profileReviewForm');
+      const closeReviewBtn = document.getElementById('closeProfileReviewModalBtn');
+      const cancelReviewBtn = document.getElementById('cancelProfileReviewBtn');
+      const starPicker = document.getElementById('profileStarPicker');
+      const selectedStarInput = document.getElementById('profileSelectedStar');
+
+      function openProfileReviewModal(listingId, listingName) {
+        document.getElementById('profileReviewListingId').value = listingId;
+        document.getElementById('profileReviewTitle').textContent = `Rate Stay: ${listingName || 'Boarding House'}`;
+        reviewForm.reset();
+        selectedStarInput.value = '5';
+        updateStarPickerDisplay(5);
+        reviewModal.classList.add('show');
+        reviewModal.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeProfileReviewModal() {
+        reviewModal.classList.remove('show');
+        reviewModal.setAttribute('aria-hidden', 'true');
+      }
+
+      function updateStarPickerDisplay(rating) {
+        if (!starPicker) return;
+        const stars = starPicker.querySelectorAll('span');
+        stars.forEach((s, idx) => {
+          s.style.opacity = (idx < rating) ? '1' : '0.3';
+          s.style.transform = (idx < rating) ? 'scale(1.08)' : 'scale(1)';
+        });
+      }
+
+      if (starPicker) {
+        starPicker.querySelectorAll('span').forEach(star => {
+          star.addEventListener('click', () => {
+            const val = parseInt(star.dataset.star, 10);
+            selectedStarInput.value = String(val);
+            updateStarPickerDisplay(val);
+          });
+        });
+      }
+
+      if (closeReviewBtn) closeReviewBtn.addEventListener('click', closeProfileReviewModal);
+      if (cancelReviewBtn) cancelReviewBtn.addEventListener('click', closeProfileReviewModal);
+
+      if (reviewForm) {
+        reviewForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const listingId = parseInt(document.getElementById('profileReviewListingId').value, 10);
+          const rating = parseInt(selectedStarInput.value, 10) || 5;
+          const comment = document.getElementById('profileReviewComment').value.trim();
+          const cleanliness = parseInt(document.getElementById('profileReviewCleanliness').value, 10) || 5;
+          const wifi = parseInt(document.getElementById('profileReviewWifi').value, 10) || 5;
+          const landlady = parseInt(document.getElementById('profileReviewLandlady').value, 10) || 5;
+
+          const reviewData = {
+            listingId: listingId,
+            authorName: user.name || 'Student Boarder',
+            authorRole: user.course ? `${user.course} • ${user.school}` : 'Verified Boarder',
+            rating: rating,
+            comment: comment,
+            cleanliness: cleanliness,
+            wifi: wifi,
+            landlady: landlady,
+            stayType: 'Verified Tenant'
+          };
+
+          await window.Auth.addReview(reviewData);
+          closeProfileReviewModal();
+          alert('Thank you! Your verified student review and rating have been published.');
+        });
+      }
+
+      // Expose to window for card buttons
+      window.openProfileReviewModal = openProfileReviewModal;
+
       renderTrips();
       renderInquiries();
     });
   </script>
+
+  <!-- Write Review Modal for Tenant Bookings -->
+  <div class="modal-backdrop" id="profileReviewModal" aria-hidden="true" style="z-index: 120;">
+    <div class="modal-card" role="dialog" aria-modal="true" style="max-width: 500px;">
+      <button class="modal-close-btn" id="closeProfileReviewModalBtn" aria-label="Close review dialog">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+
+      <div class="modal-content">
+        <h2 style="font-family: var(--font-serif); font-size: 20px; color: var(--teal-deep); margin: 0 0 4px;" id="profileReviewTitle">
+          Rate &amp; Review Your Stay
+        </h2>
+        <p style="font-size: 12.5px; color: var(--muted); margin: 0 0 16px;" id="profileReviewSubtitle">
+          Help fellow college students find a safe, quiet, and friendly boarding house.
+        </p>
+
+        <form id="profileReviewForm">
+          <input type="hidden" id="profileReviewListingId" value="">
+          <div style="margin-bottom: 14px;">
+            <label style="display:block; font-size:12px; font-weight:600; text-transform:uppercase; color:var(--muted-light); margin-bottom:6px;">
+              Overall Rating
+            </label>
+            <div id="profileStarPicker" style="display:flex; gap:8px; font-size:26px; cursor:pointer;" title="Click to select rating">
+              <span data-star="1">⭐</span>
+              <span data-star="2">⭐</span>
+              <span data-star="3">⭐</span>
+              <span data-star="4">⭐</span>
+              <span data-star="5">⭐</span>
+            </div>
+            <input type="hidden" id="profileSelectedStar" value="5">
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px;">
+            <div>
+              <label style="font-size:11px; font-weight:600; color:var(--muted); display:block; margin-bottom:4px;">Cleanliness</label>
+              <select id="profileReviewCleanliness" style="width:100%; padding:6px; font-size:12px; border:1px solid var(--line); border-radius:4px; background:var(--paper);">
+                <option value="5">5 - Spotless</option>
+                <option value="4">4 - Very Clean</option>
+                <option value="3">3 - Decent</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:11px; font-weight:600; color:var(--muted); display:block; margin-bottom:4px;">WiFi Speed</label>
+              <select id="profileReviewWifi" style="width:100%; padding:6px; font-size:12px; border:1px solid var(--line); border-radius:4px; background:var(--paper);">
+                <option value="5">5 - Ultra Fast</option>
+                <option value="4">4 - Stable</option>
+                <option value="3">3 - Average</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:11px; font-weight:600; color:var(--muted); display:block; margin-bottom:4px;">Landlady Care</label>
+              <select id="profileReviewLandlady" style="width:100%; padding:6px; font-size:12px; border:1px solid var(--line); border-radius:4px; background:var(--paper);">
+                <option value="5">5 - Very Caring</option>
+                <option value="4">4 - Helpful</option>
+                <option value="3">3 - Fair</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 16px;">
+            <label for="profileReviewComment" style="display:block; font-size:12px; font-weight:600; text-transform:uppercase; color:var(--muted-light); margin-bottom:6px;">
+              Your Review &amp; Advice for Students
+            </label>
+            <textarea id="profileReviewComment" placeholder="E.g., Super quiet for studying, strict curfew so very safe. Malinis ang CR and mabait si Ate..." required style="width:100%; min-height:85px; padding:10px; font-size:13px; border:1px solid var(--line); border-radius:var(--radius-sm); outline:none; resize:vertical; background:var(--paper);"></textarea>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:10px;">
+            <button type="button" class="btn-secondary" id="cancelProfileReviewBtn" style="width:auto; padding:8px 18px;">Cancel</button>
+            <button type="submit" class="btn-primary" style="width:auto; padding:8px 22px;">Submit Review</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
