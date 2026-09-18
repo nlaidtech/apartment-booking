@@ -105,3 +105,16 @@ CREATE POLICY "Users manage saved listings" ON public.saved_listings
   FOR ALL TO authenticated
   USING (auth.uid() = user_id)
   WITH CHECK (auth.uid() = user_id);
+
+-- 7. Reviews Policies
+ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
+
+-- Anyone can read reviews
+CREATE POLICY "Public read reviews" ON public.reviews
+  FOR SELECT USING (true);
+
+-- Authenticated tenants can write reviews
+CREATE POLICY "Tenants insert reviews" ON public.reviews
+  FOR INSERT TO authenticated
+  WITH CHECK (true);
+

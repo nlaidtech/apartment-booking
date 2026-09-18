@@ -109,10 +109,10 @@
     <div class="form-card" style="text-align: left;">
       <h2>Landlady &amp; Caretaker Information</h2>
       <div class="contact-card">
-        <img id="confHostAvatar" src="assets/avatars/ate_maria.jpg" alt="Host">
+        <img id="confHostAvatar" src="assets/avatars/default_avatar.svg" alt="Host">
         <div class="contact-info">
-          <strong id="confHostName">Ate Maria (Landlady)</strong>
-          <span id="confHostPhone">+63 917 123 4567</span>
+          <strong id="confHostName">Property Caretaker / Landlady</strong>
+          <span id="confHostPhone">Contact details confirmed</span>
           <span style="font-size: 12px; margin-top: 4px; color: var(--muted);">Please contact host 1-2 hours before gate arrival for smooth key turnover.</span>
         </div>
       </div>
@@ -176,9 +176,9 @@
       const users = window.Auth.getUsers();
       const host = listing ? users.find(u => u.id === listing.hostId) : null;
       if (host) {
-        document.getElementById('confHostAvatar').src = host.avatarUrl || 'assets/avatars/ate_maria.jpg';
+        document.getElementById('confHostAvatar').src = host.avatarUrl || 'assets/avatars/default_avatar.svg';
         document.getElementById('confHostName').textContent = host.name;
-        document.getElementById('confHostPhone').textContent = host.phone || '+63 917 123 4567';
+        document.getElementById('confHostPhone').textContent = host.phone || 'Contact Caretaker directly';
       }
     });
   </script>

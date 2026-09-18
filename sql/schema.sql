@@ -37,9 +37,10 @@ create table if not exists listings (
   location text not null,      -- e.g. 'Tagum City', 'Davao City', 'Cebu City'
   room_type text not null,     -- 'Bedspace', 'Solo Room', 'Studio Pad', '1 Bedroom', 'Capsule Pod'
   amenities text[],            -- array: ['WiFi', 'Aircon', 'Own CR', 'Mineral Water', 'CCTV']
-  rating numeric default 4.9,
-  reviews_count int default 1,
-  price numeric not null,      -- Philippine Pesos (₱) per night or month
+  rating numeric default 0,
+  reviews_count int default 0,
+  price numeric not null,      -- Philippine Pesos (₱) per night
+  monthly_price numeric,       -- Philippine Pesos (₱) per month
   image_url text,
   description text,
   -- Boarding House Rules & Proximity
@@ -65,12 +66,17 @@ create table if not exists bookings (
   price_per_night numeric,
   nights int default 1,
   total_price numeric,
-  status text default 'Confirmed', -- 'Confirmed', 'Checked-in', 'Declined', 'Pending'
+  payment_method text default 'gcash',
+  lease_type text default 'transient', -- 'transient', 'monthly', 'holding'
+  lease_name text,
+  move_in_balance numeric default 0,
+  deposit_details jsonb,
+  status text default 'Confirmed',     -- 'Confirmed', 'Checked-in', 'Declined', 'Pending'
   notes text,
   created_at timestamptz default now()
 );
 
--- 4. Inquiries (Student Questions to Landladies)
+-- 4. Inquiries & Two-Way Chat (Student Questions to Landladies)
 create table if not exists inquiries (
   id text primary key,
   listing_id bigint references listings(id),
@@ -81,7 +87,10 @@ create table if not exists inquiries (
   guest_phone text,
   message text not null,
   reply text,
-  status text default 'Sent',     -- 'Sent' or 'Replied'
+  messages jsonb default '[]'::jsonb,
+  unread_by_guest int default 0,
+  unread_by_host int default 0,
+  status text default 'Sent',          -- 'Sent' or 'Replied'
   date_sent date default current_date,
   created_at timestamptz default now()
 );
@@ -94,6 +103,20 @@ create table if not exists saved_listings (
   created_at timestamptz default now()
 );
 
+-- 6. Reviews (Student Feedback & Ratings)
+create table if not exists reviews (
+  id text primary key,
+  listing_id bigint references listings(id),
+  author_name text,
+  author_role text,
+  rating numeric not null,
+  cleanliness numeric default 5,
+  wifi numeric default 5,
+  landlady numeric default 5,
+  comment text,
+  created_at timestamptz default now()
+);
+
 -- Indexes for Fast Querying
 create index if not exists idx_listings_amenities on listings using gin (amenities);
 create index if not exists idx_listings_location on listings(location);
@@ -101,3 +124,4 @@ create index if not exists idx_inquiries_host_id on inquiries(host_id);
 create index if not exists idx_inquiries_guest_id on inquiries(guest_id);
 create index if not exists idx_bookings_guest_id on bookings(guest_id);
 create index if not exists idx_bookings_listing_id on bookings(listing_id);
+create index if not exists idx_reviews_listing_id on reviews(listing_id);
