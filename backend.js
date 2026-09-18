@@ -502,13 +502,15 @@
                 reviewsCount: 0
               };
             }
+          } else if (error) {
+            console.warn('Supabase sign-in response:', error.message);
           }
         } catch (err) {
           console.warn('Supabase login exception, checking local fallback:', err);
         }
       }
 
-      // 2. Check local fallback users
+      // 2. Check local fallback users (also handles "Email not confirmed" seamlessly)
       if (!matchedProfile) {
         const localUser = state.users.find((item) => (item.email || '').toLowerCase() === cleanEmail && (!item.password || item.password === password));
         if (localUser) {
@@ -544,7 +546,7 @@
       window.location.href = 'index.html';
     },
 
-    register: async (name, email, password, role = 'guest') => {
+    register: async (name, email, password, role = 'guest', extraDetails = {}) => {
       const cleanEmail = (email || '').trim().toLowerCase();
       const numericIds = state.users.map((item) => Number(item.id)).filter(Boolean);
       const localId = numericIds.length ? Math.max(...numericIds) + 1 : 1;
@@ -559,13 +561,15 @@
         avatarUrl: role === 'host' ? 'assets/avatars/ate_maria.jpg' : 'assets/avatars/sarah_student.jpg',
         rating: 5.0,
         reviewsCount: 0,
-        phone: '',
-        gender: 'Prefer not to say',
-        bio: role === 'host' ? 'Boarding house host / caretaker' : 'Student tenant searching for a boarding stay',
-        school: '',
-        course: '',
-        studentId: '',
-        emergencyContact: ''
+        phone: (extraDetails.phone || '').trim(),
+        gender: extraDetails.gender || 'Prefer not to say',
+        bio: extraDetails.bio || (role === 'host' ? 'Boarding house host / caretaker' : 'Student tenant searching for a boarding stay'),
+        school: (extraDetails.school || '').trim(),
+        course: (extraDetails.course || '').trim(),
+        studentId: (extraDetails.studentId || '').trim(),
+        emergencyContact: (extraDetails.emergencyContact || '').trim(),
+        permit: (extraDetails.permit || '').trim(),
+        landladyYears: (extraDetails.landladyYears || '').trim()
       };
 
       // Try Supabase registration in background
@@ -574,7 +578,7 @@
           const { data, error } = await state.supabase.auth.signUp({
             email: cleanEmail,
             password,
-            options: { data: { name, role } }
+            options: { data: { name, role, school: profile.school, phone: profile.phone } }
           });
 
           if (!error && data && data.user) {
@@ -593,7 +597,7 @@
       // Always save to state.users and state.currentUser
       const existsIdx = state.users.findIndex(u => (u.email || '').toLowerCase() === cleanEmail);
       if (existsIdx !== -1) {
-        state.users[existsIdx] = profile;
+        state.users[existsIdx] = { ...state.users[existsIdx], ...profile };
       } else {
         state.users.push(profile);
       }

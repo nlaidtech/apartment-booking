@@ -1747,6 +1747,79 @@ a {
 .login-card .toggle-link a {
   color: var(--teal);
   font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.login-card .password-field-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 14px;
+}
+
+.login-card .password-field-wrapper input {
+  margin-bottom: 0;
+  padding-right: 42px;
+}
+
+.login-card .pwd-toggle-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.login-card .pwd-toggle-btn:hover {
+  color: var(--teal-deep);
+}
+
+.login-card .pwd-toggle-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.login-card .form-row-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .login-card .form-row-2col {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+.auth-alert-banner {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  margin-bottom: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  display: none;
+}
+
+.auth-alert-error {
+  background: rgba(193, 80, 46, 0.08);
+  color: var(--clay-deep);
+  border: 1px solid rgba(193, 80, 46, 0.25);
+}
+
+.auth-alert-success {
+  background: rgba(18, 60, 61, 0.08);
+  color: var(--teal-deep);
+  border: 1px solid rgba(18, 60, 61, 0.25);
 }
 
 /* ==========================================================================

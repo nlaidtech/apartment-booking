@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apartly PH — Sign In Portal</title>
+  <title>Apartly PH — Sign In & Registration</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -44,6 +44,36 @@
     .portal-tab-btn.is-active.owner-theme {
       color: var(--clay-deep);
     }
+    .signup-only {
+      display: none;
+    }
+    .form-field {
+      margin-bottom: 12px;
+    }
+    .form-field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted-light);
+      margin-bottom: 5px;
+    }
+    .form-field input, .form-field select {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--paper);
+      color: var(--ink);
+      outline: none;
+      box-sizing: border-box;
+    }
+    .form-field input:focus, .form-field select:focus {
+      border-color: var(--teal);
+      background: var(--white);
+    }
   </style>
 </head>
 <body>
@@ -62,7 +92,7 @@
 
     <!-- Right Form Section -->
     <section class="login-form-side">
-      <div class="login-card">
+      <div class="login-card" style="max-width: 440px;">
         <!-- Two Distinct Portals -->
         <div class="portal-toggle" role="tablist">
           <button type="button" class="portal-tab-btn is-active" id="portalRenterBtn" role="tab" aria-selected="true">
@@ -76,19 +106,62 @@
         <h2 id="formTitle">Student Sign In</h2>
         <p class="subtitle" id="formSubtitle">Sign in to search rooms and manage your bookings</p>
 
+        <!-- Feedback Banners -->
+        <div id="errorAlert" class="auth-alert-banner auth-alert-error" role="alert"></div>
+        <div id="successAlert" class="auth-alert-banner auth-alert-success" role="alert"></div>
+
         <form id="authForm" novalidate>
-          <div id="nameGroup" style="display: none;">
+          <!-- Full Legal Name (Signup only) -->
+          <div class="form-field signup-only" id="nameGroup">
             <label for="regName">Full Legal Name</label>
-            <input type="text" id="regName" placeholder="Juan Dela Cruz">
+            <input type="text" id="regName" placeholder="Juan Dela Cruz" autocomplete="name">
           </div>
 
-          <label for="authEmail">Email Address</label>
-          <input type="email" id="authEmail" required placeholder="name@example.com">
+          <!-- School / Campus / Property Name (Signup only) -->
+          <div class="form-field signup-only" id="schoolGroup">
+            <label for="regSchool" id="schoolLabel">College / University</label>
+            <input type="text" id="regSchool" placeholder="e.g. UM Tagum College, Ateneo de Davao, USC">
+          </div>
 
-          <label for="authPassword">Password</label>
-          <input type="password" id="authPassword" required placeholder="••••••••">
+          <!-- Phone Number (Signup only) -->
+          <div class="form-field signup-only" id="phoneGroup">
+            <label for="regPhone">Mobile Phone (PH)</label>
+            <input type="tel" id="regPhone" placeholder="0917 123 4567" autocomplete="tel">
+          </div>
 
-          <div id="errorAlert" style="display:none; padding:10px 12px; background:rgba(193,80,46,0.08); color:var(--clay-deep); border:1px solid rgba(193,80,46,0.2); border-radius:6px; font-size:13px; margin-bottom:14px; font-weight:500;"></div>
+          <!-- Email Address (Both) -->
+          <div class="form-field">
+            <label for="authEmail">Email Address</label>
+            <input type="email" id="authEmail" required placeholder="name@example.com" autocomplete="email">
+          </div>
+
+          <!-- Password (Both) -->
+          <div class="form-field">
+            <label for="authPassword">Password</label>
+            <div class="password-field-wrapper">
+              <input type="password" id="authPassword" required placeholder="••••••••" autocomplete="current-password">
+              <button type="button" class="pwd-toggle-btn" id="toggleAuthPwd" title="Show/Hide Password" aria-label="Toggle password visibility">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Confirm Password (Signup only) -->
+          <div class="form-field signup-only" id="confirmPasswordGroup">
+            <label for="regConfirmPassword">Confirm Password</label>
+            <div class="password-field-wrapper">
+              <input type="password" id="regConfirmPassword" placeholder="••••••••" autocomplete="new-password">
+              <button type="button" class="pwd-toggle-btn" id="toggleConfirmPwd" title="Show/Hide Password" aria-label="Toggle confirm password visibility">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
 
           <button type="submit" id="submitBtn">Sign In as Student</button>
         </form>
@@ -113,16 +186,47 @@
       const bannerTitle = document.getElementById('bannerTitle');
       const bannerDesc = document.getElementById('bannerDesc');
       const submitBtn = document.getElementById('submitBtn');
-      const nameGroup = document.getElementById('nameGroup');
       const toggleText = document.getElementById('toggleText');
       const toggleBtn = document.getElementById('toggleBtn');
       const errorAlert = document.getElementById('errorAlert');
+      const successAlert = document.getElementById('successAlert');
       const authEmail = document.getElementById('authEmail');
       const authPassword = document.getElementById('authPassword');
       const regName = document.getElementById('regName');
+      const regSchool = document.getElementById('regSchool');
+      const regPhone = document.getElementById('regPhone');
+      const regConfirmPassword = document.getElementById('regConfirmPassword');
+      const schoolLabel = document.getElementById('schoolLabel');
       const authForm = document.getElementById('authForm');
+      const signupOnlyElements = document.querySelectorAll('.signup-only');
 
-      // Check query params (?portal=owner or ?portal=renter)
+      // Password visibility toggles
+      setupPasswordToggle('authPassword', 'toggleAuthPwd');
+      setupPasswordToggle('regConfirmPassword', 'toggleConfirmPwd');
+
+      function setupPasswordToggle(inputId, toggleBtnId) {
+        const input = document.getElementById(inputId);
+        const btn = document.getElementById(toggleBtnId);
+        if (!input || !btn) return;
+
+        btn.addEventListener('click', () => {
+          const isPassword = input.type === 'password';
+          input.type = isPassword ? 'text' : 'password';
+          btn.innerHTML = isPassword ? `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
+          ` : `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          `;
+        });
+      }
+
+      // Check query params (?portal=owner or ?portal=renter, ?tab=signup)
       const params = new URLSearchParams(window.location.search);
       if (params.get('portal') === 'owner') {
         setPortal('owner');
@@ -133,29 +237,33 @@
 
       function setPortal(portal) {
         activePortal = portal;
-        errorAlert.style.display = 'none';
+        hideAlerts();
 
         if (activePortal === 'owner') {
           portalRenterBtn.classList.remove('is-active');
           portalOwnerBtn.classList.add('is-active', 'owner-theme');
           bannerTitle.textContent = 'Post your boarding house rooms and accept verified tenants.';
           bannerDesc.textContent = 'Manage student bedspaces, solo rooms, and transient pads across Tagum, Davao, and Cebu with 24/7 inquiry tracking.';
-          updateFormTexts();
+          schoolLabel.textContent = 'Boarding House / Property Name';
+          regSchool.placeholder = "e.g. Ate Maria's Dormitory & Boarding House";
         } else {
           portalOwnerBtn.classList.remove('is-active', 'owner-theme');
           portalRenterBtn.classList.add('is-active');
           bannerTitle.textContent = 'Find a verified boarding house for your studies and work.';
           bannerDesc.textContent = 'Join thousands of students and reviewees across Tagum City, Davao, and Cebu finding safe bedspaces and solo rooms.';
-          updateFormTexts();
+          schoolLabel.textContent = 'College / University';
+          regSchool.placeholder = 'e.g. UM Tagum College, Ateneo de Davao, USC';
         }
+        updateFormTexts();
       }
 
       function setMode(mode) {
         authMode = mode;
-        errorAlert.style.display = 'none';
-        nameGroup.style.display = authMode === 'signup' ? 'block' : 'none';
-        toggleText.textContent = authMode === 'signin' ? "Don't have an account?" : "Already have an account?";
-        toggleBtn.textContent = authMode === 'signin' ? "Create account" : "Sign in";
+        hideAlerts();
+        const isSignup = authMode === 'signup';
+        signupOnlyElements.forEach(el => el.style.display = isSignup ? 'block' : 'none');
+        toggleText.textContent = isSignup ? "Already have an account?" : "Don't have an account?";
+        toggleBtn.textContent = isSignup ? "Sign in" : "Create account";
         updateFormTexts();
       }
 
@@ -187,10 +295,13 @@
       });
 
       async function handleAuth() {
-        errorAlert.style.display = 'none';
+        hideAlerts();
         const email = authEmail.value.trim();
         const password = authPassword.value;
         const name = regName.value.trim();
+        const school = regSchool.value.trim();
+        const phone = regPhone.value.trim();
+        const confirmPassword = regConfirmPassword.value;
 
         if (!email || !password) {
           showError('Please enter both email and password.');
@@ -200,14 +311,22 @@
         if (authMode === 'signup') {
           if (!name) {
             showError('Please enter your full legal name.');
+            regName.focus();
             return;
           }
           if (!email.includes('@') || !email.includes('.')) {
             showError('Please enter a valid email address (e.g. name@example.com).');
+            authEmail.focus();
             return;
           }
           if (password.length < 6) {
             showError('Password must be at least 6 characters.');
+            authPassword.focus();
+            return;
+          }
+          if (password !== confirmPassword) {
+            showError('Passwords do not match. Please re-enter your password confirmation.');
+            regConfirmPassword.focus();
             return;
           }
         }
@@ -215,38 +334,70 @@
         const role = activePortal === 'owner' ? 'host' : 'guest';
         const redirectParam = params.get('redirect');
 
-        if (authMode === 'signin') {
-          const res = await window.Auth.login(email, password);
-          if (res.success) {
-            if (redirectParam && !redirectParam.includes('login.html')) {
-              window.location.href = redirectParam;
-            } else if (res.user.role === 'host') {
-              window.location.href = 'admin.html';
+        submitBtn.disabled = true;
+        const originalBtnText = submitBtn.textContent;
+        submitBtn.textContent = authMode === 'signin' ? 'Signing in...' : 'Creating account...';
+
+        try {
+          if (authMode === 'signin') {
+            const res = await window.Auth.login(email, password);
+            if (res.success) {
+              showSuccess('Signed in successfully! Redirecting...');
+              setTimeout(() => {
+                if (redirectParam && !redirectParam.includes('login.html')) {
+                  window.location.href = redirectParam;
+                } else if (res.user.role === 'host') {
+                  window.location.href = 'admin.html';
+                } else {
+                  window.location.href = 'profile.html';
+                }
+              }, 400);
             } else {
-              window.location.href = 'profile.html';
+              showError(res.message || 'Invalid email or password.');
+              submitBtn.disabled = false;
+              submitBtn.textContent = originalBtnText;
             }
           } else {
-            showError(res.message);
-          }
-        } else {
-          const res = await window.Auth.register(name, email, password, role);
-          if (res.success) {
-            if (redirectParam && !redirectParam.includes('login.html')) {
-              window.location.href = redirectParam;
-            } else if (res.user.role === 'host') {
-              window.location.href = 'admin.html';
+            const res = await window.Auth.register(name, email, password, role, { school, phone });
+            if (res.success) {
+              showSuccess('Account created successfully! Redirecting to your profile...');
+              setTimeout(() => {
+                if (redirectParam && !redirectParam.includes('login.html')) {
+                  window.location.href = redirectParam;
+                } else if (res.user.role === 'host') {
+                  window.location.href = 'admin.html';
+                } else {
+                  window.location.href = 'profile.html';
+                }
+              }, 500);
             } else {
-              window.location.href = 'profile.html';
+              showError(res.message || 'Could not complete registration.');
+              submitBtn.disabled = false;
+              submitBtn.textContent = originalBtnText;
             }
-          } else {
-            showError(res.message);
           }
+        } catch (err) {
+          showError('An unexpected error occurred. Please try again.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalBtnText;
         }
       }
 
       function showError(msg) {
         errorAlert.textContent = msg;
         errorAlert.style.display = 'block';
+        successAlert.style.display = 'none';
+      }
+
+      function showSuccess(msg) {
+        successAlert.textContent = msg;
+        successAlert.style.display = 'block';
+        errorAlert.style.display = 'none';
+      }
+
+      function hideAlerts() {
+        errorAlert.style.display = 'none';
+        successAlert.style.display = 'none';
       }
     });
   </script>
