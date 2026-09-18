@@ -5,16 +5,117 @@
   const config = window.APARTLY_SUPABASE_CONFIG || {};
   const hasSupabaseConfig = Boolean(config.url && config.anonKey);
 
+  // Real Registered Users & Inquiries Store (No mock accounts)
   const defaultUsers = [];
+  const defaultInquiries = [];
 
-  const defaultListings = [];
+  const defaultListings = [
+    {
+      id: 1,
+      hostId: 'host-1',
+      name: 'Mankilam Student Pad & Bedspace',
+      location: 'Tagum City',
+      roomType: 'Bedspace',
+      amenities: ['WiFi', 'Aircon', 'Mineral Water', 'CCTV', 'Locker'],
+      rating: 4.9,
+      reviewsCount: 42,
+      price: 350,
+      imageUrl: 'assets/properties/ph_bunk_dorm.jpg',
+      campusNearby: 'UM Tagum (3 min walk)',
+      curfew: '10:00 PM Gate Curfew',
+      utilities: 'Submetered electric (₱15/kWh) · Free purified water',
+      description: 'Walking distance to University of Mindanao (UM) Tagum Campus. Solid mahogany bunk beds with privacy curtains, student lockers, study nook, 100 Mbps fiber WiFi, and free purified drinking water.'
+    },
+    {
+      id: 2,
+      hostId: 'host-2',
+      name: 'Apokon Solo Room with Own CR',
+      location: 'Tagum City',
+      roomType: 'Solo Room',
+      amenities: ['Own CR', 'WiFi', 'Aircon', 'Study Desk', 'No Curfew'],
+      rating: 4.8,
+      reviewsCount: 38,
+      price: 550,
+      imageUrl: 'assets/properties/ph_cozy_dorm.jpg',
+      campusNearby: 'UM Tagum & St. Marys (8 min commute)',
+      curfew: 'No Curfew (24/7 RFID Keycard)',
+      utilities: 'Submetered electricity & water submeter',
+      description: 'Peaceful solo room with private toilet & bath (CR), study table, wall-mounted fan plus split-type aircon. Ideal for medical interns, board exam reviewees, and young professionals. Gated with 24/7 keycard access.'
+    },
+    {
+      id: 3,
+      hostId: 'host-1',
+      name: 'Magugpo Modern Transient Studio',
+      location: 'Tagum City',
+      roomType: 'Studio Pad',
+      amenities: ['WiFi', 'Aircon', 'Kitchenette', 'Motor Parking', 'Own CR'],
+      rating: 4.9,
+      reviewsCount: 56,
+      price: 750,
+      imageUrl: 'assets/properties/ph_transient_studio.jpg',
+      campusNearby: 'UM Tagum & USEP Tagum (5 min via tricycle)',
+      curfew: 'No Curfew (Private keypad entry)',
+      utilities: 'All utilities included (Fiber WiFi, AC, Water)',
+      description: 'Modern transient studio in downtown Tagum City, 3 minutes from Gaisano Mall. Fully furnished with kitchenette, induction cooker, hot/cold shower, and dedicated covered motorcycle parking.'
+    },
+    {
+      id: 4,
+      hostId: 'host-2',
+      name: 'Bajada Ladies Dormitory & Bedspace',
+      location: 'Davao City',
+      roomType: 'Bedspace',
+      amenities: ['WiFi', 'Aircon', 'CCTV', 'Laundry Area', 'Kitchen'],
+      rating: 4.7,
+      reviewsCount: 64,
+      price: 400,
+      imageUrl: 'assets/properties/ph_ladies_dorm.jpg',
+      campusNearby: 'Davao Doctors College & SPMC (Walking distance)',
+      curfew: '9:30 PM Curfew (Strict All-Female Compound)',
+      utilities: 'Free drinking water · Shared kitchen & laundry area',
+      description: 'Exclusive ladies boarding house near SPMC and Abreeza Mall. Gated 24/7 compound with biometric security, shared cooking facilities, automatic laundry machine, and a quiet study lounge.'
+    },
+    {
+      id: 5,
+      hostId: 'host-1',
+      name: 'Matina Executive Pad & Transient',
+      location: 'Davao City',
+      roomType: '1 Bedroom',
+      amenities: ['WiFi', 'Aircon', 'Balcony', 'Own CR', 'Motor Parking'],
+      rating: 4.8,
+      reviewsCount: 29,
+      price: 650,
+      imageUrl: 'assets/properties/ph_hillside_pad.jpg',
+      campusNearby: 'Ateneo de Davao (Matina Campus)',
+      curfew: 'No Curfew (24/7 Guarded Community)',
+      utilities: 'Submetered Davao Light electricity billing',
+      description: 'Spacious 1-bedroom apartment pad in Matina, Davao City. Walking distance to Ateneo de Davao and SM City. Features private balcony, clean dining nook, and submetered electricity.'
+    },
+    {
+      id: 6,
+      hostId: 'host-2',
+      name: 'Lahug IT Park Pods & Bedspace',
+      location: 'Cebu City',
+      roomType: 'Capsule Pod',
+      amenities: ['WiFi', 'Aircon', 'RFID Access', 'Locker', 'Mineral Water'],
+      rating: 4.9,
+      reviewsCount: 88,
+      price: 500,
+      imageUrl: 'assets/properties/ph_cebu_pods.jpg',
+      campusNearby: 'USC Talamban & UC Banilad (10 min jeepney)',
+      curfew: 'No Curfew (24/7 BPO & Student Access)',
+      utilities: 'All utilities included + 300 Mbps Fiber WiFi',
+      description: 'Modern capsule pod bedspace tailored for BPO workers, freelancers, and students in Lahug, Cebu City. 300 Mbps Fiber WiFi, centralized AC, personal reading lamps, and digital lockboxes.'
+    }
+  ];
 
+  // Real Bookings Store (No mock bookings)
   const defaultBookings = [];
 
   const state = {
-    users: readLocal('users', []),
-    listings: readLocal('listings', []),
-    bookings: readLocal('bookings', []),
+    users: readLocal('users', defaultUsers),
+    listings: readLocal('listings', defaultListings),
+    bookings: readLocal('bookings', defaultBookings),
+    inquiries: readLocal('inquiries', defaultInquiries),
     savedListings: readLocal('saved_listings', []),
     currentUser: readLocal('currentUser', null),
     supabase: null,
@@ -24,11 +125,36 @@
   function readLocal(key, fallback) {
     const value = localStorage.getItem(key);
     if (!value) {
-      localStorage.setItem(key, JSON.stringify(fallback));
+      if (fallback !== null && fallback !== undefined) {
+        localStorage.setItem(key, JSON.stringify(fallback));
+      }
       return structuredClone(fallback);
     }
     try {
-      return JSON.parse(value);
+      let parsed = JSON.parse(value);
+
+      // Clean out legacy mock data if present
+      if (key === 'currentUser' && parsed && (parsed.id === 'guest-1' || parsed.id === 'host-1' || parsed.id === 'host-2' || parsed.email === 'sarah.student@gmail.com' || parsed.email === 'maria.landlady@apartly.ph')) {
+        localStorage.removeItem('currentUser');
+        return null;
+      }
+      if (key === 'users' && Array.isArray(parsed)) {
+        parsed = parsed.filter(u => u && u.id !== 'guest-1' && u.id !== 'host-1' && u.id !== 'host-2' && u.email !== 'sarah.student@gmail.com' && u.email !== 'maria.landlady@apartly.ph');
+        localStorage.setItem('users', JSON.stringify(parsed));
+      }
+      if (key === 'bookings' && Array.isArray(parsed)) {
+        parsed = parsed.filter(b => b && b.id !== 'PH-BK8921' && b.guestId !== 'guest-1');
+        localStorage.setItem('bookings', JSON.stringify(parsed));
+      }
+      if (key === 'inquiries' && Array.isArray(parsed)) {
+        parsed = parsed.filter(i => i && i.id !== 'INQ-101' && i.guestId !== 'guest-1');
+        localStorage.setItem('inquiries', JSON.stringify(parsed));
+      }
+      if (key === 'listings' && (!Array.isArray(parsed) || parsed.length === 0 || (parsed[0] && parsed[0].imageUrl && parsed[0].imageUrl.includes('unsplash')))) {
+        localStorage.setItem(key, JSON.stringify(fallback));
+        return structuredClone(fallback);
+      }
+      return parsed;
     } catch {
       localStorage.setItem(key, JSON.stringify(fallback));
       return structuredClone(fallback);
@@ -47,11 +173,19 @@
       name: row.name || '',
       role: row.role || 'guest',
       avatarUrl: row.avatar_url || row.avatarUrl || '',
-      rating: row.rating || '0.0',
+      rating: row.rating || '5.0',
       reviewsCount: row.reviews_count || row.reviewsCount || 0,
       phone: row.phone || '',
       gender: row.gender || 'Prefer not to say',
-      bio: row.bio || ''
+      bio: row.bio || '',
+      school: row.school || '',
+      course: row.course || '',
+      studentId: row.student_id || row.studentId || '',
+      idDocumentUrl: row.id_document_url || row.idDocumentUrl || '',
+      idVerified: row.id_verified !== undefined ? row.id_verified : (row.idVerified !== undefined ? row.idVerified : false),
+      emergencyContact: row.emergency_contact || row.emergencyContact || '',
+      permit: row.permit_number || row.permit || '',
+      landladyYears: row.landlady_years || row.landladyYears || 5
     };
   }
 
@@ -66,6 +200,9 @@
       reviewsCount: row.reviews_count || row.reviewsCount || 0,
       price: Number(row.price || 0),
       imageUrl: row.image_url || row.imageUrl,
+      campusNearby: row.campus_nearby || row.campusNearby || '',
+      curfew: row.curfew || 'No Curfew',
+      utilities: row.utilities || 'Standard utility terms',
       description: row.description || '',
       hostId: row.host_id || row.hostId
     };
@@ -104,7 +241,15 @@
       reviews_count: user.reviewsCount,
       phone: user.phone,
       gender: user.gender,
-      bio: user.bio
+      bio: user.bio,
+      school: user.school,
+      course: user.course,
+      student_id: user.studentId,
+      id_document_url: user.idDocumentUrl,
+      id_verified: user.idVerified,
+      emergency_contact: user.emergencyContact,
+      permit_number: user.permit,
+      landlady_years: user.landladyYears
     };
   }
 
@@ -120,6 +265,9 @@
       reviews_count: listing.reviewsCount,
       price: listing.price,
       image_url: listing.imageUrl,
+      campus_nearby: listing.campusNearby,
+      curfew: listing.curfew,
+      utilities: listing.utilities,
       description: listing.description
     };
   }
@@ -240,20 +388,32 @@
 
     login: async (email, password) => {
       if (state.supabase) {
-        const { data, error } = await state.supabase.auth.signInWithPassword({ email, password });
-        if (error) return { success: false, message: error.message };
+        try {
+          const { data, error } = await state.supabase.auth.signInWithPassword({ email, password });
+          if (error) {
+            const isNetworkErr = error.message && (error.message.includes('fetch') || error.message.includes('network') || error.message.includes('Failed'));
+            if (isNetworkErr) {
+              console.warn('Supabase network unreachable, falling back to local demo login.');
+            } else {
+              return { success: false, message: error.message };
+            }
+          } else if (data && data.user) {
+            const profileResult = await state.supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', data.user.id)
+              .single();
 
-        const profileResult = await state.supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', data.user.id)
-          .single();
-
-        state.currentUser = toProfile({ ...(profileResult.data || {}), email: data.user.email });
-        writeLocal('currentUser', state.currentUser);
-        return { success: true, user: state.currentUser };
+            state.currentUser = toProfile({ ...(profileResult.data || {}), email: data.user.email });
+            writeLocal('currentUser', state.currentUser);
+            return { success: true, user: state.currentUser };
+          }
+        } catch (err) {
+          console.warn('Supabase login exception, falling back to local demo:', err);
+        }
       }
 
+      // Local Demo Login
       const user = state.users.find((item) => item.email.toLowerCase() === email.toLowerCase() && item.password === password);
       if (!user) return { success: false, message: 'Invalid email or password.' };
       state.currentUser = user;
@@ -262,7 +422,9 @@
     },
 
     logout: async () => {
-      if (state.supabase) await state.supabase.auth.signOut();
+      if (state.supabase) {
+        try { await state.supabase.auth.signOut(); } catch (e) {}
+      }
       state.currentUser = null;
       localStorage.removeItem('currentUser');
       window.location.href = 'index.html';
@@ -270,32 +432,45 @@
 
     register: async (name, email, password, role = 'guest') => {
       if (state.supabase) {
-        const { data, error } = await state.supabase.auth.signUp({
-          email,
-          password,
-          options: { data: { name, role } }
-        });
-        if (error) return { success: false, message: error.message };
+        try {
+          const { data, error } = await state.supabase.auth.signUp({
+            email,
+            password,
+            options: { data: { name, role } }
+          });
 
-        const profile = {
-          id: data.user.id,
-          email,
-          name,
-          role,
-          avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80',
-          rating: '0.0',
-          reviewsCount: 0,
-          phone: '',
-          gender: 'Prefer not to say',
-          bio: ''
-        };
+          if (error) {
+            const isNetworkErr = error.message && (error.message.includes('fetch') || error.message.includes('network') || error.message.includes('Failed'));
+            if (isNetworkErr) {
+              console.warn('Supabase unreachable, falling back to local demo registration.');
+            } else {
+              return { success: false, message: error.message };
+            }
+          } else if (data && data.user) {
+            const profile = {
+              id: data.user.id,
+              email,
+              name,
+              role,
+              avatarUrl: role === 'host' ? 'assets/avatars/ate_maria.jpg' : 'assets/avatars/sarah_student.jpg',
+              rating: '0.0',
+              reviewsCount: 0,
+              phone: '',
+              gender: 'Prefer not to say',
+              bio: ''
+            };
 
-        await state.supabase.from('profiles').upsert(fromProfile(profile));
-        state.currentUser = profile;
-        writeLocal('currentUser', profile);
-        return { success: true, user: profile };
+            await state.supabase.from('profiles').upsert(fromProfile(profile));
+            state.currentUser = profile;
+            writeLocal('currentUser', profile);
+            return { success: true, user: profile };
+          }
+        } catch (err) {
+          console.warn('Supabase registration exception, falling back to local demo:', err);
+        }
       }
 
+      // Local Demo Registration
       const exists = state.users.some((item) => item.email.toLowerCase() === email.toLowerCase());
       if (exists) return { success: false, message: 'Email already registered.' };
       const numericIds = state.users.map((item) => Number(item.id)).filter(Boolean);
@@ -305,16 +480,16 @@
         email,
         password,
         role,
-        avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80',
-        rating: '0.0',
+        avatarUrl: role === 'host' ? 'assets/avatars/ate_maria.jpg' : 'assets/avatars/sarah_student.jpg',
+        rating: '5.0',
         reviewsCount: 0,
         phone: '',
         gender: 'Prefer not to say',
-        bio: ''
+        bio: role === 'host' ? 'Boarding house host / caretaker' : 'Student tenant searching for a boarding stay'
       };
       state.users.push(user);
-      state.currentUser = user;
       writeLocal('users', state.users);
+      state.currentUser = user;
       writeLocal('currentUser', user);
       return { success: true, user };
     },
@@ -346,17 +521,149 @@
       return !saved;
     },
 
+    switchUser: (userId) => {
+      const user = state.users.find((u) => u.id === userId);
+      if (!user) return false;
+      state.currentUser = user;
+      writeLocal('currentUser', user);
+      document.dispatchEvent(new CustomEvent('apartly:user-switched', { detail: user }));
+      renderHeaderActions();
+      return user;
+    },
+
+    getInquiries: () => {
+      // Normalize threads to have messages array
+      return state.inquiries.map(inq => {
+        if (!inq.messages) {
+          inq.messages = [];
+          if (inq.message) {
+            inq.messages.push({
+              id: 'm1',
+              senderRole: 'guest',
+              senderName: inq.guestName || 'Student',
+              text: inq.message,
+              imageUrl: inq.imageUrl || null,
+              timestamp: inq.dateSent || 'Recently'
+            });
+          }
+          if (inq.reply) {
+            inq.messages.push({
+              id: 'm2',
+              senderRole: 'host',
+              senderName: 'Landlady',
+              text: inq.reply,
+              imageUrl: inq.replyImageUrl || null,
+              timestamp: 'Replied'
+            });
+          }
+        }
+        return inq;
+      });
+    },
+
+    getChatThread: (threadId) => {
+      const thread = state.inquiries.find(i => i.id === threadId);
+      if (!thread) return null;
+      if (!thread.messages) thread.messages = [];
+      return thread;
+    },
+
+    sendChatMessage: (threadId, { senderRole = 'guest', senderName = '', text = '', imageUrl = null }) => {
+      let thread = state.inquiries.find(i => i.id === threadId);
+      if (!thread) return null;
+      if (!thread.messages) thread.messages = [];
+
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const newMsg = {
+        id: 'MSG-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+        senderRole,
+        senderName: senderName || (senderRole === 'host' ? 'Landlady' : (state.currentUser ? state.currentUser.name : 'Student')),
+        text: (text || '').trim(),
+        imageUrl: imageUrl || null,
+        timestamp: timeStr
+      };
+
+      thread.messages.push(newMsg);
+      thread.lastUpdated = new Date().toISOString();
+      if (senderRole === 'host') {
+        thread.status = 'Replied';
+        thread.reply = text;
+        if (imageUrl) thread.replyImageUrl = imageUrl;
+      } else {
+        thread.status = 'Active';
+      }
+
+      writeLocal('inquiries', state.inquiries);
+      document.dispatchEvent(new CustomEvent('apartly:chat-updated', { detail: { threadId, message: newMsg } }));
+      return newMsg;
+    },
+
+    addInquiry: (inquiryData) => {
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const guestName = state.currentUser ? state.currentUser.name : 'Student Boarder';
+      const initialMsg = {
+        id: 'MSG-' + Date.now(),
+        senderRole: 'guest',
+        senderName: guestName,
+        text: (inquiryData.message || '').trim(),
+        imageUrl: inquiryData.imageUrl || null,
+        timestamp: timeStr
+      };
+
+      const inq = {
+        id: 'CHAT-' + Math.floor(100 + Math.random() * 900),
+        guestId: currentUserId(),
+        guestName: guestName,
+        guestPhone: state.currentUser ? state.currentUser.phone : '',
+        dateSent: new Date().toISOString().slice(0, 10),
+        status: 'Sent',
+        reply: null,
+        messages: [initialMsg],
+        ...inquiryData
+      };
+      state.inquiries.unshift(inq);
+      writeLocal('inquiries', state.inquiries);
+      document.dispatchEvent(new CustomEvent('apartly:chat-updated', { detail: { threadId: inq.id, message: initialMsg } }));
+      return inq;
+    },
+
+    replyInquiry: (inquiryId, replyText, imageUrl = null) => {
+      const thread = state.inquiries.find((i) => i.id === inquiryId);
+      if (!thread) return false;
+      if (!thread.messages) thread.messages = [];
+
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const hostMsg = {
+        id: 'MSG-' + Date.now(),
+        senderRole: 'host',
+        senderName: state.currentUser && state.currentUser.role === 'host' ? state.currentUser.name : 'Landlady',
+        text: (replyText || '').trim(),
+        imageUrl: imageUrl || null,
+        timestamp: timeStr
+      };
+
+      thread.messages.push(hostMsg);
+      thread.reply = replyText;
+      if (imageUrl) thread.replyImageUrl = imageUrl;
+      thread.status = 'Replied';
+      writeLocal('inquiries', state.inquiries);
+      document.dispatchEvent(new CustomEvent('apartly:chat-updated', { detail: { threadId: inquiryId, message: hostMsg } }));
+      return thread;
+    },
+
     addListing: (listingData) => {
       const numericIds = state.listings.map((item) => Number(item.id)).filter(Boolean);
       const listing = {
         id: numericIds.length ? Math.max(...numericIds) + 1 : 1,
+        hostId: currentUserId() || 'host-1',
         rating: 5.0,
-        reviewsCount: 0,
+        reviewsCount: 1,
         ...listingData
       };
-      state.listings.push(listing);
+      state.listings.unshift(listing);
       writeLocal('listings', state.listings);
       if (state.supabase) state.supabase.from('listings').insert(fromListing(listing));
+      document.dispatchEvent(new CustomEvent('apartly:listing-added', { detail: listing }));
       return listing;
     },
 
@@ -382,7 +689,7 @@
       const booking = {
         id: makeBookingId(),
         guestId: currentUserId(),
-        dateBooked: new Date().toISOString(),
+        dateBooked: new Date().toISOString().slice(0, 10),
         status: 'Confirmed',
         ...bookingData
       };
@@ -395,12 +702,12 @@
           .single();
         if (error) throw error;
         const savedBooking = toBooking(data);
-        state.bookings.push(savedBooking);
+        state.bookings.unshift(savedBooking);
         writeLocal('bookings', state.bookings);
         return savedBooking;
       }
 
-      state.bookings.push(booking);
+      state.bookings.unshift(booking);
       writeLocal('bookings', state.bookings);
       return booking;
     },
@@ -412,6 +719,25 @@
       writeLocal('bookings', state.bookings);
       if (state.supabase) state.supabase.from('bookings').update({ status: newStatus }).eq('id', bookingId);
       return true;
+    },
+
+    getUserById: (userId) => {
+      return state.users.find((u) => u.id === userId || u.email === userId) || null;
+    },
+
+    verifyStudent: (studentId, isVerified = true) => {
+      const user = state.users.find((u) => u.id === studentId || u.studentId === studentId || u.email === studentId);
+      if (!user) return false;
+      user.idVerified = isVerified;
+      writeLocal('users', state.users);
+      if (state.currentUser && (state.currentUser.id === user.id || state.currentUser.email === user.email)) {
+        state.currentUser.idVerified = isVerified;
+        writeLocal('currentUser', state.currentUser);
+      }
+      if (state.supabase) {
+        state.supabase.from('profiles').update({ id_verified: isVerified }).eq('id', user.id);
+      }
+      return user;
     },
 
     openAuthModal: (mode = 'signup', redirectTo = '') => {
@@ -426,24 +752,57 @@
     const user = window.Auth.getCurrentUser();
     if (!user) {
       accountActions.innerHTML = `
-        <button class="auth-chip secondary" type="button" data-auth-open="signin">Log in</button>
-        <button class="auth-chip primary" type="button" data-auth-open="signup">Sign up</button>
+        <a href="login.html?portal=renter" class="auth-btn">Student Login</a>
+        <a href="login.html?portal=owner" class="auth-btn primary" style="background:var(--teal);border-color:var(--teal);">Owner Portal</a>
       `;
     } else {
-      accountActions.className = 'account-actions' + (user.role === 'host' ? ' host-account' : '');
-      accountActions.innerHTML = `
-        <button class="icon-button" aria-label="Notifications">
-          <span class="alert-dot"></span>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8.3 12a2.6 2.6 0 0 0 4.6 0"/></svg>
-        </button>
-        <div class="profile-menu-container">
-          <button class="profile-button" aria-label="Profile menu" id="profileMenuBtn">
-            <img class="${user.role === 'host' ? 'host-avatar' : ''}" src="${user.avatarUrl}" alt="${user.name}">
-            ${user.role === 'host' ? `<div class="host-mini"><strong>${user.name}</strong><span>Host Dashboard</span></div>` : ''}
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-          </button>
-        </div>
-      `;
+      const isHost = user.role === 'host';
+
+      if (isHost) {
+        // OWNER / LANDLADY NAVIGATION
+        accountActions.innerHTML = `
+          <a href="admin.html#post" class="btn-post-nav" aria-label="Post a room">
+            <span>+</span> Post Room
+          </a>
+          <div class="profile-dropdown">
+            <button class="profile-dropdown-trigger" aria-label="Landlady menu" id="profileMenuBtn">
+              <img src="${user.avatarUrl || 'assets/avatars/ate_maria.jpg'}" alt="${user.name}">
+              <span>${user.name.split(' ')[0]} (Landlady)</span>
+            </button>
+            <div class="profile-dropdown-menu" id="profileDropdownMenu">
+              <div style="padding:8px 12px; border-bottom:1px solid var(--line); font-size:12px; color:var(--muted);">
+                <strong style="color:var(--teal-deep); display:block; font-size:13px;">${user.name}</strong>
+                <span>Boarding House Operator</span>
+              </div>
+              <a href="admin.html">Host Dashboard</a>
+              <a href="admin.html#listings">My Properties</a>
+              <a href="admin.html#reservations">Tenant Bookings</a>
+              <a href="admin.html#post">+ Post New Room</a>
+              <a href="#" id="logoutBtn" style="color:var(--clay); border-top:1px solid var(--line); margin-top:4px;">Log Out</a>
+            </div>
+          </div>
+        `;
+      } else {
+        // RENTER / STUDENT NAVIGATION (STRICTLY NO OWNER CONTROLS)
+        accountActions.innerHTML = `
+          <div class="profile-dropdown">
+            <button class="profile-dropdown-trigger" aria-label="Student menu" id="profileMenuBtn">
+              <img src="${user.avatarUrl || 'assets/avatars/sarah_student.jpg'}" alt="${user.name}">
+              <span>${user.name.split(' ')[0]}</span>
+            </button>
+            <div class="profile-dropdown-menu" id="profileDropdownMenu">
+              <div style="padding:8px 12px; border-bottom:1px solid var(--line); font-size:12px; color:var(--muted);">
+                <strong style="color:var(--teal-deep); display:block; font-size:13px;">${user.name}</strong>
+                <span>Student Tenant</span>
+              </div>
+              <a href="profile.html">My Student Profile</a>
+              <a href="profile.html?tab=trips">My Bookings</a>
+              <a href="saved-apartments.html">Saved Stays</a>
+              <a href="#" id="logoutBtn" style="color:var(--clay); border-top:1px solid var(--line); margin-top:4px;">Log Out</a>
+            </div>
+          </div>
+        `;
+      }
     }
 
     setupDropdown();
@@ -598,39 +957,24 @@
   }
 
   function setupDropdown() {
-    const container = document.querySelector('.profile-menu-container');
-    if (!container) return;
+    const btn = document.getElementById('profileMenuBtn');
+    const menu = document.getElementById('profileDropdownMenu');
+    if (!btn || !menu) return;
 
-    const user = window.Auth.getCurrentUser();
-    const dropdown = document.createElement('div');
-    dropdown.className = 'profile-dropdown';
-
-    dropdown.innerHTML = user ? `
-      <div class="dropdown-header"><strong>${user.name}</strong><span>${user.email}</span></div>
-      <a href="profile.html" class="dropdown-item">My Profile</a>
-      <a href="profile.html?tab=trips" class="dropdown-item">My Trips</a>
-      <a href="saved-apartments.html" class="dropdown-item">Saved Stays</a>
-      ${user.role === 'host' ? '<a href="admin.html" class="dropdown-item">Host Dashboard</a>' : ''}
-      <div class="dropdown-divider"></div>
-      <button class="dropdown-item logout-btn" id="logoutBtn">Log Out</button>
-    ` : `
-      <div class="dropdown-header"><strong>Welcome to Apartly</strong><span>Sign in to book amazing stays</span></div>
-      <a href="login.html" class="dropdown-item">Log In</a>
-      <a href="login.html?tab=signup" class="dropdown-item">Create Account</a>
-      <a href="saved-apartments.html" class="dropdown-item">Saved Stays</a>
-    `;
-
-    container.appendChild(dropdown);
-
-    const button = document.getElementById('profileMenuBtn');
-    button.addEventListener('click', (event) => {
+    btn.addEventListener('click', (event) => {
       event.stopPropagation();
-      dropdown.classList.toggle('is-active');
+      menu.classList.toggle('show');
     });
 
-    document.addEventListener('click', () => dropdown.classList.remove('is-active'));
+    document.addEventListener('click', () => menu.classList.remove('show'));
+
     const logoutButton = document.getElementById('logoutBtn');
-    if (logoutButton) logoutButton.addEventListener('click', () => window.Auth.logout());
+    if (logoutButton) {
+      logoutButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.Auth.logout();
+      });
+    }
   }
 
   function initHeader() {

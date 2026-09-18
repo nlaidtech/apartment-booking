@@ -3,385 +3,295 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apartly - Apartment Booking</title>
+  <title>Apartly PH — Boarding Houses, Bedspaces & Transient Rooms in the Philippines</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="supabase-config.js" defer></script>
   <script src="backend.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#" aria-label="Apartly home">
-      <span class="brand-mark">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M3 11.2 12 3l9 8.2v8.1a1.7 1.7 0 0 1-1.7 1.7h-4.1v-6.2H8.8V21H4.7A1.7 1.7 0 0 1 3 19.3v-8.1Z"/>
-        </svg>
-      </span>
-      <span>Apartly</span>
+  <!-- Top Navigation -->
+  <header class="nav">
+    <a class="brand" href="index.html" aria-label="Apartly PH Home">
+      <div class="mark">A</div>
+      <div class="word">Apartly<sup>PH</sup></div>
     </a>
 
-    <form class="search-pill" aria-label="Apartment search">
-      <label class="search-field">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/>
-        </svg>
-        <input value="Tagum City" aria-label="Location">
-      </label>
-      <label class="search-field">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M7 3v3m10-3v3M4 9h16M5.5 5.5h13A1.5 1.5 0 0 1 20 7v11.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5V7a1.5 1.5 0 0 1 1.5-1.5Z"/>
-        </svg>
-        <input value="15 Oct - 18 Oct" aria-label="Dates">
-      </label>
-      <label class="search-field">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/>
-        </svg>
-        <input value="2 guests" aria-label="Guests">
-      </label>
+    <!-- Pill Search Bar -->
+    <form class="nav-search" id="topSearchForm" aria-label="Quick boarding search">
+      <span class="search-item">
+        <span aria-hidden="true">📍</span>
+        <input type="text" id="topSearchLocation" placeholder="Location" value="Tagum City" aria-label="Location">
+      </span>
+      <div class="div"></div>
+      <span class="search-item">
+        <span aria-hidden="true">📅</span>
+        <input type="text" id="topSearchDates" placeholder="Dates" value="Oct 15–18" aria-label="Dates">
+      </span>
+      <div class="div"></div>
+      <span class="search-item">
+        <span aria-hidden="true">🧍</span>
+        <input type="text" id="topSearchGuests" placeholder="Guests" value="1 guest" aria-label="Guests">
+      </span>
+      <button type="submit" aria-label="Search">→</button>
     </form>
 
-    <div class="topbar-actions">
-      <nav class="topnav" aria-label="Primary">
-        <a href="saved-apartments.html">Saved apartments</a>
-      </nav>
-
+    <!-- Nav Right: Links & Profile -->
+    <div class="nav-right">
+      <div class="nav-links">
+        <a href="index.html" class="active">Browse Stays</a>
+        <a href="saved-apartments.html">
+          Saved
+          <span class="saved-badge" data-saved-count>0</span>
+        </a>
+      </div>
       <div class="account-actions">
-        <button class="icon-button" aria-label="Notifications">
-          <span class="alert-dot"></span>
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8.3 12a2.6 2.6 0 0 0 4.6 0"/>
-          </svg>
-        </button>
-        <button class="profile-button" aria-label="Profile menu">
-          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" alt="">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m6 9 6 6 6-6"/>
-          </svg>
-        </button>
+        <!-- Rendered dynamically by backend.js -->
       </div>
     </div>
   </header>
 
-  <main class="page-shell">
-    <section class="headline">
-      <div>
-        <h1>Modern Tagum Stay - City Center Apartment</h1>
-        <p>Tagum, Davao Region, Philippines</p>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow"><span class="dot"></span> Boarding houses across Tagum, Davao &amp; Cebu</div>
+      <h1>A place to stay while you build your life here.</h1>
+      <p>Verified bedspaces, solo rooms with private CR, and studio pads near colleges and hospitals — checked in person before they're listed.</p>
+      <div class="badges">
+        <div class="badge"><span class="ic">✓</span> Verified landladies</div>
+        <div class="badge"><span class="ic">⚡</span> Fiber WiFi + submeter</div>
+        <div class="badge"><span class="ic">🔒</span> Gated &amp; CCTV</div>
       </div>
-      <div class="rating">
-        <span>4.8</span>
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m12 3 2.75 5.57 6.15.9-4.45 4.34 1.05 6.12L12 17.04l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9L12 3Z"/>
-        </svg>
-        <span>67 Reviews</span>
+    </div>
+
+    <!-- Hero Photo Card with Authentic Boarding House Photo -->
+    <div class="hero-photo" style="background-image: url('assets/properties/ph_bunk_dorm.jpg');">
+      <div class="quote">"Found my dorm two blocks from UM in a day. My landlady still checks on me."</div>
+      <div class="caption">
+        <div class="name">Ykaie, 20</div>
+        <div class="role">Nursing student, Tagum City</div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="content-grid">
-      <div class="main-content">
-        <section class="gallery" aria-label="Apartment photos">
-          <img class="gallery-main" src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1100&q=90" alt="Bright apartment living room with city view">
-          <img src="https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?auto=format&fit=crop&w=700&q=90" alt="Modern apartment kitchen">
-          <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=700&q=90" alt="Calm bedroom with neutral bedding">
-          <img src="https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&w=700&q=90" alt="Clean bathroom with glass shower">
-          <img src="https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=700&q=90" alt="Balcony seating with city view">
-        </section>
+  <!-- University Campus Proximity Pills Bar -->
+  <div class="campus-bar-wrap">
+    <div class="campus-bar">
+      <span class="campus-label">
+        🎓 Near Campus:
+      </span>
+      <button type="button" class="campus-pill is-active" data-campus="all">All Campuses</button>
+      <button type="button" class="campus-pill" data-campus="UM Tagum">📍 UM Tagum</button>
+      <button type="button" class="campus-pill" data-campus="Davao Doctors">📍 Davao Doctors &amp; SPMC</button>
+      <button type="button" class="campus-pill" data-campus="Ateneo">📍 Ateneo de Davao</button>
+      <button type="button" class="campus-pill" data-campus="USC">📍 USC &amp; UC Cebu</button>
+    </div>
+  </div>
 
-        <section class="details-grid">
-          <article class="about">
-            <h2>About this space</h2>
-            <p>
-              Modern Tagum Stay is a bright city-center apartment with floor-to-ceiling windows,
-              a private balcony, fast WiFi, and easy access to cafes, malls, and transport.
-            </p>
-            <div class="host-row">
-              <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80" alt="">
-              <div>
-                <strong>Sarah</strong>
-                <span>4.9 &middot; 114 reviews</span>
-              </div>
-            </div>
-          </article>
+  <!-- Category Filter Pills Bar -->
+  <div class="filterbar-wrap">
+    <div class="filterbar" id="categoryBar">
+      <button type="button" class="pill active" data-category="all">🏠 All stays</button>
+      <button type="button" class="pill" data-category="Bedspace">🛏 Bedspace</button>
+      <button type="button" class="pill" data-category="Solo Room">🚪 Solo room</button>
+      <button type="button" class="pill" data-category="Studio Pad">🏢 Studio pad</button>
+      <button type="button" class="pill" data-amenity="Aircon">❄️ Aircon</button>
+      <button type="button" class="pill" data-amenity="Kitchen">🍳 Cooking allowed</button>
+      <button type="button" class="pill" data-amenity="Motor Parking">🛵 Motorcycle parking</button>
+    </div>
+  </div>
 
-          <article>
-            <h2>What this place offers</h2>
-            <div class="amenities">
-              <span><svg viewBox="0 0 24 24"><path d="M5 13a10 10 0 0 1 14 0M8.5 16.5a5 5 0 0 1 7 0M12 20h.01M2 9a15 15 0 0 1 20 0"/></svg>WiFi</span>
-              <span><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4zM8 21h8M9 11h.01M13 11h.01M17 11h.01"/></svg>AC</span>
-              <span><svg viewBox="0 0 24 24"><path d="M4 13h16M7 13v6m10-6v6M8 5h8l2 8H6l2-8Z"/></svg>Kitchen</span>
-              <span><svg viewBox="0 0 24 24"><path d="M5 12h14v7H5zM8 12V8a4 4 0 0 1 8 0v4"/></svg>Pool</span>
-              <span><svg viewBox="0 0 24 24"><path d="M4 5h16v12H4zM9 21h6"/></svg>TV</span>
-              <span><svg viewBox="0 0 24 24"><path d="M8 21V4h6a4 4 0 0 1 0 8H8"/></svg>Parking</span>
-            </div>
-
-            <h2 class="sleep-title">Where you'll sleep</h2>
-            <ul class="sleep-list">
-              <li>1 Queen bed</li>
-              <li>1 Sofa bed</li>
-            </ul>
-          </article>
-
-          <article>
-            <h2>Reviews</h2>
-            <div class="review-card">
-              <div>
-                <strong>John Doe</strong>
-                <p>Great stay!</p>
-              </div>
-              <span>5 &#9733;</span>
-            </div>
-          </article>
-        </section>
+  <!-- Refine Your Search Panel -->
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Refine your search</h3>
+        <div class="count"><span data-listing-count>6</span> stays match</div>
       </div>
 
-      <aside class="booking-panel" aria-label="Reservation summary">
-        <div class="price"><strong>$85</strong><span>/ night</span></div>
-        <div class="booking-fields" style="grid-template-columns: 1fr 1fr; gap: 8px;">
-          <label>
-            <span>Check-in</span>
-            <input type="date" id="checkinDate" value="2026-10-15" style="padding: 0 8px;">
-          </label>
-          <label>
-            <span>Check-out</span>
-            <input type="date" id="checkoutDate" value="2026-10-18" style="padding: 0 8px;">
-          </label>
-        </div>
-        <div style="margin-top: 12px; margin-bottom: 12px;">
-          <label style="display: flex; flex-direction: column; gap: 8px;">
-            <span style="font-weight: 700; font-size: 13px;">Guests</span>
-            <select id="guestCount" style="width: 100%; height: 40px; border: 1px solid var(--line); border-radius: 7px; padding: 0 12px; background: #fff;">
-              <option value="1">1 guest</option>
-              <option value="2" selected>2 guests</option>
-              <option value="3">3 guests</option>
-              <option value="4">4 guests</option>
-            </select>
-          </label>
-        </div>
-        <a class="reserve-button" href="checkout.html">Reserve</a>
-        <a class="secondary-button" href="saved-apartments.html">View saved apartments</a>
-        <dl class="price-lines">
-          <div><dt>$85 x 3 nights</dt><dd>$255</dd></div>
-          <div><dt>Cleaning fee</dt><dd>$35</dd></div>
-          <div><dt>Service fee</dt><dd>$20</dd></div>
-          <div class="total"><dt>Total (USD)</dt><dd>$310</dd></div>
-        </dl>
-        <p class="policy">Free cancellation for 48 hours. See more.</p>
-      </aside>
-
-      <section class="map-card" aria-label="Map preview showing Tagum">
-        <div class="map-river"></div>
-        <div class="map-road road-one"></div>
-        <div class="map-road road-two"></div>
-        <div class="map-road road-three"></div>
-        <span>Tagum</span>
-      </section>
-    </section>
-
-    <section class="listing-section" aria-labelledby="listingHeading">
-      <div class="listing-header">
-        <div>
-          <p class="section-kicker">Featured apartments</p>
-          <h2 id="listingHeading">Search and filter live listings</h2>
-          <p>Use the controls to narrow apartments by location, room type, price, amenities, and rating.</p>
-        </div>
-        <div class="listing-summary">
-          <strong><span data-listing-count>6</span> results</strong>
-          <span>Updated instantly as you filter</span>
-        </div>
-      </div>
-
-      <form class="listing-filters" id="listingFilters">
-        <label>
-          <span>Location</span>
-          <select name="location">
-            <option value="all">All locations</option>
-            <option value="Tagum City">Tagum City</option>
+      <form class="fields" id="listingFilters">
+        <div class="field">
+          <label for="filterLocation">Location</label>
+          <select name="location" id="filterLocation">
+            <option value="all">All Philippine Cities</option>
+            <option value="Tagum City" selected>Tagum City, Davao del Norte</option>
             <option value="Davao City">Davao City</option>
-            <option value="General Santos">General Santos</option>
             <option value="Cebu City">Cebu City</option>
           </select>
-        </label>
-        <label>
-          <span>Room type</span>
-          <select name="roomType">
-            <option value="all">Any type</option>
-            <option value="Studio">Studio</option>
-            <option value="1 Bedroom">1 Bedroom</option>
-            <option value="2 Bedroom">2 Bedroom</option>
-            <option value="Loft">Loft</option>
+        </div>
+
+        <div class="field">
+          <label for="filterRoomType">Room type</label>
+          <select name="roomType" id="filterRoomType">
+            <option value="all">All room types</option>
+            <option value="Bedspace">Bedspace (Shared / Bunk)</option>
+            <option value="Solo Room">Solo Room (Own CR)</option>
+            <option value="Studio Pad">Transient Studio Pad</option>
+            <option value="1 Bedroom">1 Bedroom Apartment Pad</option>
+            <option value="Capsule Pod">Capsule Pod</option>
           </select>
-        </label>
-        <label>
-          <span>Amenities</span>
-          <select name="amenity">
+        </div>
+
+        <div class="field">
+          <label for="filterAmenity">Inclusions</label>
+          <select name="amenity" id="filterAmenity">
             <option value="all">Any amenity</option>
-            <option value="WiFi">WiFi</option>
-            <option value="Pool">Pool</option>
-            <option value="Balcony">Balcony</option>
-            <option value="Kitchen">Kitchen</option>
-            <option value="Parking">Parking</option>
+            <option value="WiFi">Fiber WiFi</option>
+            <option value="Aircon">Air Conditioning</option>
+            <option value="Own CR">Private CR (Comfort Room)</option>
+            <option value="Mineral Water">Free Mineral Water</option>
+            <option value="CCTV">24/7 CCTV Security</option>
+            <option value="Locker">Individual Locker</option>
+            <option value="Kitchen">Cooking Allowed</option>
+            <option value="Motor Parking">Motorcycle Parking</option>
           </select>
-        </label>
-        <label>
-          <span>Minimum rating</span>
-          <select name="rating">
-            <option value="0">Any rating</option>
-            <option value="4">4.0+</option>
-            <option value="4.5">4.5+</option>
-            <option value="4.8">4.8+</option>
-          </select>
-        </label>
-        <label class="range-field">
-          <span>Price max</span>
-          <input name="price" type="range" min="60" max="150" value="150">
-          <strong data-price-value>$150 max</strong>
-        </label>
+        </div>
+
+        <div class="field">
+          <label for="filterPrice">Nightly rate</label>
+          <div class="price-box">
+            <input type="range" name="price" id="filterPrice" min="300" max="1000" step="50" value="1000">
+            <div class="price-val" data-price-value>Up to ₱1,000</div>
+          </div>
+        </div>
       </form>
+    </div>
+  </div>
 
-      <div class="listing-grid" aria-live="polite">
-        <article class="listing-card" data-listing-card data-location="Tagum City" data-room-type="1 Bedroom" data-amenities="WiFi,Balcony,Kitchen" data-rating="4.8" data-price="85">
-          <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1100&q=90" alt="Bright apartment living room with city view">
-          <div class="listing-card-body">
-            <div class="listing-card-top">
-              <div>
-                <h3>Modern Tagum Stay</h3>
-                <p>Tagum City</p>
-              </div>
-              <strong>$85</strong>
-            </div>
-            <div class="listing-meta">
-              <span>1 Bedroom</span>
-              <span>4.8 rating</span>
-            </div>
-            <div class="listing-tags">
-              <span>WiFi</span>
-              <span>Balcony</span>
-              <span>Kitchen</span>
-            </div>
-            <a class="listing-button" href="index.html">View details</a>
-          </div>
-        </article>
-
-        <article class="listing-card" data-listing-card data-location="Davao City" data-room-type="Studio" data-amenities="WiFi,Pool,Parking" data-rating="4.7" data-price="72">
-          <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1100&q=90" alt="Modern apartment bedroom with natural light">
-          <div class="listing-card-body">
-            <div class="listing-card-top">
-              <div>
-                <h3>Riverfront Studio</h3>
-                <p>Davao City</p>
-              </div>
-              <strong>$72</strong>
-            </div>
-            <div class="listing-meta">
-              <span>Studio</span>
-              <span>4.7 rating</span>
-            </div>
-            <div class="listing-tags">
-              <span>WiFi</span>
-              <span>Pool</span>
-              <span>Parking</span>
-            </div>
-            <a class="listing-button" href="checkout.html">Book now</a>
-          </div>
-        </article>
-
-        <article class="listing-card" data-listing-card data-location="General Santos" data-room-type="Loft" data-amenities="WiFi,Skyline View,Kitchen" data-rating="4.9" data-price="95">
-          <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1100&q=90" alt="Stylish loft apartment with warm lighting">
-          <div class="listing-card-body">
-            <div class="listing-card-top">
-              <div>
-                <h3>City Lights Loft</h3>
-                <p>General Santos</p>
-              </div>
-              <strong>$95</strong>
-            </div>
-            <div class="listing-meta">
-              <span>Loft</span>
-              <span>4.9 rating</span>
-            </div>
-            <div class="listing-tags">
-              <span>WiFi</span>
-              <span>Kitchen</span>
-              <span>Skyline View</span>
-            </div>
-            <a class="listing-button" href="saved-apartments.html">Save listing</a>
-          </div>
-        </article>
-
-        <article class="listing-card" data-listing-card data-location="Tagum City" data-room-type="2 Bedroom" data-amenities="WiFi,Pool,Kitchen" data-rating="4.6" data-price="120">
-          <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1100&q=90" alt="Contemporary apartment lounge with large windows">
-          <div class="listing-card-body">
-            <div class="listing-card-top">
-              <div>
-                <h3>Sunset Family Flat</h3>
-                <p>Tagum City</p>
-              </div>
-              <strong>$120</strong>
-            </div>
-            <div class="listing-meta">
-              <span>2 Bedroom</span>
-              <span>4.6 rating</span>
-            </div>
-            <div class="listing-tags">
-              <span>WiFi</span>
-              <span>Pool</span>
-              <span>Kitchen</span>
-            </div>
-            <a class="listing-button" href="checkout.html">Reserve</a>
-          </div>
-        </article>
-
-        <article class="listing-card" data-listing-card data-location="Cebu City" data-room-type="Studio" data-amenities="WiFi,Balcony,Parking" data-rating="4.4" data-price="68">
-          <img src="https://images.unsplash.com/photo-1502005097973-6a7082348e28?auto=format&fit=crop&w=1100&q=90" alt="Compact studio apartment with modern design">
-          <div class="listing-card-body">
-            <div class="listing-card-top">
-              <div>
-                <h3>Harbor Studio</h3>
-                <p>Cebu City</p>
-              </div>
-              <strong>$68</strong>
-            </div>
-            <div class="listing-meta">
-              <span>Studio</span>
-              <span>4.4 rating</span>
-            </div>
-            <div class="listing-tags">
-              <span>WiFi</span>
-              <span>Balcony</span>
-              <span>Parking</span>
-            </div>
-            <a class="listing-button" href="index.html">View details</a>
-          </div>
-        </article>
-
-        <article class="listing-card" data-listing-card data-location="Davao City" data-room-type="1 Bedroom" data-amenities="WiFi,Pool,Balcony" data-rating="4.5" data-price="140">
-          <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1100&q=90" alt="Luxury apartment interior with designer furniture">
-          <div class="listing-card-body">
-            <div class="listing-card-top">
-              <div>
-                <h3>Executive Haven</h3>
-                <p>Davao City</p>
-              </div>
-              <strong>$140</strong>
-            </div>
-            <div class="listing-meta">
-              <span>1 Bedroom</span>
-              <span>4.5 rating</span>
-            </div>
-            <div class="listing-tags">
-              <span>WiFi</span>
-              <span>Pool</span>
-              <span>Balcony</span>
-            </div>
-            <a class="listing-button" href="checkout.html">Book now</a>
-          </div>
-        </article>
-      </div>
-    </section>
+  <!-- Boarding House Listings Catalog -->
+  <main class="catalog-wrap">
+    <div class="listings-grid" id="listingsGrid" aria-live="polite">
+      <!-- Populated dynamically by app.js -->
+    </div>
   </main>
+
+  <!-- Quick-View Property Modal -->
+  <div class="modal-backdrop" id="propertyModalBackdrop" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close details">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+
+      <img id="modalImg" class="modal-hero-img" src="assets/properties/ph_bunk_dorm.jpg" alt="Boarding House Room Photo">
+
+      <div class="modal-content">
+        <div class="modal-header-section">
+          <div>
+            <h2 class="modal-title" id="modalTitle">Mankilam Student Pad &amp; Bedspace</h2>
+            <div class="modal-meta-row">
+              <span id="modalLocation">Tagum City, Davao del Norte</span>
+              <span>&bull;</span>
+              <span id="modalRoomType">Bedspace</span>
+              <span>&bull;</span>
+              <strong id="modalRating" style="color: var(--gold);">⭐ 4.9 (42 reviews)</strong>
+            </div>
+            <div id="modalCampusRow" style="margin-top: 6px; font-size: 13px; color: var(--teal-deep); font-weight: 600;">
+              🎓 <span id="modalCampusText">UM Tagum (3 min walk)</span>
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 24px; font-weight: 700; color: var(--teal-deep);" id="modalPrice">₱350</div>
+            <span style="font-size: 13px; color: var(--muted);">per night</span>
+          </div>
+        </div>
+
+        <!-- Landlady / Host Card -->
+        <div class="modal-host-card">
+          <img id="modalHostAvatar" src="assets/avatars/ate_maria.jpg" alt="Landlady" class="modal-host-avatar">
+          <div class="modal-host-info">
+            <strong id="modalHostName">Ate Maria (Landlady)</strong>
+            <span id="modalHostBio">Verified Boarding House Operator &bull; 8+ yrs in Tagum City</span>
+          </div>
+        </div>
+
+        <h3 class="modal-section-title">About this Boarding House</h3>
+        <p class="modal-desc" id="modalDesc">
+          Walking distance to University of Mindanao (UM) Tagum Campus. Solid mahogany bunk beds with privacy curtains, student lockers, study nook, 100 Mbps fiber WiFi, and free purified drinking water.
+        </p>
+
+        <h3 class="modal-section-title">Inclusions &amp; Amenities</h3>
+        <div class="modal-amenities-grid" id="modalAmenitiesList">
+          <!-- Injected via JavaScript -->
+        </div>
+
+        <!-- House Rules in Philippine Context -->
+        <div class="modal-rules-box">
+          <h4>House Rules &amp; Compound Guidelines:</h4>
+          <ul>
+            <li><strong>Curfew:</strong> <span id="modalCurfewText">10:00 PM Gate Curfew</span></li>
+            <li><strong>Utilities:</strong> <span id="modalUtilitiesText">Submetered electric (₱15/kWh) · Free purified water</span></li>
+            <li><strong>Security:</strong> Gated compound with CCTV · Visitor sign-in logbook.</li>
+            <li><strong>Requirements:</strong> Valid Student ID / School COR required upon check-in.</li>
+          </ul>
+        </div>
+
+        <!-- Interactive Reservation Box -->
+        <div class="modal-booking-box">
+          <div class="modal-booking-dates">
+            <div class="modal-date-field">
+              <label for="modalCheckin">Move-in / Check-in</label>
+              <input type="date" id="modalCheckin" value="2026-10-15">
+            </div>
+            <div class="modal-date-field">
+              <label for="modalCheckout">Check-out</label>
+              <input type="date" id="modalCheckout" value="2026-10-18">
+            </div>
+          </div>
+
+          <div class="modal-price-calc">
+            <span id="modalNightsBreakdown">₱350 x 3 nights</span>
+            <span id="modalTotalPrice">Total: ₱1,150</span>
+          </div>
+
+          <button type="button" class="modal-reserve-cta" id="modalReserveBtn">Proceed to Reserve Stay</button>
+        </div>
+
+        <!-- Student Inquiry with Landlady Section -->
+        <div class="modal-inquiry-box">
+          <button type="button" class="inquiry-toggle-btn" id="toggleInquiryBtn">
+            <span>💬</span> Inquire / Chat with Landlady Before Booking
+          </button>
+          <div class="inquiry-form-card" id="inquiryFormBox" style="display:none;">
+            <p style="font-size:12px; color:var(--muted); margin:0 0 10px;">
+              Ask questions about curfews, appliances, submeters, or send photo attachments (proof of reservation, ID, etc.) directly to the landlady.
+            </p>
+
+            <div class="chat-messages-feed" id="modalChatFeed" style="max-height: 200px; margin-bottom: 10px; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 8px 10px;">
+              <!-- Dynamic Chat Messages rendered here -->
+            </div>
+
+            <div id="modalChatPhotoPreview" class="chat-pending-preview" style="display:none; margin-bottom:8px;">
+              <img id="modalChatPhotoImg" src="" alt="Preview">
+              <span id="modalChatPhotoName">Photo attached</span>
+              <button type="button" class="chat-remove-photo-btn" id="modalChatPhotoRemove" title="Remove attachment">&times;</button>
+            </div>
+
+            <div class="chat-input-bar">
+              <label for="modalChatFileInput" class="chat-attach-btn" title="Attach picture (Room / ID / Payment slip)">
+                📷
+                <input type="file" id="modalChatFileInput" accept="image/*" style="display:none;">
+              </label>
+              <input type="text" id="modalChatTextInput" class="chat-input-field" placeholder="Ask about rules, aircon, or attach proof...">
+              <button type="button" class="chat-send-btn" id="modalChatSendBtn">Send</button>
+            </div>
+
+            <div style="display:none;">
+              <textarea id="modalInquiryText"></textarea>
+              <button type="button" id="sendInquiryBtn"></button>
+              <div id="inquiryChatHistory"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Floating Toast Notifications -->
+  <div class="toast-container" id="toastContainer"></div>
 </body>
 </html>

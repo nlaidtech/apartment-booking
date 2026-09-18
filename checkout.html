@@ -3,341 +3,204 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apartly - Checkout</title>
+  <title>Apartly PH — Reserve Your Stay</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="supabase-config.js" defer></script>
   <script src="backend.js" defer></script>
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="index.html" aria-label="Apartly home">
-      <span class="brand-mark">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M3 11.2 12 3l9 8.2v8.1a1.7 1.7 0 0 1-1.7 1.7h-4.1v-6.2H8.8V21H4.7A1.7 1.7 0 0 1 3 19.3v-8.1Z"/>
-        </svg>
-      </span>
-      <span>Apartly</span>
+  <!-- Standard Nav -->
+  <header class="nav">
+    <a class="brand" href="index.html" aria-label="Apartly PH Home">
+      <div class="mark">A</div>
+      <div class="word">Apartly<sup>PH</sup></div>
     </a>
-
-    <form class="search-pill" aria-label="Apartment search">
-      <label class="search-field">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/>
-        </svg>
-        <input value="Tagum City" aria-label="Location">
-      </label>
-      <label class="search-field">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M7 3v3m10-3v3M4 9h16M5.5 5.5h13A1.5 1.5 0 0 1 20 7v11.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5V7a1.5 1.5 0 0 1 1.5-1.5Z"/>
-        </svg>
-        <input value="15 Oct - 18 Oct" aria-label="Dates">
-      </label>
-      <label class="search-field">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/>
-        </svg>
-        <input value="2 guests" aria-label="Guests">
-      </label>
-    </form>
-
-    <div class="topbar-actions">
-      <nav class="topnav" aria-label="Primary">
-        <a href="saved-apartments.html">Saved apartments</a>
-      </nav>
-
-      <div class="account-actions host-account">
-        <button class="icon-button" aria-label="Notifications">
-          <span class="alert-dot"></span>
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8.3 12a2.6 2.6 0 0 0 4.6 0"/>
-          </svg>
-        </button>
-        <img class="host-avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80" alt="">
-        <div class="host-mini">
-          <strong>Sarah</strong>
-          <span>4.9 &middot; 114 reviews</span>
-        </div>
+    <div class="nav-right">
+      <div class="nav-links">
+        <a href="index.html">← Back to Listings</a>
+        <a href="saved-apartments.html">Saved</a>
       </div>
+      <div class="account-actions"></div>
     </div>
   </header>
 
-  <main class="checkout-shell">
-    <div class="checkout-heading">
-      <div>
-        <nav class="breadcrumbs" aria-label="Booking steps">
-          <span>Listing Details</span>
-          <span>Guest Info</span>
-          <span>Cancellation Policy</span>
-          <span>Payment</span>
-        </nav>
-        <h1>Guest Info &amp; Cancellation &amp; Payment</h1>
+  <div class="page-shell">
+    <h1>Reserve Your Boarding Stay</h1>
+    <p class="page-subtitle">Complete your tenant details to secure this room with the landlady.</p>
+
+    <!-- Booking Summary Card -->
+    <div class="form-card" id="bookingSummaryCard">
+      <h2>Stay Summary</h2>
+      <div id="summaryContent">
+        <div class="summary-row">
+          <span>Property</span>
+          <strong id="summaryProperty">—</strong>
+        </div>
+        <div class="summary-row">
+          <span>Check-in (Move-in)</span>
+          <span id="summaryCheckin">—</span>
+        </div>
+        <div class="summary-row">
+          <span>Check-out</span>
+          <span id="summaryCheckout">—</span>
+        </div>
+        <div class="summary-row">
+          <span>Duration</span>
+          <span id="summaryNights">—</span>
+        </div>
+        <div class="summary-row">
+          <span>Nightly rate</span>
+          <span id="summaryRate">—</span>
+        </div>
+        <div class="summary-row">
+          <span>Maintenance &amp; Admin fee</span>
+          <span>₱100</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total</span>
+          <span id="summaryTotal">—</span>
+        </div>
       </div>
-      <a class="back-button" href="index.html">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M19 12H5m6-6-6 6 6 6"/>
-        </svg>
-        Back
-      </a>
     </div>
 
-    <div class="checkout-grid">
-      <form class="checkout-form">
-        <section class="checkout-section">
-          <h2>Your Stay Details</h2>
-          <div class="stay-card">
-            <div>
-              <strong>Modern Tagum Stay - City Center Apartment</strong>
-              <div class="stay-meta">
-                <span>
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v3m10-3v3M4 9h16M5.5 5.5h13A1.5 1.5 0 0 1 20 7v11.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5V7a1.5 1.5 0 0 1 1.5-1.5Z"/></svg>
-                  15 Oct - 18 Oct
-                </span>
-                <span>
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
-                  Guests: 2
-                </span>
-              </div>
-              <label class="check-row">
-                <input type="checkbox" checked>
-                <span>Details confirmed</span>
-              </label>
-            </div>
-            <dl class="stay-prices">
-              <div><dt>$85 / night x 3</dt><dd>$255</dd></div>
-              <div><dt>Cleaning fee</dt><dd>$35</dd></div>
-              <div><dt>Service fee</dt><dd>$20</dd></div>
-              <div><dt>Total (USD)</dt><dd>$310</dd></div>
-            </dl>
+    <!-- Tenant Details Form -->
+    <div class="form-card">
+      <h2>Tenant Details</h2>
+      <form id="checkoutForm">
+        <div class="form-row">
+          <div class="form-field">
+            <label for="tenantName">Full Legal Name</label>
+            <input type="text" id="tenantName" placeholder="Juan Dela Cruz" required>
           </div>
-        </section>
-
-        <section class="checkout-section">
-          <h2>2. Guest Information</h2>
-          <div class="guest-fields">
-            <label><span>Full Name</span><input id="guestName" placeholder="[Full Name]"></label>
-            <label><span>Email Address</span><input id="guestEmail" placeholder="[Email Address]" type="email"></label>
-            <label><span>Phone Number</span><input id="guestPhone" placeholder="[Phone Number]" type="tel"></label>
-            <label>
-              <span>Gender</span>
-              <select id="guestGender">
-                <option value="Prefer not to say">Gender</option>
-                <option value="Female">Female</option>
-                <option value="Male">Male</option>
-                <option value="Prefer not to say">Prefer not to say</option>
-              </select>
-            </label>
+          <div class="form-field">
+            <label for="tenantPhone">Mobile Number (Active PH SIM)</label>
+            <input type="tel" id="tenantPhone" placeholder="+63 917 123 4567" required>
           </div>
-        </section>
-
-        <section class="checkout-section">
-          <h2>3. Cancellation Policy</h2>
-          <div class="policy-box">
-            <p><strong>Free cancellation before Oct 10th.</strong> For a full refund of the nightly rate, the cancellation must be made before 12:00 PM local time on Oct 10th. After that, a 50% refund is issued. Fees are non-refundable.</p>
-            <label class="check-row">
-              <input type="checkbox" id="policyCheckbox">
-              <span>I understand and agree to the cancellation policy.</span>
-            </label>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="tenantEmail">Email Address</label>
+            <input type="email" id="tenantEmail" placeholder="juan@email.com" required>
           </div>
-        </section>
-
-        <section class="checkout-section">
-          <h2>4. Payment</h2>
-          <div class="payment-grid">
-            <fieldset class="payment-methods">
-              <legend>Payment Method</legend>
-              <label><input type="radio" name="payment" checked><span class="card-icon"></span>Credit/Debit Card</label>
-              <label><input type="radio" name="payment"><strong class="paypal-mark">P</strong>PayPal</label>
-              <label><input type="radio" name="payment"><span class="bank-icon"></span>Bank Transfer</label>
-            </fieldset>
-
-            <fieldset class="card-details">
-              <legend>Card Details</legend>
-              <input placeholder="[Card Number]">
-              <div>
-                <input placeholder="[Expiry MM/YY]">
-                <input placeholder="[CVV]">
-              </div>
-              <input placeholder="[Cardholder Name]">
-            </fieldset>
-
-            <div class="additional-details">
-              <h3>Additional</h3>
-              <label class="check-row">
-                <input type="checkbox">
-                <span>Save card details for future use.</span>
-              </label>
-              <p class="security-note">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3M6 11h12v10H6z"/></svg>
-                Data security keeps your payment information private. Learn more.
-              </p>
-              <label class="notes-field">
-                <span>Notes</span>
-                <textarea placeholder="Special Requests (Optional)"></textarea>
-              </label>
-            </div>
+          <div class="form-field">
+            <label for="tenantGender">Gender</label>
+            <select id="tenantGender">
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+              <option value="Other">Prefer not to say</option>
+            </select>
           </div>
-        </section>
+        </div>
+        <div class="form-row full">
+          <div class="form-field">
+            <label for="tenantNotes">Notes / Special Requests for the Landlady (optional)</label>
+            <textarea id="tenantNotes" placeholder="E.g., Reviewee studying for November nursing boards; bringing 1 laptop and small electric kettle."></textarea>
+          </div>
+        </div>
       </form>
-
-      <aside class="confirm-card" aria-label="Confirm stay">
-        <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=700&q=90" alt="Apartment living room">
-        <h2>Confirm Stay</h2>
-        <dl class="confirm-lines">
-          <div><dt>Dates:</dt><dd>15 Oct - 18 Oct</dd></div>
-          <div><dt>Guests:</dt><dd>2</dd></div>
-          <div class="summary-label"><dt>Price Summary</dt><dd></dd></div>
-          <div class="total"><dt>Total (USD)</dt><dd>$310</dd></div>
-        </dl>
-        <a class="confirm-button requires-auth" id="confirmReservationBtn" href="#">Confirm Reservation</a>
-        <p>By clicking you agree to the <a href="#">Terms of Service.</a></p>
-      </aside>
     </div>
-  </main>
+
+    <!-- Payment Options Card -->
+    <div class="form-card">
+      <h2>Payment Option</h2>
+      <div class="payment-options">
+        <label class="payment-option">
+          <input type="radio" name="paymentMethod" value="gcash" checked>
+          <span>📱 GCash (Direct to Landlady / Escrow)</span>
+        </label>
+        <label class="payment-option">
+          <input type="radio" name="paymentMethod" value="maya">
+          <span>💳 Maya / Online Banking</span>
+        </label>
+        <label class="payment-option">
+          <input type="radio" name="paymentMethod" value="cash">
+          <span>💵 Cash on Check-in (Show Student/Gov ID)</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <button class="btn-primary" id="confirmBookingBtn" type="button">
+      Confirm Reservation
+    </button>
+  </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       if (!window.Auth) return;
       await window.Auth.ready;
 
-      const user = window.Auth.getCurrentUser();
-      const pendingBooking = JSON.parse(localStorage.getItem('pendingBooking'));
-
-      if (!user) {
-        window.location.href = 'index.html?auth=signup&next=checkout.html';
+      const pending = JSON.parse(localStorage.getItem('pendingBooking'));
+      if (!pending) {
+        document.querySelector('.page-shell').innerHTML = `
+          <div class="empty-state">
+            <h3>No booking in progress</h3>
+            <p>Please browse listings and choose a stay first.</p>
+            <a href="index.html" class="btn-primary" style="width:auto;margin-top:14px;padding:10px 24px;">Browse Stays</a>
+          </div>`;
         return;
       }
 
-      // If no pending booking, redirect to home page
-      if (!pendingBooking) {
-        alert('No active reservation session found. Redirecting to homepage.');
-        window.location.href = 'index.html';
-        return;
-      }
-
-      // Pre-fill user profile fields if logged in
-      if (user) {
-        document.getElementById('guestName').value = user.name || '';
-        document.getElementById('guestEmail').value = user.email || '';
-        document.getElementById('guestPhone').value = user.phone || '';
-        document.getElementById('guestGender').value = user.gender || 'Prefer not to say';
-      }
-
-      // Populate stay details card dynamically
+      // Fill summary
       const listings = window.Auth.getListings();
-      const listing = listings.find(l => l.id === pendingBooking.listingId) || listings[0];
-      
-      const stayCard = document.querySelector('.stay-card');
-      if (stayCard) {
-        stayCard.innerHTML = `
-          <div>
-            <strong>${listing.name} - City Center Apartment</strong>
-            <div class="stay-meta">
-              <span>
-                <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 18px; stroke-width: 2; display: inline-block; vertical-align: middle;"><path d="M7 3v3m10-3v3M4 9h16M5.5 5.5h13A1.5 1.5 0 0 1 20 7v11.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5V7a1.5 1.5 0 0 1 1.5-1.5Z"/></svg>
-                ${pendingBooking.checkIn} - ${pendingBooking.checkOut}
-              </span>
-              <span>
-                <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 18px; stroke-width: 2; display: inline-block; vertical-align: middle;"><path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
-                Guests: ${pendingBooking.guests}
-              </span>
-            </div>
-            <label class="check-row">
-              <input type="checkbox" checked>
-              <span>Details confirmed</span>
-            </label>
-          </div>
-          <dl class="stay-prices">
-            <div><dt>$${pendingBooking.pricePerNight} / night x ${pendingBooking.nights}</dt><dd>$${pendingBooking.pricePerNight * pendingBooking.nights}</dd></div>
-            <div><dt>Cleaning fee</dt><dd>$35</dd></div>
-            <div><dt>Service fee</dt><dd>$20</dd></div>
-            <div><dt>Total (USD)</dt><dd>$${pendingBooking.totalPrice}</dd></div>
-          </dl>
-        `;
+      const listing = listings.find(l => l.id === pending.listingId);
+      const propName = listing ? listing.name : 'Boarding Stay';
+
+      document.getElementById('summaryProperty').textContent = propName;
+      document.getElementById('summaryCheckin').textContent = pending.checkIn;
+      document.getElementById('summaryCheckout').textContent = pending.checkOut;
+      document.getElementById('summaryNights').textContent = `${pending.nights} night${pending.nights > 1 ? 's' : ''}`;
+      document.getElementById('summaryRate').textContent = `₱${pending.pricePerNight.toLocaleString()}`;
+      document.getElementById('summaryTotal').textContent = `₱${pending.totalPrice.toLocaleString()}`;
+
+      // Pre-fill user
+      const user = window.Auth.getCurrentUser();
+      if (user) {
+        document.getElementById('tenantName').value = user.name || '';
+        document.getElementById('tenantEmail').value = user.email || '';
+        document.getElementById('tenantPhone').value = user.phone || '';
+        if (user.gender) document.getElementById('tenantGender').value = user.gender;
       }
 
-      // Populate right-side summary card
-      const confirmCard = document.querySelector('.confirm-card');
-      if (confirmCard) {
-        confirmCard.innerHTML = `
-          <img src="${listing.imageUrl}" alt="${listing.name}">
-          <h2>Confirm Stay</h2>
-          <dl class="confirm-lines">
-            <div><dt>Dates:</dt><dd>${pendingBooking.checkIn} - ${pendingBooking.checkOut}</dd></div>
-            <div><dt>Guests:</dt><dd>${pendingBooking.guests}</dd></div>
-            <div class="summary-label"><dt>Price Summary</dt><dd></dd></div>
-            <div class="total"><dt>Total (USD)</dt><dd>$${pendingBooking.totalPrice}</dd></div>
-          </dl>
-          <a class="confirm-button" id="confirmReservationBtn" href="#" style="
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            min-height: 48px;
-            margin: 18px 0 10px;
-            color: #fff;
-            background: var(--blue);
-            border: 0;
-            border-radius: 7px;
-            font-size: 18px;
-            font-weight: 700;
-            text-align: center;
-            text-decoration: none;
-            cursor: pointer;
-            box-shadow: 0 10px 18px rgba(7, 91, 216, 0.22);
-          ">Confirm Reservation</a>
-          <p>By clicking you agree to the <a href="#">Terms of Service.</a></p>
-        `;
-      }
+      // Confirm booking
+      document.getElementById('confirmBookingBtn').addEventListener('click', () => {
+        const name = document.getElementById('tenantName').value.trim();
+        const email = document.getElementById('tenantEmail').value.trim();
+        const phone = document.getElementById('tenantPhone').value.trim();
 
-      // Handle Confirm Reservation click
-      const confirmBtn = document.getElementById('confirmReservationBtn');
-      confirmBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-
-        const nameInput = document.getElementById('guestName').value.trim();
-        const emailInput = document.getElementById('guestEmail').value.trim();
-        const phoneInput = document.getElementById('guestPhone').value.trim();
-        const genderInput = document.getElementById('guestGender').value;
-        const policyCheckbox = document.getElementById('policyCheckbox');
-
-        if (!nameInput || !emailInput || !phoneInput) {
-          alert('Please fill in your Full Name, Email, and Phone Number.');
+        if (!name || !email || !phone) {
+          alert('Please enter your full name, email, and phone number.');
           return;
         }
 
-        if (!policyCheckbox.checked) {
-          alert('Please agree to the Cancellation Policy.');
-          return;
-        }
+        const bookingId = 'PH-BK' + Math.floor(1000 + Math.random() * 9000);
+        const booking = {
+          id: bookingId,
+          listingId: pending.listingId,
+          guestId: user ? user.id : 'guest-anon',
+          propertyName: propName,
+          guestName: name,
+          guestEmail: email,
+          guestPhone: phone,
+          guestGender: document.getElementById('tenantGender').value,
+          checkIn: pending.checkIn,
+          checkOut: pending.checkOut,
+          guests: pending.guests || 1,
+          pricePerNight: pending.pricePerNight,
+          nights: pending.nights,
+          totalPrice: pending.totalPrice,
+          status: 'Confirmed',
+          dateBooked: new Date().toISOString().slice(0, 10),
+          notes: document.getElementById('tenantNotes').value.trim(),
+          paymentMethod: document.querySelector('input[name=paymentMethod]:checked').value
+        };
 
-        // Add reservation booking
-        const newBooking = await window.Auth.addBooking({
-          listingId: pendingBooking.listingId,
-          propertyName: listing.name,
-          guestName: nameInput,
-          guestEmail: emailInput,
-          guestPhone: phoneInput,
-          guestGender: genderInput,
-          checkIn: pendingBooking.checkIn,
-          checkOut: pendingBooking.checkOut,
-          guests: pendingBooking.guests,
-          pricePerNight: pendingBooking.pricePerNight,
-          nights: pendingBooking.nights,
-          totalPrice: pendingBooking.totalPrice,
-          notes: document.querySelector('.notes-field textarea').value.trim()
-        });
-
-        // Store last booking ID in localStorage for confirmation screen rendering
-        localStorage.setItem('lastBookingId', newBooking.id);
-        
-        // Remove pendingBooking
+        window.Auth.addBooking(booking);
         localStorage.removeItem('pendingBooking');
-
-        // Redirect to confirmation page
-        window.location.href = 'confirmation.html?bookingId=' + newBooking.id;
+        window.location.href = `confirmation.html?bookingId=${bookingId}`;
       });
     });
   </script>

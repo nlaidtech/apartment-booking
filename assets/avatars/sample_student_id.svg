@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" width="600" height="380">
+  <defs>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#123C3D"/>
+      <stop offset="100%" stop-color="#0B2C2D"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#E8A33D"/>
+      <stop offset="100%" stop-color="#F4C272"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Card Background -->
+  <rect x="0" y="0" width="600" height="380" rx="16" fill="#F7F3EC" stroke="#E4DDCE" stroke-width="2"/>
+
+  <!-- Top Institutional Bar -->
+  <path d="M0 16 C0 7.16 7.16 0 16 0 L584 0 C592.84 0 600 7.16 600 16 L600 74 L0 74 Z" fill="url(#cardGrad)"/>
+  <rect x="0" y="74" width="600" height="6" fill="url(#goldGrad)"/>
+
+  <!-- University Emblem Icon -->
+  <circle cx="48" cy="37" r="22" fill="#E8A33D"/>
+  <text x="48" y="44" font-family="'Lora', serif" font-size="20" font-weight="bold" fill="#123C3D" text-anchor="middle">UM</text>
+
+  <!-- University Header -->
+  <text x="82" y="32" font-family="'Lora', serif" font-size="16" font-weight="bold" fill="#FFFFFF" letter-spacing="0.5">UNIVERSITY OF MINDANAO</text>
+  <text x="82" y="52" font-family="'Inter', sans-serif" font-size="11" font-weight="500" fill="#E8A33D" letter-spacing="1">TAGUM CAMPUS · COLLEGE OF NURSING EDUCATION</text>
+
+  <!-- Card Title Badge -->
+  <rect x="440" y="24" width="138" height="26" rx="4" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+  <text x="509" y="41" font-family="'Inter', sans-serif" font-size="10.5" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.8">STUDENT IDENTIFICATION</text>
+
+  <!-- Photo Box -->
+  <rect x="36" y="104" width="130" height="150" rx="8" fill="#EDE8DF" stroke="#123C3D" stroke-width="2"/>
+  <!-- Silhouette / Photo Placeholder -->
+  <circle cx="101" cy="154" r="32" fill="#123C3D" opacity="0.85"/>
+  <path d="M56 244 C56 204, 146 204, 146 244 Z" fill="#123C3D" opacity="0.85"/>
+  <rect x="42" y="260" width="118" height="20" rx="4" fill="#123C3D"/>
+  <text x="101" y="274" font-family="'Inter', sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF" text-anchor="middle">OFFICIAL STUDENT ID</text>
+
+  <!-- Student Info Details -->
+  <text x="188" y="128" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#706B63" letter-spacing="0.5">STUDENT FULL NAME</text>
+  <text x="188" y="152" font-family="'Lora', serif" font-size="20" font-weight="700" fill="#123C3D">SARAH M. DELA CRUZ</text>
+
+  <text x="188" y="184" font-family="'Inter', sans-serif" font-size="10.5" font-weight="600" fill="#706B63">DEGREE PROGRAM</text>
+  <text x="188" y="204" font-family="'Inter', sans-serif" font-size="13" font-weight="600" fill="#1F2421">Bachelor of Science in Nursing (BSN)</text>
+
+  <text x="188" y="234" font-family="'Inter', sans-serif" font-size="10.5" font-weight="600" fill="#706B63">STUDENT NUMBER</text>
+  <text x="188" y="254" font-family="'Inter', monospace" font-size="14" font-weight="700" fill="#C1502E">UM-2022-08941</text>
+
+  <text x="370" y="234" font-family="'Inter', sans-serif" font-size="10.5" font-weight="600" fill="#706B63">ACADEMIC YEAR</text>
+  <text x="370" y="254" font-family="'Inter', sans-serif" font-size="13" font-weight="700" fill="#123C3D">S.Y. 2026 – 2027 (4th Year)</text>
+
+  <!-- Bottom Divider & Verification Seal -->
+  <line x1="36" y1="295" x2="564" y2="295" stroke="#E4DDCE" stroke-width="1.5"/>
+
+  <!-- Barcode Representation -->
+  <g transform="translate(36, 312)">
+    <rect x="0" y="0" width="3" height="34" fill="#1F2421"/>
+    <rect x="5" y="0" width="2" height="34" fill="#1F2421"/>
+    <rect x="9" y="0" width="4" height="34" fill="#1F2421"/>
+    <rect x="16" y="0" width="2" height="34" fill="#1F2421"/>
+    <rect x="20" y="0" width="5" height="34" fill="#1F2421"/>
+    <rect x="28" y="0" width="2" height="34" fill="#1F2421"/>
+    <rect x="33" y="0" width="3" height="34" fill="#1F2421"/>
+    <rect x="38" y="0" width="6" height="34" fill="#1F2421"/>
+    <rect x="47" y="0" width="2" height="34" fill="#1F2421"/>
+    <rect x="51" y="0" width="4" height="34" fill="#1F2421"/>
+    <rect x="58" y="0" width="2" height="34" fill="#1F2421"/>
+    <rect x="63" y="0" width="5" height="34" fill="#1F2421"/>
+    <rect x="71" y="0" width="3" height="34" fill="#1F2421"/>
+    <rect x="76" y="0" width="2" height="34" fill="#1F2421"/>
+    <rect x="80" y="0" width="4" height="34" fill="#1F2421"/>
+    <rect x="87" y="0" width="2" height="34" fill="#1F2421"/>
+    <rect x="91" y="0" width="6" height="34" fill="#1F2421"/>
+    <rect x="100" y="0" width="3" height="34" fill="#1F2421"/>
+    <rect x="105" y="0" width="2" height="34" fill="#1F2421"/>
+    <rect x="110" y="0" width="5" height="34" fill="#1F2421"/>
+    <rect x="118" y="0" width="2" height="34" fill="#1F2421"/>
+    <rect x="122" y="0" width="4" height="34" fill="#1F2421"/>
+    <rect x="128" y="0" width="3" height="34" fill="#1F2421"/>
+    <rect x="134" y="0" width="2" height="34" fill="#1F2421"/>
+    <rect x="138" y="0" width="5" height="34" fill="#1F2421"/>
+    <rect x="146" y="0" width="3" height="34" fill="#1F2421"/>
+    <rect x="151" y="0" width="2" height="34" fill="#1F2421"/>
+    <text x="0" y="48" font-family="'Inter', monospace" font-size="10" fill="#706B63">*UM202208941NURS*</text>
+  </g>
+
+  <!-- Philippine CHED / Registrar Seal -->
+  <g transform="translate(470, 310)">
+    <circle cx="45" cy="22" r="22" fill="none" stroke="#C1502E" stroke-width="1.5" stroke-dasharray="3 2"/>
+    <circle cx="45" cy="22" r="18" fill="none" stroke="#C1502E" stroke-width="1"/>
+    <text x="45" y="19" font-family="'Inter', sans-serif" font-size="7.5" font-weight="bold" fill="#C1502E" text-anchor="middle">VALIDATED</text>
+    <text x="45" y="28" font-family="'Inter', sans-serif" font-size="7.5" font-weight="bold" fill="#C1502E" text-anchor="middle">AY 2026-27</text>
+  </g>
+
+  <text x="210" y="328" font-family="'Inter', sans-serif" font-size="10" color="#706B63" fill="#706B63">Emergency Contact: Mrs. Elena Dela Cruz (+63 918 234 5678)</text>
+  <text x="210" y="344" font-family="'Inter', sans-serif" font-size="10" color="#706B63" fill="#706B63">Status: Registered Student Boarder · Official University Record</text>
+</svg>

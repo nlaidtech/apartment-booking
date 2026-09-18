@@ -3,247 +3,133 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apartly - Saved Apartments</title>
+  <title>Apartly PH — Shortlisted Stays</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="supabase-config.js" defer></script>
   <script src="backend.js" defer></script>
 </head>
 <body>
-  <header class="topbar saved-topbar">
-    <a class="brand" href="index.html" aria-label="Apartly home">
-      <span class="brand-mark">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M3 11.2 12 3l9 8.2v8.1a1.7 1.7 0 0 1-1.7 1.7h-4.1v-6.2H8.8V21H4.7A1.7 1.7 0 0 1 3 19.3v-8.1Z"/>
-        </svg>
-      </span>
-      <span>Apartly</span>
+  <!-- Standard Nav -->
+  <header class="nav">
+    <a class="brand" href="index.html" aria-label="Apartly PH Home">
+      <div class="mark">A</div>
+      <div class="word">Apartly<sup>PH</sup></div>
     </a>
-
-    <div class="topbar-actions">
-      <nav class="topnav" aria-label="Primary">
-        <a href="saved-apartments.html" aria-current="page">Saved apartments</a>
-      </nav>
-
-      <div class="account-actions">
-        <button class="icon-button" aria-label="Notifications">
-          <span class="alert-dot"></span>
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8.3 12a2.6 2.6 0 0 0 4.6 0"/>
-          </svg>
-        </button>
-        <button class="profile-button" aria-label="Profile menu">
-          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" alt="">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m6 9 6 6 6-6"/>
-          </svg>
-        </button>
+    <div class="nav-right">
+      <div class="nav-links">
+        <a href="index.html">Browse Stays</a>
+        <a href="saved-apartments.html" class="active">
+          Saved
+          <span class="saved-badge" data-saved-count>0</span>
+        </a>
       </div>
+      <div class="account-actions"></div>
     </div>
   </header>
 
-  <main class="saved-shell">
-    <section class="saved-hero">
-      <div>
-        <p class="saved-kicker">Your shortlist</p>
-        <h1>Saved apartments ready when you are</h1>
-        <p>Keep the places you like in one spot, compare them quickly, and continue booking whenever the timing is right.</p>
-      </div>
-      <div class="saved-summary">
-        <strong>3 saved stays</strong>
-        <span>Updated just now</span>
-      </div>
-    </section>
+  <div class="catalog-wrap" style="padding-top: 32px;">
+    <div style="margin-bottom: 24px;">
+      <h1 style="font-family: var(--font-serif); font-size: 26px; font-weight: 600; color: var(--teal-deep); margin: 0 0 6px;">Saved Stays</h1>
+      <p id="savedSummaryTag" style="font-size: 14px; color: var(--muted); margin: 0;">Your shortlisted boarding houses</p>
+    </div>
 
-    <section class="saved-grid" aria-label="Saved apartments list">
-      <article class="saved-card">
-        <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1100&q=90" alt="Bright apartment living room with city view">
-        <div class="saved-card-body">
-          <div>
-            <h2>Modern Tagum Stay</h2>
-            <div class="saved-meta">
-              <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.34 1.05 6.12L12 17.04l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9L12 3Z"/></svg>4.8</span>
-              <span>Tagum, Davao Region</span>
-            </div>
-          </div>
-          <div class="saved-tags">
-            <span>WiFi</span>
-            <span>Balcony</span>
-            <span>Kitchen</span>
-          </div>
-          <p class="saved-price"><strong>$85</strong><span>/ night</span></p>
-          <div class="saved-actions">
-            <a class="action-primary" href="checkout.html">Book now</a>
-            <a class="action-secondary" href="index.html">View details</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="saved-card">
-        <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1100&q=90" alt="Modern apartment bedroom with natural light">
-        <div class="saved-card-body">
-          <div>
-            <h2>Riverfront Studio</h2>
-            <div class="saved-meta">
-              <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.34 1.05 6.12L12 17.04l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9L12 3Z"/></svg>4.7</span>
-              <span>Davao City</span>
-            </div>
-          </div>
-          <div class="saved-tags">
-            <span>Pool</span>
-            <span>AC</span>
-            <span>Parking</span>
-          </div>
-          <p class="saved-price"><strong>$72</strong><span>/ night</span></p>
-          <div class="saved-actions">
-            <a class="action-primary" href="checkout.html">Book now</a>
-            <a class="action-secondary" href="index.html">View details</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="saved-card">
-        <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1100&q=90" alt="Apartment lounge with comfortable seating">
-        <div class="saved-card-body">
-          <div>
-            <h2>City Lights Loft</h2>
-            <div class="saved-meta">
-              <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.34 1.05 6.12L12 17.04l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9L12 3Z"/></svg>4.9</span>
-              <span>General Santos</span>
-            </div>
-          </div>
-          <div class="saved-tags">
-            <span>Fast WiFi</span>
-            <span>Self check-in</span>
-            <span>City view</span>
-          </div>
-          <p class="saved-price"><strong>$95</strong><span>/ night</span></p>
-          <div class="saved-actions">
-            <a class="action-primary" href="checkout.html">Book now</a>
-            <a class="action-secondary" href="index.html">View details</a>
-          </div>
-        </div>
-      </article>
-    </section>
-  </main>
+    <div class="listings-grid" id="savedGrid">
+      <!-- Populated dynamically -->
+    </div>
+  </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       if (!window.Auth) return;
       await window.Auth.ready;
 
-      const savedGrid = document.querySelector('.saved-grid');
-      const savedSummaryStrong = document.querySelector('.saved-summary strong');
+      const grid = document.getElementById('savedGrid');
+      const summary = document.getElementById('savedSummaryTag');
+      const savedCountEl = document.querySelector('[data-saved-count]');
 
-      function renderSavedStays() {
+      function render() {
         const savedIds = window.Auth.getSavedListings();
         const listings = window.Auth.getListings();
-        const savedListings = listings.filter(l => savedIds.includes(l.id));
+        const saved = listings.filter(l => savedIds.includes(l.id));
 
-        if (savedSummaryStrong) {
-          savedSummaryStrong.textContent = `${savedListings.length} saved stays`;
-        }
+        if (savedCountEl) savedCountEl.textContent = saved.length;
 
-        if (!savedGrid) return;
-        savedGrid.innerHTML = '';
-
-        if (savedListings.length === 0) {
-          savedGrid.innerHTML = `
-            <div style="grid-column: span 3; text-align: center; padding: 60px 16px; background: var(--panel); border: 1px dashed var(--line); border-radius: 16px; box-shadow: var(--shadow);">
-              <svg viewBox="0 0 24 24" style="width: 52px; height: 52px; color: #8a9099; stroke-width: 1.5; margin-bottom: 16px; margin-left: auto; margin-right: auto;"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-              <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;">Your shortlist is empty</h2>
-              <p style="color: var(--muted); max-width: 380px; margin: 0 auto 20px; font-size: 14.5px; line-height: 1.4;">Save listings to keep track of apartments you like, compare them, and book when ready.</p>
-              <a href="index.html" class="admin-btn">Explore Stays</a>
-            </div>
-          `;
+        if (saved.length === 0) {
+          grid.innerHTML = `
+            <div class="empty-state">
+              <h3>No saved stays yet</h3>
+              <p>Browse our verified Philippine boarding houses and tap the heart icon to shortlist them here.</p>
+              <a href="index.html" class="btn-primary" style="width:auto;display:inline-flex;padding:10px 24px;margin-top:16px;text-decoration:none;">Browse Stays</a>
+            </div>`;
+          summary.textContent = 'No stays shortlisted yet';
           return;
         }
 
-        savedListings.forEach(prop => {
-          const card = document.createElement('article');
-          card.className = 'saved-card';
-          card.innerHTML = `
-            <img src="${prop.imageUrl}" alt="${prop.name}">
-            <div class="saved-card-body">
-              <div>
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
-                  <h2 style="font-size: 19px; font-weight: 800; margin: 0 0 6px;">${prop.name}</h2>
-                  <button class="remove-bookmark-btn" data-id="${prop.id}" title="Remove from saved" style="
-                    background: transparent;
-                    border: 0;
-                    cursor: pointer;
-                    color: #e83e5a;
-                    padding: 4px;
-                    display: inline-flex;
-                    align-items: center;
-                  ">
-                    <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: #e83e5a; stroke: #e83e5a; stroke-width: 2;"><path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-                  </button>
-                </div>
-                <div class="saved-meta">
-                  <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.34 1.05 6.12L12 17.04l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9L12 3Z"/></svg>${prop.rating}</span>
-                  <span>${prop.location}</span>
-                </div>
+        summary.textContent = `${saved.length} stay${saved.length > 1 ? 's' : ''} saved in your shortlist`;
+
+        grid.innerHTML = saved.map(listing => `
+          <article class="listing-card">
+            <div class="listing-media">
+              <img src="${listing.imageUrl}" alt="${listing.name}" class="listing-img" loading="lazy">
+              <button type="button" class="listing-save-btn is-saved remove-save-btn" data-id="${listing.id}" aria-label="Remove from saved">
+                <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </button>
+            </div>
+            <div class="listing-body">
+              <div class="listing-header-row">
+                <h3 class="listing-title">${listing.name}</h3>
+                <span class="listing-rating">
+                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  ${listing.rating}
+                </span>
               </div>
-              <div class="saved-tags">
-                ${prop.amenities.slice(0, 3).map(am => `<span>${am}</span>`).join('')}
-              </div>
-              <p class="saved-price"><strong>$${prop.price}</strong><span>/ night</span></p>
-              <div class="saved-actions">
-                <button class="action-primary saved-book-btn requires-auth" data-id="${prop.id}" style="border: 0; cursor: pointer; width: 100%;">Book now</button>
-                <a class="action-secondary" href="index.html?listing=${prop.id}">View details</a>
+              <div class="listing-location-sub">📍 ${listing.location} &bull; ${listing.roomType}</div>
+              <div class="listing-footer-row">
+                <div class="listing-price-block">
+                  <span class="listing-price-main">₱${listing.price}</span>
+                  <span class="listing-price-sub">/ night</span>
+                </div>
+                <button type="button" class="listing-btn-book book-btn" data-id="${listing.id}">Book</button>
               </div>
             </div>
-          `;
-          savedGrid.appendChild(card);
-        });
+          </article>
+        `).join('');
 
-        // Add listeners for bookmark removal
-        document.querySelectorAll('.remove-bookmark-btn').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            const btnEl = e.currentTarget;
-            const id = parseInt(btnEl.dataset.id, 10);
-            window.Auth.toggleSaveListing(id);
-            renderSavedStays();
+        // Remove handlers
+        grid.querySelectorAll('.remove-save-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            window.Auth.toggleSaveListing(parseInt(btn.dataset.id, 10));
+            render();
           });
         });
 
-        // Add listeners for Book now clicks
-        document.querySelectorAll('.saved-book-btn').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            const id = parseInt(e.target.dataset.id, 10);
+        // Book handlers
+        grid.querySelectorAll('.book-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = parseInt(btn.dataset.id, 10);
             const listing = listings.find(l => l.id === id);
-            
-            // Set standard Oct 15 - Oct 18 default dates for the checkout
-            const baseCost = listing.price * 3;
-            const cleaningFee = 35;
-            const serviceFee = 20;
-            
+            if (!listing) return;
             const pendingBooking = {
               listingId: listing.id,
               checkIn: '15 Oct',
               checkOut: '18 Oct',
               checkInRaw: '2026-10-15',
               checkOutRaw: '2026-10-18',
-              guests: 2,
+              guests: 1,
               pricePerNight: listing.price,
               nights: 3,
-              totalPrice: baseCost + cleaningFee + serviceFee
+              totalPrice: (listing.price * 3) + 100
             };
-            
             localStorage.setItem('pendingBooking', JSON.stringify(pendingBooking));
-            if (!window.Auth.getCurrentUser()) {
-              window.Auth.openAuthModal('signup', 'checkout.html');
-              return;
-            }
             window.location.href = 'checkout.html';
           });
         });
       }
 
-      renderSavedStays();
+      render();
     });
   </script>
 </body>

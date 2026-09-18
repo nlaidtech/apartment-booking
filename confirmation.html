@@ -3,252 +3,143 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apartly - Reservation Confirmed</title>
+  <title>Apartly PH — Booking Confirmed</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="supabase-config.js" defer></script>
   <script src="backend.js" defer></script>
 </head>
 <body>
-  <header class="topbar confirmation-topbar">
-    <a class="brand" href="index.html" aria-label="Apartly home">
-      <span class="brand-mark">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M3 11.2 12 3l9 8.2v8.1a1.7 1.7 0 0 1-1.7 1.7h-4.1v-6.2H8.8V21H4.7A1.7 1.7 0 0 1 3 19.3v-8.1Z"/>
-        </svg>
-      </span>
-      <span>Apartly</span>
+  <!-- Standard Nav -->
+  <header class="nav">
+    <a class="brand" href="index.html" aria-label="Apartly PH Home">
+      <div class="mark">A</div>
+      <div class="word">Apartly<sup>PH</sup></div>
     </a>
-
-    <div class="topbar-actions">
-      <nav class="topnav" aria-label="Primary">
-        <a href="saved-apartments.html">Saved apartments</a>
-      </nav>
-
-      <div class="account-actions host-account">
-        <button class="icon-button" aria-label="Notifications">
-          <span class="alert-dot"></span>
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8.3 12a2.6 2.6 0 0 0 4.6 0"/>
-          </svg>
-        </button>
-        <img class="host-avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80" alt="">
-        <div class="host-mini">
-          <strong>Sarah</strong>
-          <span>4.9 &middot; 114 reviews</span>
-        </div>
+    <div class="nav-right">
+      <div class="nav-links">
+        <a href="index.html">Browse Stays</a>
+        <a href="profile.html?tab=trips">My Bookings</a>
       </div>
+      <div class="account-actions"></div>
     </div>
   </header>
 
-  <main class="confirmation-shell">
-    <section class="success-hero">
-      <div class="success-mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24">
-          <path d="m5 12.5 4.2 4.2L19.5 6.5"/>
-        </svg>
-      </div>
-      <div>
-        <h1>Reservation Confirmed!</h1>
-        <p>Thank you, Sarah, for booking your stay at <strong>Modern Tagum Stay - City Center Apartment.</strong><br>An email confirmation has been sent to your registered email address.</p>
-      </div>
-    </section>
-
-    <div class="confirmation-grid">
-      <div class="confirmation-main">
-        <section class="reservation-summary">
-          <div>
-            <strong>Reservation ID: AP-TAG-1015-S</strong>
-            <h2>Modern Tagum Stay - City Center Apartment</h2>
-            <div class="stay-meta">
-              <span>
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v3m10-3v3M4 9h16M5.5 5.5h13A1.5 1.5 0 0 1 20 7v11.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5V7a1.5 1.5 0 0 1 1.5-1.5Z"/></svg>
-                15 Oct - 18 Oct
-              </span>
-              <span>
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
-                Guests: 2
-              </span>
-            </div>
-          </div>
-          <dl class="stay-prices">
-            <div><dt>$85 / night x 3</dt><dd>$255</dd></div>
-            <div><dt>Cleaning fee</dt><dd>$35</dd></div>
-            <div><dt>Service fee</dt><dd>$20</dd></div>
-            <div><dt>Total (USD)</dt><dd>$310</dd></div>
-          </dl>
-        </section>
-
-        <section class="confirmed-section">
-          <h2>3. Confirmed Stay</h2>
-          <div class="confirmed-stay-card">
-            <strong>Modern Tagum Stay - City Center Apartment</strong>
-            <div class="stay-meta">
-              <span>
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v3m10-3v3M4 9h16M5.5 5.5h13A1.5 1.5 0 0 1 20 7v11.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5V7a1.5 1.5 0 0 1 1.5-1.5Z"/></svg>
-                15 Oct - 18 Oct
-              </span>
-              <span>
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
-                Guests: 2
-              </span>
-            </div>
-          </div>
-        </section>
-
-        <div class="cancellation-note">
-          <strong>Your free cancellation period ends Oct 10th.</strong>
-          <a href="#">Manage booking for changes.</a>
-        </div>
-
-        <section class="confirmed-section">
-          <h2>4. Payment</h2>
-          <div class="payment-confirm-grid">
-            <div class="payment-confirm-card">
-              <strong>Final Payment</strong>
-              <p>Paid with Credit/Debit Card</p>
-              <strong>Transdetails ID</strong>
-            </div>
-            <div class="payment-confirm-details">
-              <strong>Final Payment</strong>
-              <p>Paid with Credit/Debit Card<br>(card details hidden for privacy)</p>
-              <label>
-                <span>Transaction ID</span>
-                <input>
-              </label>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <aside class="stay-side-card" aria-label="Your confirmed stay">
-        <h2>Your Stay</h2>
-        <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=700&q=90" alt="Apartment living room">
-        <h3>Modern Tagum Stay</h3>
-        <dl>
-          <div><dt>Confirmed:</dt><dd>15 Oct - 18 Oct</dd></div>
-          <div><dt>Total (USD)</dt><dd>$310</dd></div>
-        </dl>
-        <a class="side-primary" href="#">View Check-in Instructions</a>
-        <a class="side-secondary" id="myTripsBtn" href="profile.html?tab=trips">Go to My Trips</a>
-      </aside>
+  <div class="page-shell" style="text-align: center; padding-top: 24px;">
+    <!-- Green Check Badge -->
+    <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--badge-green-bg); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px;">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--badge-green-text)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
     </div>
-  </main>
+
+    <h1>Booking Confirmed!</h1>
+    <p class="page-subtitle">Your reservation is locked in. The landlady has been notified.</p>
+
+    <div class="confirmation-badge" id="refBadge">
+      Ref: <strong id="refId">PH-BK0000</strong>
+    </div>
+
+    <!-- Official Slip Card -->
+    <div class="form-card" style="text-align: left;">
+      <h2>Reservation Slip</h2>
+      <div style="display: flex; gap: 16px; margin-bottom: 16px; align-items: center;">
+        <img id="confImg" src="assets/properties/ph_bunk_dorm.jpg" alt="Property" style="width: 90px; height: 75px; border-radius: var(--radius-sm); object-fit: cover; border: 1px solid var(--line);">
+        <div>
+          <strong id="confProperty" style="font-size: 16px; color: var(--teal-deep);">Boarding Stay</strong>
+          <p id="confLocation" style="font-size: 13px; color: var(--muted); margin: 2px 0 0;">Location</p>
+        </div>
+      </div>
+
+      <dl>
+        <div class="detail-row">
+          <dt>Reservation Status</dt>
+          <dd><span class="trip-status confirmed" id="confStatus">Confirmed</span></dd>
+        </div>
+        <div class="detail-row">
+          <dt>Check-in / Move-in Date</dt>
+          <dd id="confCheckin">—</dd>
+        </div>
+        <div class="detail-row">
+          <dt>Check-out Date</dt>
+          <dd id="confCheckout">—</dd>
+        </div>
+        <div class="detail-row">
+          <dt>Total Duration</dt>
+          <dd id="confNights">—</dd>
+        </div>
+        <div class="detail-row">
+          <dt>Registered Tenant</dt>
+          <dd id="confGuest">—</dd>
+        </div>
+        <div class="detail-row">
+          <dt>Total Amount</dt>
+          <dd id="confTotal" style="font-weight: 700; color: var(--teal-deep); font-size: 16px;">—</dd>
+        </div>
+      </dl>
+    </div>
+
+    <!-- Landlady Contact Box -->
+    <div class="form-card" style="text-align: left;">
+      <h2>Landlady &amp; Caretaker Information</h2>
+      <div class="contact-card">
+        <img id="confHostAvatar" src="assets/avatars/ate_maria.jpg" alt="Host">
+        <div class="contact-info">
+          <strong id="confHostName">Ate Maria (Landlady)</strong>
+          <span id="confHostPhone">+63 917 123 4567</span>
+          <span style="font-size: 12px; margin-top: 4px; color: var(--muted);">Please present 1 government or school ID upon gate arrival. Gate locks at 10:00 PM.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 8px;">
+      <button type="button" class="btn-secondary" onclick="window.print()">Print Slip</button>
+      <a href="profile.html?tab=trips" class="btn-secondary" style="text-decoration:none;">My Bookings</a>
+      <a href="index.html" class="btn-primary" style="text-decoration:none; width: auto; padding: 10px 24px;">Browse More Stays</a>
+    </div>
+  </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       if (!window.Auth) return;
       await window.Auth.ready;
 
-      // Parse bookingId from query string or localStorage fallback
-      const urlParams = new URLSearchParams(window.location.search);
-      let bookingId = urlParams.get('bookingId');
-      if (!bookingId) {
-        bookingId = localStorage.getItem('lastBookingId');
-      }
+      const params = new URLSearchParams(window.location.search);
+      const bookingId = params.get('bookingId') || localStorage.getItem('lastBookingId');
 
-      if (!bookingId) {
-        alert('No booking confirmation reference found. Redirecting to home.');
-        window.location.href = 'index.html';
-        return;
-      }
+      if (!bookingId) return;
 
-      // Read bookings
       const bookings = window.Auth.getBookings();
       const booking = bookings.find(b => b.id === bookingId);
+      if (!booking) return;
 
-      if (!booking) {
-        alert('Reservation record not found. Redirecting to home.');
-        window.location.href = 'index.html';
-        return;
-      }
+      document.getElementById('refId').textContent = booking.id;
+      document.getElementById('confProperty').textContent = booking.propertyName;
+      document.getElementById('confCheckin').textContent = booking.checkIn;
+      document.getElementById('confCheckout').textContent = booking.checkOut;
+      document.getElementById('confNights').textContent = `${booking.nights} night${booking.nights > 1 ? 's' : ''}`;
+      document.getElementById('confGuest').textContent = booking.guestName;
+      document.getElementById('confTotal').textContent = `₱${booking.totalPrice.toLocaleString()}`;
+      document.getElementById('confStatus').textContent = booking.status;
 
+      // Image & location
       const listings = window.Auth.getListings();
-      const listing = listings.find(l => l.id === booking.listingId) || {
-        name: booking.propertyName || 'Apartment Stay',
-        imageUrl: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=700&q=90'
-      };
-
-      // 1. Success Hero
-      const heroTextDiv = document.querySelector('.success-hero div:nth-child(2)');
-      if (heroTextDiv) {
-        heroTextDiv.innerHTML = `
-          <h1>Reservation Confirmed!</h1>
-          <p>Thank you, ${booking.guestName}, for booking your stay at <strong>${listing.name}.</strong><br>An email confirmation has been sent to ${booking.guestEmail}.</p>
-        `;
+      const listing = listings.find(l => l.id === booking.listingId);
+      if (listing) {
+        document.getElementById('confImg').src = listing.imageUrl;
+        document.getElementById('confLocation').textContent = `${listing.location}, Philippines`;
       }
 
-      // 2. Reservation Summary Column
-      const resIdEl = document.querySelector('.reservation-summary strong');
-      const resTitleEl = document.querySelector('.reservation-summary h2');
-      const resDatesEl = document.querySelector('.reservation-summary .stay-meta span:first-child');
-      const resGuestsEl = document.querySelector('.reservation-summary .stay-meta span:last-child');
-      const resPricesEl = document.querySelector('.reservation-summary .stay-prices');
-
-      if (resIdEl) resIdEl.textContent = `Reservation ID: ${booking.id}`;
-      if (resTitleEl) resTitleEl.textContent = listing.name;
-      if (resDatesEl) {
-        resDatesEl.innerHTML = `
-          <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 18px; stroke-width: 2; display: inline-block; vertical-align: middle;"><path d="M7 3v3m10-3v3M4 9h16M5.5 5.5h13A1.5 1.5 0 0 1 20 7v11.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5V7a1.5 1.5 0 0 1 1.5-1.5Z"/></svg>
-          ${booking.checkIn} - ${booking.checkOut}
-        `;
-      }
-      if (resGuestsEl) {
-        resGuestsEl.innerHTML = `
-          <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 18px; stroke-width: 2; display: inline-block; vertical-align: middle;"><path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
-          Guests: ${booking.guests}
-        `;
-      }
-      if (resPricesEl) {
-        resPricesEl.innerHTML = `
-          <div><dt>$${booking.pricePerNight} / night x ${booking.nights}</dt><dd>$${booking.pricePerNight * booking.nights}</dd></div>
-          <div><dt>Cleaning fee</dt><dd>$35</dd></div>
-          <div><dt>Service fee</dt><dd>$20</dd></div>
-          <div><dt>Total (USD)</dt><dd>$${booking.totalPrice}</dd></div>
-        `;
-      }
-
-      // 3. Confirmed Stay Section
-      const confTitleEl = document.querySelector('.confirmed-stay-card strong');
-      const confDatesEl = document.querySelector('.confirmed-stay-card .stay-meta span:first-child');
-      const confGuestsEl = document.querySelector('.confirmed-stay-card .stay-meta span:last-child');
-
-      if (confTitleEl) confTitleEl.textContent = listing.name;
-      if (confDatesEl) {
-        confDatesEl.innerHTML = `
-          <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 18px; stroke-width: 2; display: inline-block; vertical-align: middle;"><path d="M7 3v3m10-3v3M4 9h16M5.5 5.5h13A1.5 1.5 0 0 1 20 7v11.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5V7a1.5 1.5 0 0 1 1.5-1.5Z"/></svg>
-          ${booking.checkIn} - ${booking.checkOut}
-        `;
-      }
-      if (confGuestsEl) {
-        confGuestsEl.innerHTML = `
-          <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 18px; stroke-width: 2; display: inline-block; vertical-align: middle;"><path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
-          Guests: ${booking.guests}
-        `;
-      }
-
-      // 4. Transaction ID field prefill
-      const txnInput = document.querySelector('.payment-confirm-details input');
-      if (txnInput) {
-        txnInput.value = `TXN-${booking.id}-${Math.floor(Math.random() * 90000 + 10000)}`;
-        txnInput.readOnly = true;
-        txnInput.style.background = '#f6f7f9';
-      }
-
-      // 5. Sidebar stay details
-      const sideImgEl = document.querySelector('.stay-side-card img');
-      const sideTitleEl = document.querySelector('.stay-side-card h3');
-      const sideDlEl = document.querySelector('.stay-side-card dl');
-
-      if (sideImgEl) sideImgEl.src = listing.imageUrl;
-      if (sideTitleEl) sideTitleEl.textContent = listing.name;
-      if (sideDlEl) {
-        sideDlEl.innerHTML = `
-          <div><dt>Confirmed:</dt><dd>${booking.checkIn} - ${booking.checkOut}</dd></div>
-          <div><dt>Total (USD)</dt><dd style="font-weight: 800;">$${booking.totalPrice}</dd></div>
-        `;
+      // Host info
+      const users = window.Auth.getUsers();
+      const host = listing ? users.find(u => u.id === listing.hostId) : null;
+      if (host) {
+        document.getElementById('confHostAvatar').src = host.avatarUrl || 'assets/avatars/ate_maria.jpg';
+        document.getElementById('confHostName').textContent = host.name;
+        document.getElementById('confHostPhone').textContent = host.phone || '+63 917 123 4567';
       }
     });
   </script>

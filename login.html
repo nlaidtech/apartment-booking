@@ -3,113 +3,99 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apartly - Log In or Sign Up</title>
+  <title>Apartly PH — Sign In Portal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="supabase-config.js" defer></script>
   <script src="backend.js" defer></script>
+  <style>
+    .portal-toggle {
+      display: flex;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 20px;
+      gap: 4px;
+    }
+    .portal-tab-btn {
+      flex: 1;
+      padding: 10px 12px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .portal-tab-btn.is-active {
+      background: var(--white);
+      color: var(--teal-deep);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    .portal-tab-btn.is-active.owner-theme {
+      color: var(--clay-deep);
+    }
+  </style>
 </head>
 <body>
-  <header class="topbar saved-topbar">
-    <a class="brand" href="index.html" aria-label="Apartly home">
-      <span class="brand-mark">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M3 11.2 12 3l9 8.2v8.1a1.7 1.7 0 0 1-1.7 1.7h-4.1v-6.2H8.8V21H4.7A1.7 1.7 0 0 1 3 19.3v-8.1Z"/>
-        </svg>
-      </span>
-      <span>Apartly</span>
-    </a>
-    <div class="topbar-actions">
-      <nav class="topnav" aria-label="Primary">
-        <a href="index.html">Browse apartments</a>
-      </nav>
-      <div class="account-actions">
-        <!-- Dynamically loaded by backend.js -->
-      </div>
-    </div>
-  </header>
-
   <main class="login-shell">
-    <section class="login-side-banner" aria-label="Welcome banner">
-      <div class="banner-brand">
-        <a class="brand" href="index.html" style="color: #fff;">
-          <span class="brand-mark" style="color: #fff;">
-            <svg viewBox="0 0 24 24" aria-hidden="true" style="stroke: #fff;">
-              <path d="M3 11.2 12 3l9 8.2v8.1a1.7 1.7 0 0 1-1.7 1.7h-4.1v-6.2H8.8V21H4.7A1.7 1.7 0 0 1 3 19.3v-8.1Z"/>
-            </svg>
-          </span>
-          <span style="color: #fff;">Apartly</span>
+    <!-- Left Editorial Banner -->
+    <section class="login-banner" id="bannerSection">
+      <div class="login-banner-content">
+        <a class="brand" href="index.html" style="margin-bottom: 32px; display: inline-flex;">
+          <div class="mark">A</div>
+          <div class="word" style="color: var(--white);">Apartly<sup style="color: var(--gold);">PH</sup></div>
         </a>
-      </div>
-      <div class="banner-content">
-        <h2>Find your next inspiring stay.</h2>
-        <p>Explore curated design homes, lofts, and waterfront apartments tailored for both travelers and local staycationers.</p>
-      </div>
-      <div class="banner-footer">
-        &copy; 2026 Apartly Inc. All rights reserved.
+        <h1 id="bannerTitle">Find a verified boarding house for your studies and work.</h1>
+        <p id="bannerDesc">Join thousands of students and reviewees across Tagum City, Davao, and Cebu finding safe bedspaces and solo rooms with private CR.</p>
       </div>
     </section>
 
-    <section class="login-side-form" aria-label="Login Form">
-      <div class="form-container">
-        <div class="form-tabs">
-          <div class="form-tab active" id="tabSignin">Sign In</div>
-          <div class="form-tab" id="tabSignup">Create Account</div>
+    <!-- Right Form Section -->
+    <section class="login-form-side">
+      <div class="login-card">
+        <!-- Two Distinct Portals -->
+        <div class="portal-toggle" role="tablist">
+          <button type="button" class="portal-tab-btn is-active" id="portalRenterBtn" role="tab" aria-selected="true">
+            <span>🎓</span> Student Tenant
+          </button>
+          <button type="button" class="portal-tab-btn" id="portalOwnerBtn" role="tab" aria-selected="false">
+            <span>🏠</span> Landlady / Owner
+          </button>
         </div>
 
+        <h2 id="formTitle">Student Sign In</h2>
+        <p class="subtitle" id="formSubtitle">Sign in to search rooms and manage your bookings</p>
+
         <form id="authForm" novalidate>
-          <div class="login-form-group" id="nameGroup" style="display: none;">
-            <label for="regName">Full Name</label>
-            <input type="text" id="regName" placeholder="John Doe">
+          <div id="nameGroup" style="display: none;">
+            <label for="regName">Full Legal Name</label>
+            <input type="text" id="regName" placeholder="Juan Dela Cruz">
           </div>
 
-          <div class="login-form-group">
-            <label for="authEmail">Email Address</label>
-            <input type="email" id="authEmail" required placeholder="name@example.com">
-          </div>
+          <label for="authEmail">Email Address</label>
+          <input type="email" id="authEmail" required placeholder="name@example.com">
 
-          <div class="login-form-group">
-            <label for="authPassword">Password</label>
-            <input type="password" id="authPassword" required placeholder="••••••••">
-          </div>
+          <label for="authPassword">Password</label>
+          <input type="password" id="authPassword" required placeholder="••••••••">
 
-          <div class="login-form-group" id="roleGroup" style="display: none;">
-            <label>I want to</label>
-            <div class="role-selector">
-              <div class="role-option active" data-role="guest">Book Stays</div>
-              <div class="role-option" data-role="host">Host Stays</div>
-            </div>
-          </div>
+          <div id="errorAlert" style="display:none; padding:10px 12px; background:rgba(193,80,46,0.08); color:var(--clay-deep); border:1px solid rgba(193,80,46,0.2); border-radius:6px; font-size:13px; margin-bottom:14px; font-weight:500;"></div>
 
-          <div id="errorAlert" style="
-            display: none;
-            padding: 12px;
-            background: #fef2f2;
-            color: #b91c1c;
-            border: 1px solid #fca5a5;
-            border-radius: 6px;
-            font-size: 13.5px;
-            margin-bottom: 18px;
-            font-weight: 500;
-          "></div>
-
-          <button type="submit" class="login-submit-btn" id="submitBtn">Sign In</button>
+          <button type="submit" id="submitBtn">Sign In as Student</button>
         </form>
 
-        <div class="quick-logins">
-          <div class="quick-logins-title">Quick demo logins</div>
-          <div class="quick-login-grid">
-            <button class="quick-login-btn" id="quickGuest">
-              <strong>Guest User</strong>
-              <span>john@gmail.com</span>
-            </button>
-            <button class="quick-login-btn" id="quickHost">
-              <strong>Property Host</strong>
-              <span>sarah@apartly.com</span>
-            </button>
-          </div>
+        <div class="toggle-link">
+          <span id="toggleText">Don't have an account?</span>
+          <a href="#" id="toggleBtn">Create account</a>
         </div>
       </div>
     </section>
@@ -117,73 +103,84 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const tabSignin = document.getElementById('tabSignin');
-      const tabSignup = document.getElementById('tabSignup');
-      const nameGroup = document.getElementById('nameGroup');
-      const roleGroup = document.getElementById('roleGroup');
+      let activePortal = 'renter'; // 'renter' or 'owner'
+      let authMode = 'signin';     // 'signin' or 'signup'
+
+      const portalRenterBtn = document.getElementById('portalRenterBtn');
+      const portalOwnerBtn = document.getElementById('portalOwnerBtn');
+      const formTitle = document.getElementById('formTitle');
+      const formSubtitle = document.getElementById('formSubtitle');
+      const bannerTitle = document.getElementById('bannerTitle');
+      const bannerDesc = document.getElementById('bannerDesc');
       const submitBtn = document.getElementById('submitBtn');
-      const authForm = document.getElementById('authForm');
+      const nameGroup = document.getElementById('nameGroup');
+      const toggleText = document.getElementById('toggleText');
+      const toggleBtn = document.getElementById('toggleBtn');
       const errorAlert = document.getElementById('errorAlert');
-      
-      const regName = document.getElementById('regName');
       const authEmail = document.getElementById('authEmail');
       const authPassword = document.getElementById('authPassword');
-      
-      let mode = 'signin'; // or 'signup'
-      let selectedRole = 'guest';
+      const regName = document.getElementById('regName');
+      const authForm = document.getElementById('authForm');
 
-      // Check query string for default tab
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('tab') === 'signup') {
+      // Check query params (?portal=owner or ?portal=renter)
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('portal') === 'owner') {
+        setPortal('owner');
+      }
+      if (params.get('tab') === 'signup') {
         setMode('signup');
       }
 
-      function setMode(newMode) {
-        mode = newMode;
+      function setPortal(portal) {
+        activePortal = portal;
         errorAlert.style.display = 'none';
-        if (mode === 'signin') {
-          tabSignin.classList.add('active');
-          tabSignup.classList.remove('active');
-          nameGroup.style.display = 'none';
-          roleGroup.style.display = 'none';
-          submitBtn.textContent = 'Sign In';
+
+        if (activePortal === 'owner') {
+          portalRenterBtn.classList.remove('is-active');
+          portalOwnerBtn.classList.add('is-active', 'owner-theme');
+          bannerTitle.textContent = 'Post your boarding house rooms and accept verified tenants.';
+          bannerDesc.textContent = 'Manage student bedspaces, solo rooms, and transient pads across Tagum, Davao, and Cebu with 24/7 inquiry tracking.';
+          updateFormTexts();
         } else {
-          tabSignin.classList.remove('active');
-          tabSignup.classList.add('active');
-          nameGroup.style.display = 'flex';
-          roleGroup.style.display = 'flex';
-          submitBtn.textContent = 'Create Account';
+          portalOwnerBtn.classList.remove('is-active', 'owner-theme');
+          portalRenterBtn.classList.add('is-active');
+          bannerTitle.textContent = 'Find a verified boarding house for your studies and work.';
+          bannerDesc.textContent = 'Join thousands of students and reviewees across Tagum City, Davao, and Cebu finding safe bedspaces and solo rooms.';
+          updateFormTexts();
         }
       }
 
-      tabSignin.addEventListener('click', () => setMode('signin'));
-      tabSignup.addEventListener('click', () => setMode('signup'));
+      function setMode(mode) {
+        authMode = mode;
+        errorAlert.style.display = 'none';
+        nameGroup.style.display = authMode === 'signup' ? 'block' : 'none';
+        toggleText.textContent = authMode === 'signin' ? "Don't have an account?" : "Already have an account?";
+        toggleBtn.textContent = authMode === 'signin' ? "Create account" : "Sign in";
+        updateFormTexts();
+      }
 
-      // Role selector clicking
-      const roleOptions = document.querySelectorAll('.role-option');
-      roleOptions.forEach(opt => {
-        opt.addEventListener('click', () => {
-          roleOptions.forEach(o => o.classList.remove('active'));
-          opt.classList.add('active');
-          selectedRole = opt.dataset.role;
-        });
+      function updateFormTexts() {
+        const isOwner = activePortal === 'owner';
+        if (authMode === 'signin') {
+          formTitle.textContent = isOwner ? 'Landlady & Owner Sign In' : 'Student Tenant Sign In';
+          formSubtitle.textContent = isOwner ? 'Sign in to manage your properties and bookings' : 'Sign in to browse stays and view your reservations';
+          submitBtn.textContent = isOwner ? 'Sign In as Landlady' : 'Sign In as Student';
+        } else {
+          formTitle.textContent = isOwner ? 'Register Landlady Account' : 'Create Student Account';
+          formSubtitle.textContent = isOwner ? 'List your boarding house and reach student boarders' : 'Create an account to reserve boarding houses';
+          submitBtn.textContent = isOwner ? 'Create Landlady Account' : 'Create Student Account';
+        }
+      }
+
+      portalRenterBtn.addEventListener('click', () => setPortal('renter'));
+      portalOwnerBtn.addEventListener('click', () => setPortal('owner'));
+
+      toggleBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        setMode(authMode === 'signin' ? 'signup' : 'signin');
       });
 
-      // Quick logins
-      document.getElementById('quickGuest').addEventListener('click', () => {
-        authEmail.value = 'john@gmail.com';
-        authPassword.value = 'password';
-        setMode('signin');
-        handleAuth();
-      });
-
-      document.getElementById('quickHost').addEventListener('click', () => {
-        authEmail.value = 'sarah@apartly.com';
-        authPassword.value = 'password';
-        setMode('signin');
-        handleAuth();
-      });
-
+      // Handle Submit
       authForm.addEventListener('submit', (e) => {
         e.preventDefault();
         handleAuth();
@@ -191,25 +188,36 @@
 
       async function handleAuth() {
         errorAlert.style.display = 'none';
-        
         const email = authEmail.value.trim();
         const password = authPassword.value;
         const name = regName.value.trim();
 
         if (!email || !password) {
-          showError('Please enter email and password.');
+          showError('Please enter both email and password.');
           return;
         }
 
-        if (mode === 'signup' && !name) {
-          showError('Please enter your full name.');
-          return;
+        if (authMode === 'signup') {
+          if (!name) {
+            showError('Please enter your full legal name.');
+            return;
+          }
+          if (!email.includes('@') || !email.includes('.')) {
+            showError('Please enter a valid email address (e.g. name@example.com).');
+            return;
+          }
+          if (password.length < 6) {
+            showError('Password must be at least 6 characters.');
+            return;
+          }
         }
 
-        if (mode === 'signin') {
+        const role = activePortal === 'owner' ? 'host' : 'guest';
+
+        if (authMode === 'signin') {
           const res = await window.Auth.login(email, password);
           if (res.success) {
-            // Redirect based on role
+            // Strictly separate destination:
             if (res.user.role === 'host') {
               window.location.href = 'admin.html';
             } else {
@@ -219,7 +227,7 @@
             showError(res.message);
           }
         } else {
-          const res = await window.Auth.register(name, email, password, selectedRole);
+          const res = await window.Auth.register(name, email, password, role);
           if (res.success) {
             if (res.user.role === 'host') {
               window.location.href = 'admin.html';
