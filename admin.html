@@ -273,27 +273,27 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: var(--paper); padding: 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); margin-bottom: 18px; font-size: 13px;">
           <div>
             <span style="display: block; font-size: 11px; text-transform: uppercase; color: var(--muted-light); font-weight: 600;">Student Name</span>
-            <strong id="inspectStudentName" style="color: var(--teal-deep); font-size: 14px;">Sarah Dela Cruz</strong>
+            <strong id="inspectStudentName" style="color: var(--teal-deep); font-size: 14px;">—</strong>
           </div>
           <div>
             <span style="display: block; font-size: 11px; text-transform: uppercase; color: var(--muted-light); font-weight: 600;">University / Campus</span>
-            <span id="inspectStudentSchool" style="font-weight: 600;">University of Mindanao (UM) Tagum</span>
+            <span id="inspectStudentSchool" style="font-weight: 600;">—</span>
           </div>
           <div>
             <span style="display: block; font-size: 11px; text-transform: uppercase; color: var(--muted-light); font-weight: 600;">Course &amp; Level</span>
-            <span id="inspectStudentCourse">BS Nursing (4th Year Reviewee)</span>
+            <span id="inspectStudentCourse">—</span>
           </div>
           <div>
             <span style="display: block; font-size: 11px; text-transform: uppercase; color: var(--muted-light); font-weight: 600;">Student ID #</span>
-            <strong id="inspectStudentIdNum" style="color: var(--clay-deep);">UM-2022-08941</strong>
+            <strong id="inspectStudentIdNum" style="color: var(--clay-deep);">—</strong>
           </div>
           <div>
             <span style="display: block; font-size: 11px; text-transform: uppercase; color: var(--muted-light); font-weight: 600;">Contact Phone</span>
-            <span id="inspectStudentPhone">+63 939 456 7890</span>
+            <span id="inspectStudentPhone">—</span>
           </div>
           <div>
             <span style="display: block; font-size: 11px; text-transform: uppercase; color: var(--muted-light); font-weight: 600;">Emergency Contact</span>
-            <span id="inspectStudentEmergency">Mrs. Elena Dela Cruz (+63 918 234 5678)</span>
+            <span id="inspectStudentEmergency">—</span>
           </div>
         </div>
 
@@ -396,7 +396,7 @@
               <td><span class="status-badge ${statusClass}">${b.status}</span></td>
               <td>
                 <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                  <button type="button" class="action-btn" style="color:var(--teal); font-weight:600; border-color:var(--teal);" onclick="openStudentIdModal('${b.guestId || 'guest-1'}', '${b.guestName}', '${b.id}')">🔍 Inspect ID</button>
+                  <button type="button" class="action-btn" style="color:var(--teal); font-weight:600; border-color:var(--teal);" onclick="openStudentIdModal('${b.guestId || ''}', '${b.guestName}', '${b.id}')">🔍 Inspect ID</button>
                   ${b.status !== 'Confirmed' ? `
                     <button type="button" class="action-btn" style="color:var(--badge-green-text); font-weight:700;" onclick="window.Auth.updateBookingStatus('${b.id}', 'Confirmed'); location.reload();">Approve</button>
                   ` : ''}

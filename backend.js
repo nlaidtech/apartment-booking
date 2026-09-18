@@ -17,8 +17,8 @@
       location: 'Tagum City',
       roomType: 'Bedspace',
       amenities: ['WiFi', 'Aircon', 'Mineral Water', 'CCTV', 'Locker'],
-      rating: 4.9,
-      reviewsCount: 42,
+      rating: 0,
+      reviewsCount: 0,
       price: 350,
       monthlyPrice: 2800,
       imageUrl: 'assets/properties/ph_bunk_dorm.jpg',
@@ -34,8 +34,8 @@
       location: 'Tagum City',
       roomType: 'Solo Room',
       amenities: ['Own CR', 'WiFi', 'Aircon', 'Study Desk', 'No Curfew'],
-      rating: 4.8,
-      reviewsCount: 38,
+      rating: 0,
+      reviewsCount: 0,
       price: 550,
       monthlyPrice: 4500,
       imageUrl: 'assets/properties/ph_cozy_dorm.jpg',
@@ -51,8 +51,8 @@
       location: 'Tagum City',
       roomType: 'Studio Pad',
       amenities: ['WiFi', 'Aircon', 'Kitchenette', 'Motor Parking', 'Own CR'],
-      rating: 4.9,
-      reviewsCount: 56,
+      rating: 0,
+      reviewsCount: 0,
       price: 750,
       monthlyPrice: 6500,
       imageUrl: 'assets/properties/ph_transient_studio.jpg',
@@ -68,8 +68,8 @@
       location: 'Davao City',
       roomType: 'Bedspace',
       amenities: ['WiFi', 'Aircon', 'CCTV', 'Laundry Area', 'Kitchen'],
-      rating: 4.7,
-      reviewsCount: 64,
+      rating: 0,
+      reviewsCount: 0,
       price: 400,
       monthlyPrice: 3200,
       imageUrl: 'assets/properties/ph_ladies_dorm.jpg',
@@ -85,8 +85,8 @@
       location: 'Davao City',
       roomType: '1 Bedroom',
       amenities: ['WiFi', 'Aircon', 'Balcony', 'Own CR', 'Motor Parking'],
-      rating: 4.8,
-      reviewsCount: 29,
+      rating: 0,
+      reviewsCount: 0,
       price: 650,
       monthlyPrice: 5500,
       imageUrl: 'assets/properties/ph_hillside_pad.jpg',
@@ -102,8 +102,8 @@
       location: 'Cebu City',
       roomType: 'Capsule Pod',
       amenities: ['WiFi', 'Aircon', 'RFID Access', 'Locker', 'Mineral Water'],
-      rating: 4.9,
-      reviewsCount: 88,
+      rating: 0,
+      reviewsCount: 0,
       price: 500,
       monthlyPrice: 4200,
       imageUrl: 'assets/properties/ph_cebu_pods.jpg',
@@ -114,48 +114,9 @@
     }
   ];
 
-  // Real Bookings Store (No mock bookings)
+  // Real Bookings & Reviews Store (No mock data)
   const defaultBookings = [];
-
-  // Authentic Philippine Boarding House Reviews
-  const defaultReviews = [
-    {
-      id: 'rev-1',
-      listingId: 1,
-      authorName: 'Camille R.',
-      authorRole: 'Nursing Intern (UM Tagum)',
-      rating: 5,
-      comment: 'Super peaceful environment, perfect for studying for boards! Ate Maria is very motherly and makes sure the gate is locked at 10 PM. Own CR is very clean with strong water pressure.',
-      cleanliness: 5,
-      wifi: 5,
-      landlady: 5,
-      date: 'Sep 10, 2026'
-    },
-    {
-      id: 'rev-2',
-      listingId: 2,
-      authorName: 'Ken Bryan S.',
-      authorRole: 'IT Student (Ateneo Davao)',
-      rating: 5,
-      comment: 'Fiber internet never drops during my coding projects and capstone. Submetered electric is fair and transparent. Highly recommended for students!',
-      cleanliness: 5,
-      wifi: 5,
-      landlady: 5,
-      date: 'Sep 02, 2026'
-    },
-    {
-      id: 'rev-3',
-      listingId: 3,
-      authorName: 'Jessa Mae B.',
-      authorRole: 'Medtech Student (USC Cebu)',
-      rating: 5,
-      comment: 'Very convenient location, just 5 minutes walk to USC Talamban campus. Safe compound with CCTV and polite co-boarders.',
-      cleanliness: 5,
-      wifi: 5,
-      landlady: 5,
-      date: 'Aug 28, 2026'
-    }
-  ];
+  const defaultReviews = [];
 
   const state = {
     users: readLocal('users', defaultUsers),
@@ -196,6 +157,10 @@
       if (key === 'inquiries' && Array.isArray(parsed)) {
         parsed = parsed.filter(i => i && i.id !== 'INQ-101' && i.guestId !== 'guest-1');
         localStorage.setItem('inquiries', JSON.stringify(parsed));
+      }
+      if (key === 'reviews' && Array.isArray(parsed)) {
+        parsed = parsed.filter(r => r && r.id !== 'rev-1' && r.id !== 'rev-2' && r.id !== 'rev-3');
+        localStorage.setItem('reviews', JSON.stringify(parsed));
       }
       if (key === 'listings' && (!Array.isArray(parsed) || parsed.length === 0 || (parsed[0] && parsed[0].imageUrl && parsed[0].imageUrl.includes('unsplash')))) {
         localStorage.setItem(key, JSON.stringify(fallback));
@@ -443,8 +408,14 @@
           writeLocal('saved_listings', state.savedListings);
         }
       } else {
-        state.currentUser = null;
-        localStorage.removeItem('currentUser');
+        // Retain local session if user is logged in
+        const storedUser = readLocal('currentUser', null);
+        if (storedUser) {
+          state.currentUser = storedUser;
+        } else {
+          state.currentUser = null;
+          localStorage.removeItem('currentUser');
+        }
       }
     } catch (error) {
       console.warn('Supabase unavailable. Using local demo data.', error);
@@ -497,7 +468,7 @@
                 email: data.user.email,
                 name: (data.user.user_metadata && data.user.user_metadata.name) || cleanEmail.split('@')[0],
                 role: (data.user.user_metadata && data.user.user_metadata.role) || 'guest',
-                avatarUrl: 'assets/avatars/sarah_student.jpg',
+                avatarUrl: 'assets/avatars/default_avatar.svg',
                 rating: 5.0,
                 reviewsCount: 0
               };
@@ -558,7 +529,7 @@
         email: cleanEmail,
         password,
         role,
-        avatarUrl: role === 'host' ? 'assets/avatars/ate_maria.jpg' : 'assets/avatars/sarah_student.jpg',
+        avatarUrl: extraDetails.avatarUrl || 'assets/avatars/default_avatar.svg',
         rating: 5.0,
         reviewsCount: 0,
         phone: (extraDetails.phone || '').trim(),
@@ -925,9 +896,9 @@
       const numericIds = state.listings.map((item) => Number(item.id)).filter(Boolean);
       const listing = {
         id: numericIds.length ? Math.max(...numericIds) + 1 : 1,
-        hostId: currentUserId() || 'host-1',
-        rating: 5.0,
-        reviewsCount: 1,
+        hostId: currentUserId() || 'USR-HOST',
+        rating: 0,
+        reviewsCount: 0,
         ...listingData
       };
       state.listings.unshift(listing);
@@ -1041,7 +1012,7 @@
           </a>
           <div class="profile-dropdown">
             <button class="profile-dropdown-trigger" aria-label="Landlady menu" id="profileMenuBtn">
-              <img src="${user.avatarUrl || 'assets/avatars/ate_maria.jpg'}" alt="${user.name}">
+              <img src="${user.avatarUrl || 'assets/avatars/default_avatar.svg'}" alt="${user.name}">
               <span>${user.name.split(' ')[0]} (Landlady)</span>
             </button>
             <div class="profile-dropdown-menu" id="profileDropdownMenu">
@@ -1071,7 +1042,7 @@
           </a>
           <div class="profile-dropdown">
             <button class="profile-dropdown-trigger" aria-label="Student menu" id="profileMenuBtn">
-              <img src="${user.avatarUrl || 'assets/avatars/sarah_student.jpg'}" alt="${user.name}">
+              <img src="${user.avatarUrl || 'assets/avatars/default_avatar.svg'}" alt="${user.name}">
               <span>${user.name.split(' ')[0]}</span>
             </button>
             <div class="profile-dropdown-menu" id="profileDropdownMenu">
