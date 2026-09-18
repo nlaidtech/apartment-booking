@@ -379,9 +379,11 @@
       const sessionResult = await state.supabase.auth.getSession();
       const sessionUser = sessionResult.data.session && sessionResult.data.session.user;
 
-      const [listingsResult, bookingsResult] = await Promise.all([
+      const [listingsResult, bookingsResult, reviewsResult, inquiriesResult] = await Promise.all([
         state.supabase.from('listings').select('*').order('id'),
-        state.supabase.from('bookings').select('*').order('created_at', { ascending: false })
+        state.supabase.from('bookings').select('*').order('created_at', { ascending: false }),
+        state.supabase.from('reviews').select('*').order('created_at', { ascending: false }),
+        state.supabase.from('inquiries').select('*').order('created_at', { ascending: false })
       ]);
 
       if (!listingsResult.error && listingsResult.data) {
@@ -392,6 +394,27 @@
       if (!bookingsResult.error && bookingsResult.data) {
         state.bookings = bookingsResult.data.map(toBooking);
         writeLocal('bookings', state.bookings);
+      }
+
+      if (reviewsResult && !reviewsResult.error && reviewsResult.data && reviewsResult.data.length > 0) {
+        state.reviews = reviewsResult.data.map(r => ({
+          id: r.id,
+          listingId: r.listing_id || r.listingId,
+          authorName: r.author_name || r.authorName,
+          authorRole: r.author_role || r.authorRole,
+          rating: r.rating,
+          cleanliness: r.cleanliness || 5,
+          wifi: r.wifi || 5,
+          landlady: r.landlady || 5,
+          comment: r.comment,
+          date: r.date || (r.created_at ? new Date(r.created_at).toLocaleDateString() : '')
+        }));
+        writeLocal('reviews', state.reviews);
+      }
+
+      if (inquiriesResult && !inquiriesResult.error && inquiriesResult.data && inquiriesResult.data.length > 0) {
+        state.inquiries = inquiriesResult.data;
+        writeLocal('inquiries', state.inquiries);
       }
 
       if (sessionUser) {
@@ -657,6 +680,22 @@
 
       writeLocal('inquiries', state.inquiries);
       updateUnreadBadges();
+
+      if (state.supabase) {
+        state.supabase.from('inquiries').upsert({
+          id: thread.id,
+          listing_id: thread.listingId,
+          property_name: thread.propertyName,
+          guest_id: thread.guestId,
+          messages: thread.messages,
+          status: thread.status,
+          reply: thread.reply,
+          unread_by_guest: thread.unreadByGuest,
+          unread_by_host: thread.unreadByHost,
+          last_updated: thread.lastUpdated
+        }).then(() => {}).catch(() => {});
+      }
+
       document.dispatchEvent(new CustomEvent('apartly:chat-updated', { detail: { threadId, message: newMsg } }));
       document.dispatchEvent(new CustomEvent('apartly:unread-updated', { detail: { count: window.Auth.getUnreadCount() } }));
       return newMsg;
@@ -690,6 +729,23 @@
       state.inquiries.unshift(inq);
       writeLocal('inquiries', state.inquiries);
       updateUnreadBadges();
+
+      if (state.supabase) {
+        state.supabase.from('inquiries').insert({
+          id: inq.id,
+          listing_id: inq.listingId,
+          property_name: inq.propertyName,
+          guest_id: inq.guestId,
+          guest_name: inq.guestName,
+          guest_phone: inq.guestPhone,
+          message: inq.message,
+          messages: inq.messages,
+          status: inq.status,
+          date_sent: inq.dateSent,
+          unread_by_host: 1,
+          unread_by_guest: 0
+        }).then(() => {}).catch(() => {});
+      }
       document.dispatchEvent(new CustomEvent('apartly:chat-updated', { detail: { threadId: inq.id, message: initialMsg } }));
       document.dispatchEvent(new CustomEvent('apartly:unread-updated', { detail: { count: window.Auth.getUnreadCount() } }));
       return inq;
@@ -792,6 +848,27 @@
         listing.reviewsCount = newCount;
         listing.rating = Math.min(5.0, Math.max(1.0, newRating));
         writeLocal('listings', state.listings);
+
+        if (state.supabase) {
+          state.supabase.from('listings').update({
+            rating: listing.rating,
+            reviews_count: listing.reviewsCount
+          }).eq('id', numListingId).then(() => {}).catch(() => {});
+        }
+      }
+
+      if (state.supabase) {
+        state.supabase.from('reviews').insert({
+          id: review.id,
+          listing_id: numListingId,
+          author_name: review.authorName,
+          author_role: review.authorRole,
+          rating: review.rating,
+          cleanliness: review.cleanliness,
+          wifi: review.wifi,
+          landlady: review.landlady,
+          comment: review.comment
+        }).then(() => {}).catch(() => {});
       }
 
       document.dispatchEvent(new CustomEvent('apartly:review-added', { detail: { review, listingId: numListingId } }));
