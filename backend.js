@@ -386,14 +386,18 @@
         state.supabase.from('inquiries').select('*').order('created_at', { ascending: false })
       ]);
 
-      if (!listingsResult.error && listingsResult.data) {
+      if (!listingsResult.error && listingsResult.data && listingsResult.data.length > 0) {
         state.listings = listingsResult.data.map(toListing);
         writeLocal('listings', state.listings);
+      } else {
+        state.listings = readLocal('listings', defaultListings);
       }
 
-      if (!bookingsResult.error && bookingsResult.data) {
+      if (!bookingsResult.error && bookingsResult.data && bookingsResult.data.length > 0) {
         state.bookings = bookingsResult.data.map(toBooking);
         writeLocal('bookings', state.bookings);
+      } else {
+        state.bookings = readLocal('bookings', defaultBookings);
       }
 
       if (reviewsResult && !reviewsResult.error && reviewsResult.data && reviewsResult.data.length > 0) {
