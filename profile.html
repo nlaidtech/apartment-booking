@@ -339,7 +339,7 @@
       });
 
       // Form Submit
-      document.getElementById('profileForm').addEventListener('submit', (e) => {
+      document.getElementById('profileForm').addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const updated = {
@@ -354,7 +354,7 @@
           idDocumentUrl: currentIdDocUrl
         };
 
-        window.Auth.updateProfile(updated);
+        await window.Auth.updateProfile(updated);
         document.getElementById('profileName').textContent = updated.name;
         document.getElementById('profileSub').textContent = `${updated.course} • ${updated.school}`;
 

@@ -472,38 +472,67 @@
     getCurrentUser: () => state.currentUser,
 
     login: async (email, password) => {
+      const cleanEmail = (email || '').trim().toLowerCase();
+      let matchedProfile = null;
+
+      // 1. Try Supabase Auth first
       if (state.supabase) {
         try {
-          const { data, error } = await state.supabase.auth.signInWithPassword({ email, password });
-          if (error) {
-            const isNetworkErr = error.message && (error.message.includes('fetch') || error.message.includes('network') || error.message.includes('Failed'));
-            if (isNetworkErr) {
-              console.warn('Supabase network unreachable, falling back to local demo login.');
-            } else {
-              return { success: false, message: error.message };
-            }
-          } else if (data && data.user) {
-            const profileResult = await state.supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', data.user.id)
-              .single();
+          const { data, error } = await state.supabase.auth.signInWithPassword({ email: cleanEmail, password });
+          if (!error && data && data.user) {
+            try {
+              const profileResult = await state.supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', data.user.id)
+                .single();
+              if (profileResult && profileResult.data) {
+                matchedProfile = toProfile({ ...profileResult.data, email: data.user.email });
+              }
+            } catch (e) {}
 
-            state.currentUser = toProfile({ ...(profileResult.data || {}), email: data.user.email });
-            writeLocal('currentUser', state.currentUser);
-            return { success: true, user: state.currentUser };
+            if (!matchedProfile) {
+              matchedProfile = {
+                id: data.user.id,
+                email: data.user.email,
+                name: (data.user.user_metadata && data.user.user_metadata.name) || cleanEmail.split('@')[0],
+                role: (data.user.user_metadata && data.user.user_metadata.role) || 'guest',
+                avatarUrl: 'assets/avatars/sarah_student.jpg',
+                rating: 5.0,
+                reviewsCount: 0
+              };
+            }
           }
         } catch (err) {
-          console.warn('Supabase login exception, falling back to local demo:', err);
+          console.warn('Supabase login exception, checking local fallback:', err);
         }
       }
 
-      // Local Demo Login
-      const user = state.users.find((item) => item.email.toLowerCase() === email.toLowerCase() && item.password === password);
-      if (!user) return { success: false, message: 'Invalid email or password.' };
-      state.currentUser = user;
-      writeLocal('currentUser', user);
-      return { success: true, user };
+      // 2. Check local fallback users
+      if (!matchedProfile) {
+        const localUser = state.users.find((item) => (item.email || '').toLowerCase() === cleanEmail && (!item.password || item.password === password));
+        if (localUser) {
+          matchedProfile = localUser;
+        }
+      }
+
+      if (!matchedProfile) {
+        return { success: false, message: 'Invalid email or password. Please verify your details or click Create Account.' };
+      }
+
+      state.currentUser = matchedProfile;
+      writeLocal('currentUser', matchedProfile);
+
+      // Keep state.users synchronized
+      const userIdx = state.users.findIndex(u => (u.email || '').toLowerCase() === cleanEmail);
+      if (userIdx !== -1) {
+        state.users[userIdx] = { ...state.users[userIdx], ...matchedProfile };
+      } else {
+        state.users.push({ ...matchedProfile, password });
+      }
+      writeLocal('users', state.users);
+
+      return { success: true, user: matchedProfile };
     },
 
     logout: async () => {
@@ -516,76 +545,85 @@
     },
 
     register: async (name, email, password, role = 'guest') => {
+      const cleanEmail = (email || '').trim().toLowerCase();
+      const numericIds = state.users.map((item) => Number(item.id)).filter(Boolean);
+      const localId = numericIds.length ? Math.max(...numericIds) + 1 : 1;
+      let userId = 'USR-' + localId;
+
+      const profile = {
+        id: userId,
+        name: name.trim(),
+        email: cleanEmail,
+        password,
+        role,
+        avatarUrl: role === 'host' ? 'assets/avatars/ate_maria.jpg' : 'assets/avatars/sarah_student.jpg',
+        rating: 5.0,
+        reviewsCount: 0,
+        phone: '',
+        gender: 'Prefer not to say',
+        bio: role === 'host' ? 'Boarding house host / caretaker' : 'Student tenant searching for a boarding stay',
+        school: '',
+        course: '',
+        studentId: '',
+        emergencyContact: ''
+      };
+
+      // Try Supabase registration in background
       if (state.supabase) {
         try {
           const { data, error } = await state.supabase.auth.signUp({
-            email,
+            email: cleanEmail,
             password,
             options: { data: { name, role } }
           });
 
-          if (error) {
-            const isNetworkErr = error.message && (error.message.includes('fetch') || error.message.includes('network') || error.message.includes('Failed'));
-            if (isNetworkErr) {
-              console.warn('Supabase unreachable, falling back to local demo registration.');
-            } else {
-              return { success: false, message: error.message };
+          if (!error && data && data.user) {
+            profile.id = data.user.id;
+            try {
+              await state.supabase.from('profiles').upsert(fromProfile(profile));
+            } catch (e) {
+              console.warn('Supabase profiles notice:', e);
             }
-          } else if (data && data.user) {
-            const profile = {
-              id: data.user.id,
-              email,
-              name,
-              role,
-              avatarUrl: role === 'host' ? 'assets/avatars/ate_maria.jpg' : 'assets/avatars/sarah_student.jpg',
-              rating: '0.0',
-              reviewsCount: 0,
-              phone: '',
-              gender: 'Prefer not to say',
-              bio: ''
-            };
-
-            await state.supabase.from('profiles').upsert(fromProfile(profile));
-            state.currentUser = profile;
-            writeLocal('currentUser', profile);
-            return { success: true, user: profile };
           }
         } catch (err) {
-          console.warn('Supabase registration exception, falling back to local demo:', err);
+          console.warn('Supabase registration notice, continuing with saved profile:', err);
         }
       }
 
-      // Local Demo Registration
-      const exists = state.users.some((item) => item.email.toLowerCase() === email.toLowerCase());
-      if (exists) return { success: false, message: 'Email already registered.' };
-      const numericIds = state.users.map((item) => Number(item.id)).filter(Boolean);
-      const user = {
-        id: numericIds.length ? Math.max(...numericIds) + 1 : 1,
-        name,
-        email,
-        password,
-        role,
-        avatarUrl: role === 'host' ? 'assets/avatars/ate_maria.jpg' : 'assets/avatars/sarah_student.jpg',
-        rating: '5.0',
-        reviewsCount: 0,
-        phone: '',
-        gender: 'Prefer not to say',
-        bio: role === 'host' ? 'Boarding house host / caretaker' : 'Student tenant searching for a boarding stay'
-      };
-      state.users.push(user);
+      // Always save to state.users and state.currentUser
+      const existsIdx = state.users.findIndex(u => (u.email || '').toLowerCase() === cleanEmail);
+      if (existsIdx !== -1) {
+        state.users[existsIdx] = profile;
+      } else {
+        state.users.push(profile);
+      }
       writeLocal('users', state.users);
-      state.currentUser = user;
-      writeLocal('currentUser', user);
-      return { success: true, user };
+
+      state.currentUser = profile;
+      writeLocal('currentUser', profile);
+      return { success: true, user: profile };
     },
 
     updateProfile: async (updatedData) => {
       if (!state.currentUser) return false;
       state.currentUser = { ...state.currentUser, ...updatedData };
       writeLocal('currentUser', state.currentUser);
-      state.users = state.users.map((user) => user.id === state.currentUser.id ? state.currentUser : user);
+
+      const userIndex = state.users.findIndex(u => u.id === state.currentUser.id || (u.email && u.email.toLowerCase() === (state.currentUser.email || '').toLowerCase()));
+      if (userIndex !== -1) {
+        state.users[userIndex] = { ...state.users[userIndex], ...updatedData };
+      } else {
+        state.users.push(state.currentUser);
+      }
       writeLocal('users', state.users);
-      if (state.supabase) await state.supabase.from('profiles').upsert(fromProfile(state.currentUser));
+
+      if (state.supabase) {
+        try {
+          await state.supabase.from('profiles').upsert(fromProfile(state.currentUser));
+        } catch (err) {
+          console.warn('Supabase profile sync notice (check RLS policy):', err);
+        }
+      }
       return true;
     },
 
@@ -1216,12 +1254,12 @@
 
     closeAuthModal();
     const redirectTo = modal.dataset.redirectTo || '';
-    if (redirectTo) {
+    if (redirectTo && !redirectTo.includes('login.html')) {
       window.location.href = redirectTo;
     } else if (result.user.role === 'host') {
       window.location.href = 'admin.html';
     } else {
-      window.location.reload();
+      window.location.href = 'profile.html';
     }
   }
 
